@@ -16,7 +16,7 @@ public class LinkTypes {
 	 @Column(name="link_type_id")
 	 private int id;
 	 
-	 @Column(name="text")
+	 @Column(name="text", unique=true)
 	 private String text;
 	 
 	 @Column(name="table_name")
