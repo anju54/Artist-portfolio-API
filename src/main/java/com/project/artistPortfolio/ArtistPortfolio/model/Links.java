@@ -1,12 +1,14 @@
 package com.project.artistPortfolio.ArtistPortfolio.model;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -18,14 +20,28 @@ public class Links {
 	 @Column(name="link_id")
 	 private int id;
 	 
-	 @Column(name="token")
+	 @Column(name="token",unique=true)
 	 private String token;
 	 
+	 //private static final int EXPIRATION = 60 * 24;
+	 
 	 @Column(name="expiry_date")
-	 private Timestamp expiryDate;
+	 private Date expiryDate;
 	 
 	 @Column(name="refrence_id")
 	 private int refrenceId;
+	 
+	 @ManyToOne
+	 @JoinColumn(name = "link_type_id", nullable = false)
+	 private LinkTypes linkTypes;
+
+	public LinkTypes getLinkTypes() {
+		return linkTypes;
+	}
+
+	public void setLinkTypes(LinkTypes linkTypes) {
+		this.linkTypes = linkTypes;
+	}
 
 	public int getId() {
 		return id;
@@ -43,11 +59,11 @@ public class Links {
 		this.token = token;
 	}
 
-	public Timestamp getExpiryDate() {
+	public Date getExpiryDate() {
 		return expiryDate;
 	}
 
-	public void setExpiryDate(Timestamp expiryDate) {
+	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
 
@@ -58,7 +74,4 @@ public class Links {
 	public void setRefrenceId(int refrenceId) {
 		this.refrenceId = refrenceId;
 	}
-	 
-	 
-
 }
