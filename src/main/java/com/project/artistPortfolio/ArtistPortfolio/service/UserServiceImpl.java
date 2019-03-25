@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService{
 		mapDTOtoObject(user, registrationDTO);
 		try {
 			String email = user.getEmail();
+			//user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
 			UserModel userOp = userRepository.findByEmail(email);
 			if (userOp == null) {
 				userRepository.save(user); }

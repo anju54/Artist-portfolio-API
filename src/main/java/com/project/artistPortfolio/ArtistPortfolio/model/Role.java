@@ -18,6 +18,15 @@ public class Role {
 	 
 	@Column(name="role")
 	private String role;
+	
+	public Role() {
+		super();
+	}
+
+	public Role(String role) {
+		super();
+		this.role = role;
+	}
 
 	public int getId() {
 		return id;
