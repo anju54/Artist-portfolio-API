@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,17 +24,18 @@ public class Linkcontroller {
 	
 	private final static Logger logger = LoggerFactory.getLogger(LinksServiceImpl.class);
 	
-	@PostMapping("/{text}/{email}/{id}")
-	public void createLink(@PathVariable("text") String text, @PathVariable("email")
-							String email, @PathVariable("id") int id) {
-		
-		logger.info("trying to create link");
-		linksService.createLinks(text,email,id);		
-	}
+//	@PostMapping("/{text}/{email}/{id}")
+//	public void createLink(@PathVariable("text") String text, @PathVariable("email")
+//							String email, @PathVariable("id") int id) {
+//		
+//		logger.info("trying to create link");
+//		linksService.createLinks(text,email,id);		
+//	}
 	
 	@GetMapping("/{id}")
 	public @ResponseBody Links getLinkById(@PathVariable("id") int id) {
 		
+		logger.info("trying to get links");
 		return linksService.getLinksById(id);
 	}
 

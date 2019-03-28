@@ -10,7 +10,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Links;
  */
 public interface LinksService {
 	
-	void createLinks(String text,  String email, int id);
+	void createLinks(String text,  String email, int id,String token);
 	Links getLinksById(int id);
 
 }

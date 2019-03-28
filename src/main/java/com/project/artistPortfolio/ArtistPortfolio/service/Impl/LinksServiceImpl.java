@@ -1,7 +1,6 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +44,12 @@ public class LinksServiceImpl implements LinksService {
 	/***
 	 * This method helps to create token for any request
 	 */
-	public void createLinks(String text, String email, int id) { // id can be userID and mediaId
+	public void createLinks(String text, String email, int id,String token) { // id can be userID and mediaId
 		
 		try {
 			Links links = new Links();
 			
-			String token = UUID.randomUUID().toString();
+			//String token = UUID.randomUUID().toString();
 			
 			Date date = new Date(System.currentTimeMillis() + 60*60 * 1000); // 1hr
 			
