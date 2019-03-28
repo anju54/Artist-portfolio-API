@@ -16,6 +16,16 @@ public class ArtistProfileMediaKey implements Serializable{
     @Column(name = "media_id")
     private int mediaId;
 
+	public ArtistProfileMediaKey() {
+		super();
+	}
+
+	public ArtistProfileMediaKey(int artistProfileId, int mediaId) {
+		super();
+		this.artistProfileId = artistProfileId;
+		this.mediaId = mediaId;
+	}
+
 	public int getArtistProfileId() {
 		return artistProfileId;
 	}
