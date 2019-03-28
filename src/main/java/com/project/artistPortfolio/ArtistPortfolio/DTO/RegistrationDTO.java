@@ -10,16 +10,14 @@ public class RegistrationDTO {
 	 private String fname;
 	 private String lname;
 	 private String email;
+	 private String roleName;
 	 
-//	 private String password;
-//	 
-//	public String getPassword() {
-//		return password;
-//	}
-//	public void setPassword(String password) {
-//		this.password = password;
-//	}
-	 
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 	public String getFname() {
 		return fname;
 	}
