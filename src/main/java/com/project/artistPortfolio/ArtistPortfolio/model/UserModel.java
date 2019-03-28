@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -44,9 +45,12 @@ public class UserModel {
 	 @Column(name = "password")
 	 private String password;
 	 
-	 @ManyToOne
-	 @JoinColumn(name = "role_id", nullable = false)
-	 private Role role;
+	@ManyToOne
+	@JoinColumn(name = "role_id", nullable = false)
+	private Role role;
+	 
+	@OneToOne(mappedBy="user")
+	private ArtistProfile artistProfile;
 	 
 	public UserModel() {
 		super();
@@ -68,6 +72,14 @@ public class UserModel {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public ArtistProfile getArtistProfile() {
+		return artistProfile;
+	}
+
+	public void setArtistProfile(ArtistProfile artistProfile) {
+		this.artistProfile = artistProfile;
 	}
 
 	public int getId() {

@@ -47,6 +47,10 @@ public class ArtistProfile {
 	@NotNull
 	@Column(name = "about_me")
 	private String aboutMe;
+	
+	@OneToOne
+	@JoinColumn(name="user_id")
+	private UserModel user;
 
 	@OneToMany(mappedBy = "artistProfile") 
 	private List<ArtistProfileMedia> artistProfileMedia;
@@ -57,13 +61,21 @@ public class ArtistProfile {
 	@OneToOne
 	@JoinColumn(name="profile_pic_id")
 	private Media media;
-	 
+	
 	public Media getMedia() {
 		return media;
 	}
 
 	public void setMedia(Media media) {
 		this.media = media;
+	}
+
+	public UserModel getUser() {
+		return user;
+	}
+
+	public void setUser(UserModel user) {
+		this.user = user;
 	}
 
 	public List<PaintingType> getPaintingType() {
