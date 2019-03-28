@@ -1,10 +1,13 @@
 package com.project.artistPortfolio.ArtistPortfolio.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,6 +40,17 @@ public class Media {
 	@Column(name = "path_thumb")
 	@Size(max=40)
 	private String pathThumb;
+	
+	@OneToMany(mappedBy = "media") 
+	private List<ArtistProfileMedia> artistProfileMedia;
+
+	public List<ArtistProfileMedia> getArtistProfileMedia() {
+		return artistProfileMedia;
+	}
+
+	public void setArtistProfileMedia(List<ArtistProfileMedia> artistProfileMedia) {
+		this.artistProfileMedia = artistProfileMedia;
+	}
 
 	public int getId() {
 		return id;
