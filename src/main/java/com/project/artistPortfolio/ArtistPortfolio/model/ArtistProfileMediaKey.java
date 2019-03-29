@@ -2,6 +2,7 @@ package com.project.artistPortfolio.ArtistPortfolio.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -9,10 +10,10 @@ public class ArtistProfileMediaKey implements Serializable{
 	
 	private static final long serialVersionUID = 8958607353870411854L;
 
-	//@Column(name = "artist_profile_id")
+	@Column(name = "artist_profile_id")
     private int artistProfileId;
  
-    //@Column(name = "media_id")
+    @Column(name = "media_id")
     private int mediaId;
 
 	public ArtistProfileMediaKey() {
