@@ -30,5 +30,28 @@ public class MediaServiceImpl implements MediaService{
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	public void createMedia(Media media) {
+		
+		mediaRepository.save(media);
+	}
+	
+	public void updateMedia(int id,Media media) {
+		
+		Media existingMedia = getMediaById(id);
+		if ( existingMedia!=null ) {
+			existingMedia.setFileName(media.getFileName());
+			existingMedia.setFilenameOriginal(media.getFilenameOriginal());
+			existingMedia.setPath(media.getPath());
+			existingMedia.setPathThumb(media.getPathThumb());
+			mediaRepository.save(existingMedia);
+		}	
+	}
+	
+	public String deleteMediaById(int id) {
+		
+		mediaRepository.deleteById(id);
+		return "media deleted";
+	}
 
 }
