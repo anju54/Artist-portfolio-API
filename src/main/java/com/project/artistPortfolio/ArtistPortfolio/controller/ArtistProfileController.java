@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 
@@ -22,8 +23,19 @@ public class ArtistProfileController {
 	@Autowired
 	ArtistProfileService artistProfileService;
 	
+	/**
+	 * This is used to display all the painting type of any artist by id.
+	 * @param id
+	 * 		artist profile id.
+	 */
+	@GetMapping("/{id}/all/painting_type")
+	public void getArtistProfilePaintingByid(@PathVariable("id") int id) {
+		
+		artistProfileService.getListOfPaintingType(id);
+	}
+		
 	@GetMapping("/{id}")
-	public void getArtistProfileByid(int id) {
+	public void getArtistProfileByid(@PathVariable("id") int id) {
 		
 		artistProfileService.getArtistProfileById(id);
 	}
@@ -35,9 +47,9 @@ public class ArtistProfileController {
 	}
 	
 	@PostMapping("/")
-	public void create(@RequestBody ArtistProfile artistProfile) {
+	public void create(@RequestBody ArtistProfileDTO artistProfileDTO) {
 		
-		artistProfileService.createArtistProfileRecord(artistProfile);
+		artistProfileService.createArtistProfileRecord(artistProfileDTO);
 	}
 
 	@PutMapping("/{id}")

@@ -4,10 +4,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -52,12 +54,14 @@ public class ArtistProfile {
 	@JoinColumn(name="user_id")
 	private UserModel user;
 
-	@OneToMany(mappedBy = "artistProfile") 
+	@OneToMany(mappedBy = "artistProfile") //bridge table
 	private List<ArtistProfileMedia> artistProfileMedia;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable( name="artist_painting_bridge", joinColumns=@JoinColumn(name="artist_profile_id"), 
+				inverseJoinColumns=@JoinColumn(name = "painting_type_id"))
 	List<PaintingType> paintingType;
-	 
+	
 	@OneToOne
 	@JoinColumn(name="profile_pic_id")
 	private Media media;
