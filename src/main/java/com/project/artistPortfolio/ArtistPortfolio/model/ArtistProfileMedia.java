@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class ArtistProfileMedia {
 	
 	@EmbeddedId
-	ArtistProfileMediaKey id;
+	private ArtistProfileMediaKey id;
 	
 	@ManyToOne
     @MapsId("artist_profile_id")
