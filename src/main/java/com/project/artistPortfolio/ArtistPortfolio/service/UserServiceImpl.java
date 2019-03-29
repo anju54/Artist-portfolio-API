@@ -74,29 +74,38 @@ public class UserServiceImpl implements UserService{
 		
 		UserModel user = new UserModel();
 		mapDTOtoObject(user, registrationDTO);
+		logger.info(user.getEmail());
 		try {
 			String email = user.getEmail();
-			//user.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
+			logger.info("checking if this user alreday exists? ");
 			UserModel userOp = userRepository.findByEmail(email);
+			
 			if (userOp == null) {
 				
+				logger.info("proceeding to create new user");
+				logger.info(registrationDTO.getRoleName());
 				Role role = roleRepository.findByRole(registrationDTO.getRoleName());
 				user.setRole(role);
 				
-				userRepository.save(user); }
+				userRepository.save(user); 
+				
 				logger.info("data saved sucessfully in user table");
 				
 				String text = "set_password";
 				String token = UUID.randomUUID().toString();
 				
-				linksService.createLinks(text, user.getEmail(), user.getId(),token);
+				linksService.createLinks(text, user.getEmail(), user.getId(),token); // create token 
 				
-				mailSender.send( emailService.registrationCredentialEmail(user, token) );
+				mailSender.send( emailService.registrationCredentialEmail(user, token) ); // send mail with token and set password link
 				
 				return "user registered succesfully";
-		} catch (Exception e) {
-			throw new CustomException(ExceptionMessage.DUPLICATE_email, HttpStatus.BAD_REQUEST);
-		}	
+			}
+		} 
+		catch (Exception e) {
+			logger.error(e.getMessage());
+			//throw new CustomException(ExceptionMessage.DUPLICATE_email, HttpStatus.BAD_REQUEST);
+		}
+		return null;
 	}
 	
 	/***
