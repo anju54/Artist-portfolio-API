@@ -14,7 +14,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -26,27 +25,22 @@ public class ArtistProfile {
 	@Column(name="artist_profile_id")
 	private int id;
 	 
-	@NotNull
 	@Column(name = "profile_name")
 	@Size(max=20)
 	private String profileName;
 
-	@NotNull
 	@Column(name = "facebook_url")
 	@Size(max=70)
 	private String facebookUrl;
 	 
-	@NotNull
 	@Column(name = "twitter_url")
 	@Size(max=70)
 	private String twitterUrl;
 	 
-	@NotNull
 	@Column(name = "linkedin_url")
 	@Size(max=70)
 	private String linkedinUrl;
 	 
-	@NotNull
 	@Column(name = "about_me")
 	private String aboutMe;
 	
