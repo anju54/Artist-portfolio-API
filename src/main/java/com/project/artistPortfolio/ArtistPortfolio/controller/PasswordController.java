@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.Links;
@@ -22,6 +22,7 @@ import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
 @RestController
 @CrossOrigin
+@RequestMapping("/api/user")
 public class PasswordController {
 	
 	@Autowired
@@ -84,8 +85,8 @@ public class PasswordController {
 	 * @param password
 	 * @return String message
 	 */
-	@RequestMapping(value = "/api/user/set_password/valid/{token}/{id}", method = RequestMethod.POST)
-	public String showSetPasswordPage( @PathVariable("token") String token, @PathVariable("id") int id,
+	@RequestMapping(value = "/set_password/valid", method = RequestMethod.POST)
+	public String showSetPasswordPage(@RequestParam("token") String token, @RequestParam("id") int id,
 			@RequestBody Map<String, String> password) {
 		
 		logger.info("calling from password controller to set password");
