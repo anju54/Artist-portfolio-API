@@ -1,5 +1,7 @@
 package com.project.artistPortfolio.ArtistPortfolio.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,16 @@ public class PaintingTypeController {
 	public void delete(@PathVariable("id") int id) {
 		
 		paintingTypeService.deletePaintingById(id);
+	}
+	
+	/**
+	 * This is used to display all the painting type
+	 * @return List<PaintingType>
+	 */
+	@GetMapping("/all")
+	public List<PaintingType> getAllpainting() {
+		
+		return paintingTypeService.getAllPaintingType();
 	}
 
 }
