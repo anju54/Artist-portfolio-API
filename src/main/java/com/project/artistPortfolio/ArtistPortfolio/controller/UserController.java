@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.CurrentUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.UserRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
@@ -47,6 +48,11 @@ public class UserController {
 		userService.createUser(registrationDTO);
 	}
 	
+	@PutMapping("/{id}")
+	public @ResponseBody void updateUser(@PathVariable("id") int id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+		userService.updateUser(id, updateUserDTO);
+	}
+	
 	@GetMapping("/{id}")
 	public @ResponseBody UserModel getUserByUserId(@PathVariable("id") int id) {
 		
@@ -60,27 +66,25 @@ public class UserController {
 	 * 			it holds the data related to artist profile
 	 */
 	@GetMapping("/username")
-	public ProfileDTO getPrincipalUser(Authentication authentication) {
+	public CurrentUserDTO getPrincipalUser(Authentication authentication) {
 		
+		try {
 		logger.info("trying to get all detail of artist");
-		ProfileDTO profileDTO = new ProfileDTO();
-
-		String username =  authentication.getName(); // email id
-		profileDTO.setEmail(username);
+		CurrentUserDTO currentUserDTO = new CurrentUserDTO();
 		
+		String username =  authentication.getName(); // email id
 		UserModel user = userRepository.findByEmail(username);
 		String name = user.getFname() + " " + user.getLname();
-		profileDTO.setFullName(name);
 		
-		ArtistProfile artistProfile = user.getArtistProfile();
-		profileDTO.setAboutMe(artistProfile.getAboutMe());
-		profileDTO.setFacebookUrl(artistProfile.getFacebookUrl());
-		profileDTO.setLinkedinUrl(artistProfile.getLinkedinUrl());
-		profileDTO.setTwitterUrl(artistProfile.getTwitterUrl());
-		profileDTO.setProfileName(artistProfile.getProfileName());
-		profileDTO.setPaintingType(artistProfile.getPaintingType());
+		currentUserDTO.setFullName(name);
+		currentUserDTO.setUsername(username);
+		return currentUserDTO;
 		
-		return profileDTO;
+		}catch (Exception e) {
+			// TODO: handle exception
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 	
 }
