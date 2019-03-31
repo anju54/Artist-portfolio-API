@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.mail.EmailServiceImpl;
@@ -106,6 +107,24 @@ public class UserServiceImpl implements UserService{
 			//throw new CustomException(ExceptionMessage.DUPLICATE_email, HttpStatus.BAD_REQUEST);
 		}
 		return null;
+	}
+	
+	/**
+	 * this is used to update user personal information
+	 * @param id
+	 * 			user id
+	 * @param UpdateUserDTO
+	 * 		this is holding the user's personal information
+	 */
+	public void updateUser(int id,UpdateUserDTO updateUserDTO ) {
+		
+		UserModel existingUseruser = getUserById(id);
+		if (existingUseruser!=null) {
+			
+			existingUseruser.setFname(updateUserDTO.getFname());
+			existingUseruser.setLname(updateUserDTO.getLname());
+			userRepository.save(existingUseruser);	
+		}
 	}
 	
 	/***
