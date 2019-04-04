@@ -8,18 +8,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "artist_profile_media")
 public class ArtistProfileMedia {
 	
 	@EmbeddedId
-	private ArtistProfileMediaKey id;
+	private ArtistProfileMediaKey artistProfileMediaKey;
 	
+	@JsonIgnore
 	@ManyToOne
     @MapsId("artist_profile_id")
     @JoinColumn(name = "artist_profile_id")
     private ArtistProfile artistProfile;
 	
+	@JsonIgnore
 	@ManyToOne
     @MapsId("media_id")
     @JoinColumn(name = "media_id")
@@ -28,22 +32,27 @@ public class ArtistProfileMedia {
 	@Column(name="is_public")
 	private boolean isPublic;
 	
-	public ArtistProfileMedia(ArtistProfile artistProfile, Media media) {
+	public ArtistProfileMedia(ArtistProfileMediaKey artistProfileMediaKey, ArtistProfile artistProfile, Media media,
+			boolean isPublic) {
 		super();
+		this.artistProfileMediaKey = artistProfileMediaKey;
 		this.artistProfile = artistProfile;
 		this.media = media;
+		this.isPublic = isPublic;
 	}
 
 	public ArtistProfileMedia() {
 		super();
 	}
 
-	public ArtistProfileMediaKey getId() {
-		return id;
+	
+
+	public ArtistProfileMediaKey getArtistProfileMediaKey() {
+		return artistProfileMediaKey;
 	}
 
-	public void setId(ArtistProfileMediaKey id) {
-		this.id = id;
+	public void setArtistProfileMediaKey(ArtistProfileMediaKey artistProfileMediaKey) {
+		this.artistProfileMediaKey = artistProfileMediaKey;
 	}
 
 	public ArtistProfile getArtistProfile() {
