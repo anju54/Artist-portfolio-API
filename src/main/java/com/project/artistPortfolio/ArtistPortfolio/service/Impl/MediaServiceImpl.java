@@ -31,9 +31,12 @@ public class MediaServiceImpl implements MediaService{
 		}
 	}
 	
-	public void createMedia(Media media) {
+	public int createMedia(Media media) {
 		
 		mediaRepository.save(media);
+		logger.info("data inserted in media table and now prinintg the media id");
+		System.out.println(media.getId());
+		return media.getId();
 	}
 	
 	public void updateMedia(int id,Media media) {
