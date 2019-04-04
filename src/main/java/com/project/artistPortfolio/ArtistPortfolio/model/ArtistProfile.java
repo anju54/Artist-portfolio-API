@@ -16,6 +16,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "artist_profile")
 public class ArtistProfile {
@@ -44,6 +46,7 @@ public class ArtistProfile {
 	@Column(name = "about_me")
 	private String aboutMe;
 	
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="user_id")
 	private UserModel user;
