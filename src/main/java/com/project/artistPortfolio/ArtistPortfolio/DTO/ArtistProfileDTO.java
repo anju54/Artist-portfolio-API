@@ -2,7 +2,6 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
 import java.util.List;
 
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 
 public class ArtistProfileDTO {
@@ -12,13 +11,12 @@ public class ArtistProfileDTO {
 	private String twitterUrl;
 	private String linkedinUrl;
 	private String aboutMe;
-	private int userId;
-
-	private List<ArtistProfileMedia> artistProfileMedia;
-	
+	private String email;
+	//private List<ArtistProfileMedia> artistProfileMedia;
 	private List<PaintingType> paintingType;
+	//private int profilePicId;
 	
-	private int profilePicId;
+	// setter and getters 
 	
 	public String getProfileName() {
 		return profileName;
@@ -50,17 +48,12 @@ public class ArtistProfileDTO {
 	public void setAboutMe(String aboutMe) {
 		this.aboutMe = aboutMe;
 	}
-	public int getUserId() {
-		return userId;
+	
+	public String getEmail() {
+		return email;
 	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-	public List<ArtistProfileMedia> getArtistProfileMedia() {
-		return artistProfileMedia;
-	}
-	public void setArtistProfileMedia(List<ArtistProfileMedia> artistProfileMedia) {
-		this.artistProfileMedia = artistProfileMedia;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	public List<PaintingType> getPaintingType() {
 		return paintingType;
@@ -68,10 +61,5 @@ public class ArtistProfileDTO {
 	public void setPaintingType(List<PaintingType> paintingType) {
 		this.paintingType = paintingType;
 	}
-	public int getProfilePicId() {
-		return profilePicId;
-	}
-	public void setProfilePicId(int profilePicId) {
-		this.profilePicId = profilePicId;
-	}
+	
 }
