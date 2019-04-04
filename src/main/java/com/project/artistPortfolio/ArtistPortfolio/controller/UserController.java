@@ -68,23 +68,7 @@ public class UserController {
 	@GetMapping("/username")
 	public CurrentUserDTO getPrincipalUser(Authentication authentication) {
 		
-		try {
-		logger.info("trying to get all detail of artist");
-		CurrentUserDTO currentUserDTO = new CurrentUserDTO();
-		
-		String username =  authentication.getName(); // email id
-		UserModel user = userRepository.findByEmail(username);
-		String name = user.getFname() + " " + user.getLname();
-		
-		currentUserDTO.setFullName(name);
-		currentUserDTO.setUsername(username);
-		return currentUserDTO;
-		
-		}catch (Exception e) {
-			// TODO: handle exception
-			logger.error(e.getMessage());
-		}
-		return null;
+		return userService.getPrincipalUser(authentication);
 	}
 	
 }

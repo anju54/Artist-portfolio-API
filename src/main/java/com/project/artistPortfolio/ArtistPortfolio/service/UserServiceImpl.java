@@ -9,8 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.CurrentUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
@@ -41,6 +44,33 @@ public class UserServiceImpl implements UserService{
 	 @Autowired
 	 private RoleRepository roleRepository;
 	
+	 /**
+	 * This is used to display Artist profile information
+	 * @param authentication
+	 * @return ProfileDTO
+	 * 			it holds the data related to artist profile
+	 */
+	public CurrentUserDTO getPrincipalUser(Authentication authentication) {
+		
+		try {
+		logger.info("trying to get all detail of artist");
+		CurrentUserDTO currentUserDTO = new CurrentUserDTO();
+		
+		String username =  authentication.getName(); // email id
+		UserModel user = userRepository.findByEmail(username);
+		String name = user.getFname() + " " + user.getLname();
+		
+		currentUserDTO.setFullName(name);
+		currentUserDTO.setUsername(username);
+		return currentUserDTO;
+		
+		}catch (Exception e) {
+			// TODO: handle exception
+			logger.error(e.getMessage());
+		}
+		return null;
+	}
+ 
 	/***
 	 * This is used to get particular user by id
 	 * 
@@ -164,6 +194,14 @@ public class UserServiceImpl implements UserService{
 		return users;
 	}
 	
-	
+	public UserModel getUserByEmail(String email) {
+		
+		try {
+		return userRepository.findByEmail(email);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
+		}
+	}
 
 }
