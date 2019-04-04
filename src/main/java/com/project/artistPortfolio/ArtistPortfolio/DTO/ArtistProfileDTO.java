@@ -2,8 +2,6 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
 import java.util.List;
 
-import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
-
 public class ArtistProfileDTO {
 	
 	private String profileName;
@@ -12,9 +10,8 @@ public class ArtistProfileDTO {
 	private String linkedinUrl;
 	private String aboutMe;
 	private String email;
+	private List<String> paintingType;
 	//private List<ArtistProfileMedia> artistProfileMedia;
-	private List<PaintingType> paintingType;
-	//private int profilePicId;
 	
 	// setter and getters 
 	
@@ -55,11 +52,12 @@ public class ArtistProfileDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public List<PaintingType> getPaintingType() {
+	public List<String> getPaintingType() {
 		return paintingType;
 	}
-	public void setPaintingType(List<PaintingType> paintingType) {
+	public void setPaintingType(List<String> paintingType) {
 		this.paintingType = paintingType;
 	}
+	
 	
 }

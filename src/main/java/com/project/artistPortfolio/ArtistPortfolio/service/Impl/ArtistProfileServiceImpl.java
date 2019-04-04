@@ -142,10 +142,10 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		
 		//--------------------------------------------------------
 		List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
-		List<PaintingType> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
-		for (PaintingType paintingTypeList: paintingTypeLists) {
+		List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
+		for (String paintingTypeList: paintingTypeLists) {
 			
-			PaintingType p = paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList.getPaintingName());
+			PaintingType p = paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
 			paintingTypesSet.add(p);	
 		}
 		artistProfile.setPaintingType(paintingTypesSet); // list of painting type.
