@@ -1,9 +1,9 @@
 package com.project.artistPortfolio.ArtistPortfolio.service;
 
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileMediaDTO;
 
 public interface ArtistProfileMediaService {
 	
-	void createArtistProfileMediaLink(ArtistProfileMediaKey artistProfileMediaKey);
+	void createArtistProfileMediaLink(ArtistProfileMediaDTO artistProfileMediaDTO);
 
 }
