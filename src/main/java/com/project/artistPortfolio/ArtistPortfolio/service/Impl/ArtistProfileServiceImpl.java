@@ -1,7 +1,6 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,11 +59,12 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	/**
 	 * This is used to get artist profile pic path by profile id
 	 * @param id
+	 * 			user id
 	 * @return Media object
 	 */
 	public Media getProfilePicByArtistProfileId(int id) {
 		
-		ArtistProfile artistProfile = getArtistProfileById(id);
+		ArtistProfile artistProfile = userService.getUserById(id).getArtistProfile();
 		File a = new File(artistProfile.getMedia().getPath());
 		logger.info(a.getAbsolutePath());
 		

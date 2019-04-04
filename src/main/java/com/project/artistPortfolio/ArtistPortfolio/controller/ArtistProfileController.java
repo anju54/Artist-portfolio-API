@@ -46,7 +46,8 @@ public class ArtistProfileController {
 		
 		String email = userService.getPrincipalUser(authentication).getUsername();
 		UserModel user = userService.getUserByEmail(email);
-		int id = user.getId();
+		int id = user.getId();   // user id
+		
 		return artistProfileService.getProfilePicByArtistProfileId(id);
 	}
 	
