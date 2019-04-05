@@ -46,6 +46,9 @@ public class ArtistProfile {
 	@Column(name = "about_me")
 	private String aboutMe;
 	
+	@Column(name = "color_id")
+	private String colorId;
+	
 	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="user_id")
