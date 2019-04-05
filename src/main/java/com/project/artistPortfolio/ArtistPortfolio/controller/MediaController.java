@@ -83,7 +83,16 @@ public class MediaController {
 		artistProfileRepository.save(artistProfile);
 		
 		return new ResponseEntity<>( HttpStatus.OK);
-	}	
+	}
+	
+	@PostMapping(value="/api/upload/paintings", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<?> uploadListOfpaintings(MultipartFile file,Authentication authentication) throws IOException {
+			
+	String filename = file.getOriginalFilename();
+	
+		return null;
+		
+	}
 	
 //	@PostMapping("/upload")
 //	public int create(@RequestBody Media media) {

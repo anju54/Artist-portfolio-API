@@ -167,15 +167,14 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * 			profile name of artist
 	 */
 	@Override
-	public void addArtistProfileMedia(List<MediaDTO> mediaList,String profileName) {
+	public void addArtistProfileMedia(MediaDTO mediaDTO,String profileName) {
 		
-		for(MediaDTO mediaDTO: mediaList) {
+		//for(MediaDTO mediaDTO: mediaList) {
 			
 			Media media = new Media();
 			media.setFileName(mediaDTO.getFileName());
-			media.setFilenameOriginal(mediaDTO.getFilenameOriginal());
+			
 			media.setPath(mediaDTO.getPath());
-			media.setPathThumb(mediaDTO.getPathThumb());
 			
 			int mediaId = mediaService.createMedia(media);
 			
@@ -186,14 +185,11 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			artistProfileMediaDTO.setArtistProfileId(artistProfileId);
 			artistProfileMediaDTO.setMediaId(mediaId);
-			artistProfileMediaDTO.setPublic(mediaDTO.isPublic());
 			
 			artistProfileMediaDTO.setArtistProfileMediaKey( new ArtistProfileMediaKey(artistProfileId,mediaId));
 			
-			logger.info("------------------"+mediaDTO.isPublic());
-			
 			artistProfileMediaService.createArtistProfileMediaLink(artistProfileMediaDTO);
-		}
+		
 		
 	}
 	

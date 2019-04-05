@@ -95,7 +95,7 @@ public class ArtistProfileController {
 	}
 	
 	@PostMapping("/link/media")
-	public void createLinkArtistProlfileMedia(@RequestBody List<MediaDTO> mediaList,@RequestParam("profileName")
+	public void createLinkArtistProlfileMedia(@RequestBody MediaDTO mediaList,@RequestParam("profileName")
 																					String profileName) {
 		
 		artistProfileService.addArtistProfileMedia(mediaList, profileName);

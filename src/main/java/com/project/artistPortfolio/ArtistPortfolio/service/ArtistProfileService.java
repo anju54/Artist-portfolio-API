@@ -18,7 +18,7 @@ public interface ArtistProfileService {
 	String deleteByid(int id);
 	List<PaintingType> getListOfPaintingType(int id);
 	
-	void addArtistProfileMedia(List<MediaDTO> mediaList,String profileName);
+	public void addArtistProfileMedia(MediaDTO mediaDTO,String profileName);
 	
 	ArtistProfile getArtistProfileByProfileName(String profileName);
 	
