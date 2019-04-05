@@ -2,15 +2,19 @@ package com.project.artistPortfolio.ArtistPortfolio.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "media")
@@ -43,6 +47,18 @@ public class Media {
 	
 	@OneToMany(mappedBy = "media") 
 	private List<ArtistProfileMedia> artistProfileMedia;
+	
+	@JsonIgnore
+	@OneToOne(mappedBy="media", cascade = CascadeType.ALL,orphanRemoval = true)
+	private ArtistProfile artistProfile;
+
+	public ArtistProfile getArtistProfile() {
+		return artistProfile;
+	}
+
+	public void setArtistProfile(ArtistProfile artistProfile) {
+		this.artistProfile = artistProfile;
+	}
 
 	public List<ArtistProfileMedia> getArtistProfileMedia() {
 		return artistProfileMedia;
