@@ -30,7 +30,7 @@ public class ColorController {
 	}
 	
 	@PostMapping("/")
-	public void create(Color color) {
+	public void create(@RequestBody Color color) {
 		
 		colorService.create(color);
 	}

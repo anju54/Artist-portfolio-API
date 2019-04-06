@@ -60,6 +60,24 @@ public class ColorServiceImpl implements ColorService{
 	}
 	
 	/***
+	 * This is used to get color by name
+	 * 
+	 * @param colorName
+	 * 	
+	 * @return Color object
+	 */
+	public Color getColorByColorName(String colorName) {
+		
+		try {
+			Color color = colorRepository.getColorByColorName(colorName);
+			return color;
+		}catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	/***
 	 * This is used to get list of color
 	 */
 	public List<Color> getAllColors(){
