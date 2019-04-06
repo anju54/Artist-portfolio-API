@@ -47,8 +47,8 @@ public class ArtistProfile {
 	private String aboutMe;
 	
 	@Column(name = "color_id")
-	private String colorId;
-	
+	private int colorId;
+
 	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="user_id")
@@ -65,6 +65,14 @@ public class ArtistProfile {
 	@OneToOne
 	@JoinColumn(name="profile_pic_id")
 	private Media media;
+	
+	public int getColorId() {
+		return colorId;
+	}
+
+	public void setColorId(int colorId) {
+		this.colorId = colorId;
+	}
 	
 	public Media getMedia() {
 		return media;

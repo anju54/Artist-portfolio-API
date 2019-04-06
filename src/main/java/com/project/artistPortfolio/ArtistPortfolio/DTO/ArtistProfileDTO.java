@@ -11,12 +11,19 @@ public class ArtistProfileDTO {
 	private String aboutMe;
 	private String email;
 	private List<String> paintingType;
+	private List<String> colors;
 	//private List<ArtistProfileMedia> artistProfileMedia;
 	
 	// setter and getters 
 	
 	public String getProfileName() {
 		return profileName;
+	}
+	public List<String> getColors() {
+		return colors;
+	}
+	public void setColors(List<String> colors) {
+		this.colors = colors;
 	}
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;

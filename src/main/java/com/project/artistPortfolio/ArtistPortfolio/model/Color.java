@@ -28,6 +28,14 @@ public class Color {
 	 @OneToMany(mappedBy="colorId",cascade = CascadeType.ALL)
 	 private List<ArtistProfile> artistProfile;
 
+	public List<ArtistProfile> getArtistProfile() {
+		return artistProfile;
+	}
+
+	public void setArtistProfile(List<ArtistProfile> artistProfile) {
+		this.artistProfile = artistProfile;
+	}
+
 	public int getId() {
 		return id;
 	}
