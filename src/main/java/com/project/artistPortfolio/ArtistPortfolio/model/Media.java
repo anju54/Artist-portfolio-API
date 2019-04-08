@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -25,24 +23,16 @@ public class Media {
 	@Column(name="media_id")
 	private int id;
 	
-	@NotNull
 	@Column(name = "file_name")
-	@Size(max=40)
 	private String fileName;
 	 
-	@NotNull
 	@Column(name = "filename_original")
-	@Size(max=40)
 	private String filenameOriginal;
 	 
-	@NotNull
-	@Column(name = "path")
-	@Size(max=40)
+	@Column(name = "path") 
 	private String path;
 	 
-	@NotNull
 	@Column(name = "path_thumb")
-	@Size(max=40)
 	private String pathThumb;
 	
 	@OneToMany(mappedBy = "media") 
