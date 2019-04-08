@@ -1,5 +1,7 @@
 package com.project.artistPortfolio.ArtistPortfolio.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,12 @@ public class ColorController {
 	
 	@Autowired
 	private ColorService colorService;
+	
+	@GetMapping("/all")
+	public List<Color> getAllColor(){
+		
+		return colorService.getAllColors();
+	}
 	
 	@GetMapping("/{id}")
 	public @ResponseBody Color getColorById(@PathVariable("id") int id) {
