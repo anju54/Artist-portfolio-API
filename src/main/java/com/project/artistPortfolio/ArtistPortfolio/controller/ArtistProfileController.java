@@ -59,10 +59,10 @@ public class ArtistProfileController {
 	 * @param profileName
 	 * 		artist profile name.
 	 */
-	@GetMapping("/{mail}/info/{profileName}")
-	public ProfileDTO getArtistProfile(@PathVariable("email") String email,@PathVariable("profileName") String profileName) {
+	@GetMapping("/{email}/info")
+	public ProfileDTO getArtistProfile(@PathVariable("email") String email,Authentication authentication) {
 		
-		return artistProfileService.getArtistPublicProfileInfo(email, profileName);
+		return artistProfileService.getArtistPublicProfileInfo(email,authentication);
 	}
 	
 	/**
@@ -106,4 +106,5 @@ public class ArtistProfileController {
 		
 		artistProfileService.updateArtistProfileRecord(artistProfile, id);
 	}
+	
 }
