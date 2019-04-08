@@ -59,10 +59,10 @@ public class ArtistProfileController {
 	 * @param profileName
 	 * 		artist profile name.
 	 */
-	@GetMapping("/{email}/info")
-	public ProfileDTO getArtistProfile(@PathVariable("email") String email,Authentication authentication) {
+	@GetMapping("/info")
+	public ProfileDTO getArtistProfile(Authentication authentication) {
 		
-		return artistProfileService.getArtistPublicProfileInfo(email,authentication);
+		return artistProfileService.getArtistPublicProfileInfo(authentication);
 	}
 	
 	/**

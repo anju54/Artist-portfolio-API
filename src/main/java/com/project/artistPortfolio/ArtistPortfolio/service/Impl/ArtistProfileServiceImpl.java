@@ -97,7 +97,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @param profileName
 	 * 		artist profile name.
 	 */
-	public ProfileDTO getArtistPublicProfileInfo(String email, Authentication authentication) {
+	public ProfileDTO getArtistPublicProfileInfo(Authentication authentication) {
 		
 		String currentUser = userService.getPrincipalUser(authentication).getUsername();
 		UserModel user = userService.getUserByEmail(currentUser);
@@ -117,6 +117,9 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		profileDTO.setFname(user.getFname());
 		profileDTO.setLname(user.getLname());
 		profileDTO.setEmail(user.getEmail());
+		
+		Color color = colorService.getColorById(artistProfile.getColorId());
+		profileDTO.setColorName(color.getColorName());
 		return profileDTO;
 	}
 	

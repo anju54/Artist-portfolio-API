@@ -24,7 +24,7 @@ public interface ArtistProfileService {
 	
 	ArtistProfile getArtistProfileByProfileName(String profileName);
 	
-	ProfileDTO getArtistPublicProfileInfo(String email,Authentication authentication);
+	ProfileDTO getArtistPublicProfileInfo(Authentication authentication);
 	
 	Media getProfilePicByArtistProfileId(int id);
 	
