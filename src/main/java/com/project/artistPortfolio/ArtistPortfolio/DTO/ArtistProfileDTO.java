@@ -11,7 +11,7 @@ public class ArtistProfileDTO {
 	private String aboutMe;
 	private String email;
 	private List<String> paintingType;
-	private List<String> colors;
+	private String colorName;
 	//private List<ArtistProfileMedia> artistProfileMedia;
 	
 	// setter and getters 
@@ -19,12 +19,15 @@ public class ArtistProfileDTO {
 	public String getProfileName() {
 		return profileName;
 	}
-	public List<String> getColors() {
-		return colors;
+	
+	public String getColorName() {
+		return colorName;
 	}
-	public void setColors(List<String> colors) {
-		this.colors = colors;
+
+	public void setColorName(String colorName) {
+		this.colorName = colorName;
 	}
+
 	public void setProfileName(String profileName) {
 		this.profileName = profileName;
 	}

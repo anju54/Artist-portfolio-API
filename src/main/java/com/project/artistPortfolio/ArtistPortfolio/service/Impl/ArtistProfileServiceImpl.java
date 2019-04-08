@@ -1,6 +1,9 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
@@ -19,14 +23,15 @@ import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
+import com.project.artistPortfolio.ArtistPortfolio.model.Color;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.PaintingTypeRepository;
-import com.project.artistPortfolio.ArtistPortfolio.repository.UserRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileMediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
+import com.project.artistPortfolio.ArtistPortfolio.service.ColorService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
@@ -48,10 +53,10 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	private PaintingTypeRepository paintingTypeRepo;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private ArtistProfileMediaService artistProfileMediaService;
 	
 	@Autowired
-	private ArtistProfileMediaService artistProfileMediaService;
+	private ColorService colorService;
 	
 //	@Autowired
 //	private PaintingTypeService paintingTypeService;
@@ -92,20 +97,23 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @param profileName
 	 * 		artist profile name.
 	 */
-	public ProfileDTO getArtistPublicProfileInfo(String email, String profileName) {
+	public ProfileDTO getArtistPublicProfileInfo(String email, Authentication authentication) {
+		
+		String currentUser = userService.getPrincipalUser(authentication).getUsername();
+		UserModel user = userService.getUserByEmail(currentUser);
+		int id = user.getArtistProfile().getId();
 		
 		ProfileDTO profileDTO = new ProfileDTO();
 		
-		ArtistProfile artistProfile = getArtistProfileByProfileName(profileName);
+		ArtistProfile artistProfile = getArtistProfileById(id);
 		
 		profileDTO.setAboutMe(artistProfile.getAboutMe());
 		profileDTO.setFacebookUrl(artistProfile.getFacebookUrl());
 		profileDTO.setLinkedinUrl(artistProfile.getLinkedinUrl());
 		profileDTO.setTwitterUrl(artistProfile.getTwitterUrl());
-		profileDTO.setProfileName(profileName);
+		profileDTO.setProfileName(artistProfile.getProfileName());
 		profileDTO.setPaintingType(artistProfile.getPaintingType());
 		
-		UserModel user = userRepository.findByEmail(email);
 		profileDTO.setFname(user.getFname());
 		profileDTO.setLname(user.getLname());
 		profileDTO.setEmail(user.getEmail());
@@ -154,8 +162,23 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		UserModel user = userService.getUserByEmail(artistProfileDTO.getEmail());
 		artistProfile.setUser(user);
 		
+		Color existingColor = colorService.getColorByColorName(artistProfileDTO.getColorName());
+		artistProfile.setColorId(existingColor.getId());
+		
 //		Media media = mediaService.getMediaById(artistProfileDTO.getProfilePicId()); //for profile picture.
 //		artistProfile.setMedia(media);
+		
+		// to create a folder by artist profile name
+		Path existingPath = Paths.get("../../Artist_portfolio/ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName());
+		boolean flag = Files.notExists(existingPath);
+		if(!flag) {
+			logger.info("folder exists");
+		}else {
+		
+			File parentDir = new File("../../Artist_portfolio/ArtistPortfolioAPI/media/");
+			File newDir = new File(parentDir, artistProfileDTO.getProfileName());
+			newDir.mkdir();
+		}
 		
 		artistProfileRepository.save(artistProfile);	
 	}
@@ -176,7 +199,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			media.setPath(mediaDTO.getPath());
 			
-			int mediaId = mediaService.createMedia(media);
+			int mediaId = mediaService.createMedia(media).getId();
 			
 			ArtistProfile exsitingArtistProfile = artistProfileRepository.findByProfileName(profileName);
 			int artistProfileId = exsitingArtistProfile.getId();
@@ -188,9 +211,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			artistProfileMediaDTO.setArtistProfileMediaKey( new ArtistProfileMediaKey(artistProfileId,mediaId));
 			
-			artistProfileMediaService.createArtistProfileMediaLink(artistProfileMediaDTO);
-		
-		
+			artistProfileMediaService.createArtistProfileMediaLink(artistProfileMediaDTO);	
 	}
 	
 	@Override

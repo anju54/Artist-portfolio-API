@@ -2,6 +2,8 @@ package com.project.artistPortfolio.ArtistPortfolio.service;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
@@ -22,7 +24,7 @@ public interface ArtistProfileService {
 	
 	ArtistProfile getArtistProfileByProfileName(String profileName);
 	
-	ProfileDTO getArtistPublicProfileInfo(String email, String profileName);
+	ProfileDTO getArtistPublicProfileInfo(String email,Authentication authentication);
 	
 	Media getProfilePicByArtistProfileId(int id);
 	
