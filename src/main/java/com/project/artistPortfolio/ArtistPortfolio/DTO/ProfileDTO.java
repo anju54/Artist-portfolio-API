@@ -15,7 +15,14 @@ public class ProfileDTO {
 	private String aboutMe;
 	private String profileName;
 	private List<PaintingType> paintingType;
+	private String colorName;
 	
+	public String getColorName() {
+		return colorName;
+	}
+	public void setColorName(String colorName) {
+		this.colorName = colorName;
+	}
 	public String getFname() {
 		return fname;
 	}
