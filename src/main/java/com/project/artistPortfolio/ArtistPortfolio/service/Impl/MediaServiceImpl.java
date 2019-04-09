@@ -1,18 +1,23 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
+import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
@@ -26,6 +31,9 @@ public class MediaServiceImpl implements MediaService{
 	
 	@Autowired
 	private UserService userService;
+		
+	@Autowired
+	private ArtistProfileMediaRepository artistProfileMediaRepository;
 	
 	@Autowired
 	private  MediaStorageService fileStorageService;
@@ -42,6 +50,26 @@ public class MediaServiceImpl implements MediaService{
 			logger.error(e.getMessage());
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	/**
+	 * This is used to get all paintings of particular artist
+	 * 
+	 * @return list of media object
+	 */
+	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication) {
+		
+		List<Media> mediaList = new ArrayList<Media>(); 
+		
+		String email =  userService.getPrincipalUser(authentication).getUsername();
+		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
+		
+		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.findArtistProfileMediaByArtistProfileId(artistProfileId);
+		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
+			
+			mediaList.add(artistProfileMedia.getMedia());	
+		}
+		return mediaList;	
 	}
 	
 	@Override

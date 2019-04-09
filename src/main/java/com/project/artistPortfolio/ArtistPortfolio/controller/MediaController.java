@@ -2,13 +2,11 @@ package com.project.artistPortfolio.ArtistPortfolio.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +61,17 @@ public class MediaController {
 	@Autowired
 	ServletContext servletContext; 
 	
+	/**
+	 * This is used to get all paintings of particular artist
+	 * 
+	 * @return list of media object
+	 */
+	@GetMapping("/artist/albums")
+	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication){
+		
+		return mediaService.getMediaByArtistProfileMediaKey(authentication);
+	}
+	
 	@GetMapping("/{id}")
 	public @ResponseBody Media getMediaById(@PathVariable("id") int id) {
 		
@@ -112,7 +121,7 @@ public class MediaController {
 		UserModel user = userService.getUserByEmail(username);
 		String profileName = user.getArtistProfile().getProfileName();
 		
-		String paintingUploadLocation = "../ArtistPortfolioAPI/media/" + profileName;
+		String paintingUploadLocation = "../ArtistPortfolioAPI/media/" + profileName +"/";
 			
 		String filename = file.getOriginalFilename();
 		fileStorageService.uploadFile(file,paintingUploadLocation);
@@ -135,43 +144,6 @@ public class MediaController {
 	public void updateProfilePic(@PathVariable("email") String email,MultipartFile file) throws IOException {
 		
 		mediaService.updateProfilePic(email, file);
-	}
-	
-	@GetMapping("/read/image")
-	public void readMedia(Authentication authentication,String picType,HttpServletResponse response) throws IOException {
-		
-		String username = userService.getPrincipalUser(authentication).getUsername();
-		UserModel user = userService.getUserByEmail(username);
-		String profileName = user.getArtistProfile().getProfileName();
-		
-		ArtistProfile artistProfile = artistProfileService.getArtistProfileByProfileName(profileName);
-		String path = artistProfile.getMedia().getPath();
-		String fileName = artistProfile.getMedia().getFileName();
-		
-		String paintingUploadLocation = path + fileName;
-		picType = "profile-pic";
-		
-		 InputStream in = servletContext.getResourceAsStream(paintingUploadLocation);
-		 logger.info(paintingUploadLocation);
-		    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-		    IOUtils.copy(in, response.getOutputStream());
-			
-//		if(picType.equalsIgnoreCase("profile-pic")) {
-//			 paintingUploadLocation = "../../Artist_portfolio/ArtistPortfolioAPI/media/artist-profile-pics/" +
-//					 											"profile-pic-anju.jpg";
-//		} else if (picType.equalsIgnoreCase("painting")) {
-//			 paintingUploadLocation = "../../Artist_portfolio/ArtistPortfolioAPI/media/" + profileName;
-//		}
-		
-		
-//		BufferedImage img = null;
-//		try {
-//		    img = ImageIO.read(new File(paintingUploadLocation));
-//		    return img;
-//		} catch (IOException e) {
-//		}
-//		return img;
-		
 	}
 	
 	@PutMapping("/{id}")

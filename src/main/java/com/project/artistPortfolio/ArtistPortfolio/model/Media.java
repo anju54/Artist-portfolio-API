@@ -35,6 +35,7 @@ public class Media {
 	@Column(name = "path_thumb")
 	private String pathThumb;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "media") 
 	private List<ArtistProfileMedia> artistProfileMedia;
 	
