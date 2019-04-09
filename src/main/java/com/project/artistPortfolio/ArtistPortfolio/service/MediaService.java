@@ -1,5 +1,9 @@
 package com.project.artistPortfolio.ArtistPortfolio.service;
 
+import java.io.IOException;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
 public interface MediaService {
@@ -8,5 +12,7 @@ public interface MediaService {
 	Media createMedia(Media media);
 	void updateMedia(int id,Media media);
 	String deleteMediaById(int id);
+	
+	void updateProfilePic(String email,MultipartFile file) throws IOException;
 
 }

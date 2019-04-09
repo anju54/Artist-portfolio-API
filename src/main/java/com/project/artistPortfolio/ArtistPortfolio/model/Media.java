@@ -23,10 +23,10 @@ public class Media {
 	@Column(name="media_id")
 	private int id;
 	
-	@Column(name = "file_name")
+	@Column(name = "file_name",unique=true)
 	private String fileName;
 	 
-	@Column(name = "filename_original")
+	@Column(name = "filename_original",unique=true)
 	private String filenameOriginal;
 	 
 	@Column(name = "path") 

@@ -97,14 +97,13 @@ public class ArtistProfileController {
 	@PostMapping("/link/media")
 	public void createLinkArtistProlfileMedia(@RequestBody MediaDTO mediaList,@RequestParam("profileName")
 																					String profileName) {
-		
 		artistProfileService.addArtistProfileMedia(mediaList, profileName);
 	}
 
-	@PutMapping("/{id}")
-	public void update(@RequestBody ArtistProfile artistProfile, @PathVariable("id") int id) {
+	@PutMapping("/basic-info/{email}")
+	public void update(@RequestBody ArtistProfileDTO artistProfileDTO,@PathVariable("email") String email) {
 		
-		artistProfileService.updateArtistProfileRecord(artistProfile, id);
+		artistProfileService.updateArtistProfileRecord(artistProfileDTO,email);
 	}
 	
 }

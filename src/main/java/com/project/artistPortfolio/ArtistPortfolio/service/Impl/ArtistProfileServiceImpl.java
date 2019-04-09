@@ -14,19 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
-import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileMediaDTO;
-import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
-import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.*;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
-import com.project.artistPortfolio.ArtistPortfolio.model.Color;
-import com.project.artistPortfolio.ArtistPortfolio.model.Media;
-import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
-import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
+import com.project.artistPortfolio.ArtistPortfolio.model.*;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.PaintingTypeRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileMediaService;
@@ -57,9 +48,6 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	
 	@Autowired
 	private ColorService colorService;
-	
-//	@Autowired
-//	private PaintingTypeService paintingTypeService;
 	
 	/**
 	 * This is used to get artist profile pic path by profile id
@@ -218,17 +206,34 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	}
 	
 	@Override
-	public void updateArtistProfileRecord(ArtistProfile artistProfile, int id) {
+	public void updateArtistProfileRecord(ArtistProfileDTO artistProfileDTO,String email) {
 		
-		ArtistProfile existingRecord = getArtistProfileById(id);
+		UserModel user = userService.getUserByEmail(email);
+		int artistId = user.getArtistProfile().getId();
+		
+		ArtistProfile existingRecord = getArtistProfileById(artistId);
 		
 		if(existingRecord!=null) {
 			
-			existingRecord.setAboutMe(artistProfile.getAboutMe());
-			existingRecord.setFacebookUrl(artistProfile.getFacebookUrl());
-			existingRecord.setLinkedinUrl(artistProfile.getLinkedinUrl());
-			existingRecord.setTwitterUrl(artistProfile.getTwitterUrl());
-			existingRecord.setProfileName(artistProfile.getProfileName());
+			existingRecord.setAboutMe(artistProfileDTO.getAboutMe());
+			existingRecord.setFacebookUrl(artistProfileDTO.getFacebookUrl());
+			existingRecord.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
+			existingRecord.setTwitterUrl(artistProfileDTO.getTwitterUrl());
+			existingRecord.setProfileName(artistProfileDTO.getProfileName());
+			
+			List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
+			List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
+			for (String paintingTypeList: paintingTypeLists) {
+				
+				PaintingType p = paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
+				paintingTypesSet.add(p);	
+			}
+			existingRecord.setPaintingType(paintingTypesSet); // list of painting type.
+			
+			Color existingColor = colorService.getColorByColorName(artistProfileDTO.getColorName());
+			existingRecord.setColorId(existingColor.getId());
+			
+			existingRecord.setUser(user);
 			
 			artistProfileRepository.save(existingRecord);
 		}
@@ -260,6 +265,8 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	
 	
 	public String deleteByid(int id) {
 		

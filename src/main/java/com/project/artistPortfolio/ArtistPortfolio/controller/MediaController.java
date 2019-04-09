@@ -1,6 +1,5 @@
 package com.project.artistPortfolio.ArtistPortfolio.controller;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,22 +108,33 @@ public class MediaController {
 	@PostMapping(value="/upload/paintings", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> uploadpaintings(MultipartFile file,Authentication authentication) throws IOException {
 
-	String username = userService.getPrincipalUser(authentication).getUsername();
-	UserModel user = userService.getUserByEmail(username);
-	String profileName = user.getArtistProfile().getProfileName();
-	
-	String paintingUploadLocation = "../ArtistPortfolioAPI/media/" + profileName;
+		String username = userService.getPrincipalUser(authentication).getUsername();
+		UserModel user = userService.getUserByEmail(username);
+		String profileName = user.getArtistProfile().getProfileName();
 		
-	String filename = file.getOriginalFilename();
-	fileStorageService.uploadFile(file,paintingUploadLocation);
-	
-	MediaDTO mediaDTO = new MediaDTO();
-	mediaDTO.setFileName(filename);
-	mediaDTO.setPath("/media/"+profileName+"/");
-	
-	artistProfileService.addArtistProfileMedia(mediaDTO, profileName);
-	return null;
+		String paintingUploadLocation = "../ArtistPortfolioAPI/media/" + profileName;
+			
+		String filename = file.getOriginalFilename();
+		fileStorageService.uploadFile(file,paintingUploadLocation);
 		
+		MediaDTO mediaDTO = new MediaDTO();
+		mediaDTO.setFileName(filename);
+		mediaDTO.setPath("/media/"+profileName+"/");
+		
+		artistProfileService.addArtistProfileMedia(mediaDTO, profileName);
+		return null;	
+	}
+	
+	/**
+	 * This is used to update profile picture of particular user
+	 * @param email
+	 * @param file
+	 * @throws IOException
+	 */
+	@PutMapping("/{email}")
+	public void updateProfilePic(@PathVariable("email") String email,MultipartFile file) throws IOException {
+		
+		mediaService.updateProfilePic(email, file);
 	}
 	
 	@GetMapping("/read/image")
