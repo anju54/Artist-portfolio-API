@@ -128,7 +128,7 @@ public class MediaController {
 		String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
 		
 		String fileType = "profile-pic";
-		fileStorageService.uploadFile(file,uploadLocation,fileType,authentication);
+		fileStorageService.uploadFile(file,uploadLocation,fileType);
 		
 		String email = userService.getPrincipalUser(authentication).getUsername();
 		UserModel user  = userService.getUserByEmail(email);
@@ -159,7 +159,7 @@ public class MediaController {
 			
 		String filename = file.getOriginalFilename();
 		String fileType = "paintings";
-		fileStorageService.uploadFile(file,paintingUploadLocation,fileType,authentication);
+		fileStorageService.uploadFile(file,paintingUploadLocation,fileType);
 		
 		MediaDTO mediaDTO = new MediaDTO();
 		mediaDTO.setFileName(filename);

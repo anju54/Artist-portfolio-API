@@ -1,6 +1,7 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -17,11 +18,20 @@ public class MediaStorageServiceImpl implements MediaStorageService{
 	private final static Logger logger = LoggerFactory.getLogger(MediaStorageServiceImpl.class);
 
 	@Override
-	public void uploadFile(MultipartFile file, String location) throws IOException {
+	public void uploadFile(MultipartFile file, String location, String fileType) throws IOException {
 		
 		logger.info("trying to upload file");
+		File newFile;
+		
 		// Create a blank new file in the upload location
-		File newFile = new File(location + "profile-pic-" +file.getOriginalFilename());
+		if(fileType.equalsIgnoreCase("profile-pic")) {
+			
+			 newFile = new File(location + "profile-pic-" + file.getOriginalFilename());
+		}else {
+
+			 newFile = new File(location +( ZonedDateTime.now().toInstant().toEpochMilli() ) +file.getOriginalFilename());
+		}
+		
 		newFile.createNewFile();
 		
 		// Open output stream to new file and write from file to be uploaded

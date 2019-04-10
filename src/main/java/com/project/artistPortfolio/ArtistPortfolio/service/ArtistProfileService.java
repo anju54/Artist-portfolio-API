@@ -1,10 +1,8 @@
 package com.project.artistPortfolio.ArtistPortfolio.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;

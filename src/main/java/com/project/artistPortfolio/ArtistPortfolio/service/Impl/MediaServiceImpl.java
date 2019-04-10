@@ -71,12 +71,6 @@ public class MediaServiceImpl implements MediaService{
 	 * @return list of media object
 	 */
 	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageNo,int pageLimit) {
-//		
-//		Query query = entityManager.createQuery("");
-//		int pageNumber = 1;
-//		int pageSize = 10;
-//		query.setFirstResult((pageNumber-1) * pageSize); 
-//		query.setMaxResults(pageSize);
 		
 		List<Media> mediaList = new ArrayList<Media>(); 
 		
@@ -149,7 +143,7 @@ public class MediaServiceImpl implements MediaService{
 		String filename = file.getOriginalFilename();
 		String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
 		String fileType = "profile-pic";
-		fileStorageService.uploadFile(file,uploadLocation,fileType,authentication);
+		fileStorageService.uploadFile(file,uploadLocation,fileType);
 		
 		existingMedia.setPath("/media/artist-profile-pics/");
 		existingMedia.setFileName("profile-pic-"+filename);
@@ -163,6 +157,7 @@ public class MediaServiceImpl implements MediaService{
 		mediaRepository.save(existingMedia);	
 	}
 	
+	
 	@Override
 	public void updateMedia(int id,Media media) {
 		
@@ -175,6 +170,21 @@ public class MediaServiceImpl implements MediaService{
 			existingMedia.setPathThumb(media.getPathThumb());
 			mediaRepository.save(existingMedia);
 		}	
+	}
+	
+	/**
+	 * This is used to get media by file name
+	 * @param fileName
+	 * @return Media object
+	 */
+	public Media getMediaDataByFileName(String fileName) {
+		try {
+			 return mediaRepository.getMediaByFileName(fileName);
+		}catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,17 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.*;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.*;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
+import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.PaintingTypeRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileMediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ColorService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
+import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
 @Service
@@ -47,7 +51,13 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	private ArtistProfileMediaService artistProfileMediaService;
 	
 	@Autowired
+	private  MediaStorageService fileStorageService;
+	
+	@Autowired
 	private ColorService colorService;
+	
+	@Autowired
+	private MediaRepository mediaRepository;
 	
 	/**
 	 * This is used to get artist profile pic path by profile id
@@ -172,31 +182,38 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @param List of MediaDTO
 	 * @param profileName
 	 * 			profile name of artist
+	 * @throws IOException 
 	 */
 	@Override
-	public void addArtistProfileMedia(MediaDTO mediaDTO,String profileName) {
+	public void addArtistProfileMedia(MediaDTO mediaDTO,String profileName)  {
 		
-		//for(MediaDTO mediaDTO: mediaList) {
+		
 			
-			Media media = new Media();
-			media.setFileName(mediaDTO.getFileName());
-			media.setFilenameOriginal(mediaDTO.getFileName());
-			
-			media.setPath(mediaDTO.getPath());
-			
-			int mediaId = mediaService.createMedia(media).getId();
-			
-			ArtistProfile exsitingArtistProfile = artistProfileRepository.findByProfileName(profileName);
-			int artistProfileId = exsitingArtistProfile.getId();
-			
-			ArtistProfileMediaDTO artistProfileMediaDTO = new ArtistProfileMediaDTO();
-			
-			artistProfileMediaDTO.setArtistProfileId(artistProfileId);
-			artistProfileMediaDTO.setMediaId(mediaId);
-			
-			artistProfileMediaDTO.setArtistProfileMediaKey( new ArtistProfileMediaKey(artistProfileId,mediaId));
-			
-			artistProfileMediaService.createArtistProfileMediaLink(artistProfileMediaDTO);	
+		Media media = new Media();
+		media.setFileName(mediaDTO.getFileName());
+		media.setFilenameOriginal(mediaDTO.getFileName());
+		
+		media.setPath(mediaDTO.getPath());
+		
+		int mediaId = mediaService.createMedia(media).getId();
+		
+		
+		// for renaming the fileName
+//		media.setFilenameOriginal(mediaId+mediaDTO.getFileName());
+//		media.setFileName(mediaId+mediaDTO.getFileName());
+//		mediaRepository.save(media);
+		
+		ArtistProfile exsitingArtistProfile = artistProfileRepository.findByProfileName(profileName);
+		int artistProfileId = exsitingArtistProfile.getId();
+		
+		ArtistProfileMediaDTO artistProfileMediaDTO = new ArtistProfileMediaDTO();
+		
+		artistProfileMediaDTO.setArtistProfileId(artistProfileId);
+		artistProfileMediaDTO.setMediaId(mediaId);
+		
+		artistProfileMediaDTO.setArtistProfileMediaKey( new ArtistProfileMediaKey(artistProfileId,mediaId));
+		
+		artistProfileMediaService.createArtistProfileMediaLink(artistProfileMediaDTO);	
 	}
 	
 	@Override
