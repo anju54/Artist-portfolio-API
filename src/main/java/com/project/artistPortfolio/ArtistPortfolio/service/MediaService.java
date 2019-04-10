@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
 public interface MediaService {
@@ -15,8 +16,10 @@ public interface MediaService {
 	void updateMedia(int id,Media media);
 	String deleteMediaById(int id);
 	
-	void updateProfilePic(String email,MultipartFile file) throws IOException;
+	void updateProfilePic(Authentication authentication,MultipartFile file) throws IOException;
 	
 	List<Media> getMediaByArtistProfileMediaKey(Authentication authentication);
+	
+	MediaArtistDTO getPublicMedia(Authentication authentication);
 
 }

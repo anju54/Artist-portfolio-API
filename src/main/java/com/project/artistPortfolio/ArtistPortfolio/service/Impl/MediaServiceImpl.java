@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
@@ -19,6 +20,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
+import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
@@ -31,7 +33,10 @@ public class MediaServiceImpl implements MediaService{
 	
 	@Autowired
 	private UserService userService;
-		
+	
+	@Autowired
+	private ArtistProfileService artistProfileService;
+	
 	@Autowired
 	private ArtistProfileMediaRepository artistProfileMediaRepository;
 	
@@ -72,6 +77,34 @@ public class MediaServiceImpl implements MediaService{
 		return mediaList;	
 	}
 	
+	/**
+	 * This is used to get all public paintings of particular artist
+	 * 
+	 * @return list of media object
+	 */
+	public MediaArtistDTO getPublicMedia(Authentication authentication){
+		
+		List<Media> mediaList = new ArrayList<Media>(); 
+		
+		MediaArtistDTO mediaArtistDTO = new MediaArtistDTO();
+		
+		String email =  userService.getPrincipalUser(authentication).getUsername();
+		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
+		
+		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.findArtistProfileMediaByArtistProfileId(artistProfileId);
+		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
+			
+			if(artistProfileMedia.getPublicImage().equalsIgnoreCase("true")) {
+				
+				mediaList.add(artistProfileMedia.getMedia());
+			}
+		}
+		
+		mediaArtistDTO.setMediaList(mediaList);
+		mediaArtistDTO.setProfileName(artistProfileService.getArtistProfileById(artistProfileId).getProfileName());
+		return mediaArtistDTO;
+	}
+	
 	@Override
 	public Media createMedia(Media media) {
 		
@@ -88,19 +121,24 @@ public class MediaServiceImpl implements MediaService{
 	 * @throws IOException
 	 */
 	@Override
-	public void updateProfilePic(String email,MultipartFile file) throws IOException {
+	public void updateProfilePic(Authentication authentication,MultipartFile file) throws IOException {
 		
-		UserModel existingUser = userService.getUserByEmail(email);
+		UserModel existingUser = userService.getUserByEmail((userService.getPrincipalUser(authentication).getUsername()));
 		Media existingMedia = existingUser.getArtistProfile().getMedia();
 		
 		String filename = file.getOriginalFilename();
-		String uploadLocation = ".././media/artist-profile-pics/";
-		
-		fileStorageService.uploadFile(file,uploadLocation);
+		String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
+		String fileType = "profile-pic";
+		fileStorageService.uploadFile(file,uploadLocation,fileType,authentication);
 		
 		existingMedia.setPath("/media/artist-profile-pics/");
 		existingMedia.setFileName("profile-pic-"+filename);
 		existingMedia.setFilenameOriginal(filename);
+		
+//		ArtistProfile artistProfile = existingMedia.getArtistProfile();
+//		
+//		artistProfile.setMedia(existingMedia);
+//		artistProfileRepository.save(artistProfile);
 		
 		mediaRepository.save(existingMedia);	
 	}
@@ -109,6 +147,7 @@ public class MediaServiceImpl implements MediaService{
 	public void updateMedia(int id,Media media) {
 		
 		Media existingMedia = getMediaById(id);
+		
 		if ( existingMedia!=null ) {
 			existingMedia.setFileName(media.getFileName());
 			existingMedia.setFilenameOriginal(media.getFilenameOriginal());

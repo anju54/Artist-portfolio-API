@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
@@ -79,6 +80,18 @@ public class MediaController {
 		return 	mediaService.getMediaById(id);
 	}
 	
+
+	/**
+	 * This is used to get all paintings of particular artist
+	 * 
+	 * @return list of media object
+	 */
+	@GetMapping("/artist/public-albums")
+	public MediaArtistDTO getPublicMedia(Authentication authentication){
+		
+		return mediaService.getPublicMedia(authentication);
+	}
+	
 	@PostMapping(value="/upload/profile-pic", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> uploadFile(MultipartFile file,Authentication authentication,HttpServletRequest request) throws IOException {
 		
@@ -92,9 +105,10 @@ public class MediaController {
 		logger.info("context path printing : "+ request.getContextPath() );
 		
 		//append server IP and port number to read the image
-		String uploadLocation = ".././media/artist-profile-pics/";
+		String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
 		
-		fileStorageService.uploadFile(file,uploadLocation);
+		String fileType = "profile-pic";
+		fileStorageService.uploadFile(file,uploadLocation,fileType,authentication);
 		
 		String email = userService.getPrincipalUser(authentication).getUsername();
 		UserModel user  = userService.getUserByEmail(email);
@@ -124,10 +138,12 @@ public class MediaController {
 		String paintingUploadLocation = "../ArtistPortfolioAPI/media/" + profileName +"/";
 			
 		String filename = file.getOriginalFilename();
-		fileStorageService.uploadFile(file,paintingUploadLocation);
+		String fileType = "paintings";
+		fileStorageService.uploadFile(file,paintingUploadLocation,fileType,authentication);
 		
 		MediaDTO mediaDTO = new MediaDTO();
 		mediaDTO.setFileName(filename);
+		
 		mediaDTO.setPath("/media/"+profileName+"/");
 		
 		artistProfileService.addArtistProfileMedia(mediaDTO, profileName);
@@ -140,10 +156,10 @@ public class MediaController {
 	 * @param file
 	 * @throws IOException
 	 */
-	@PutMapping("/{email}")
-	public void updateProfilePic(@PathVariable("email") String email,MultipartFile file) throws IOException {
+	@PutMapping("/profile-pic")
+	public void updateProfilePic(Authentication authentication,MultipartFile file) throws IOException {
 		
-		mediaService.updateProfilePic(email, file);
+		mediaService.updateProfilePic(authentication, file);
 	}
 	
 	@PutMapping("/{id}")
