@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,22 +31,29 @@ public class ArtistProfileMedia {
     private Media media;
 	
 	@Column(name="is_public")
-	private boolean isPublic;
+	@Size(max=5)
+	private String publicImage;
 	
+	public ArtistProfileMedia() {
+		super();
+	}
+	
+	public String getPublicImage() {
+		return publicImage;
+	}
+
+	public void setPublicImage(String publicImage) {
+		this.publicImage = publicImage;
+	}
+
 	public ArtistProfileMedia(ArtistProfileMediaKey artistProfileMediaKey, ArtistProfile artistProfile, Media media,
-			boolean isPublic) {
+			String publicImage) {
 		super();
 		this.artistProfileMediaKey = artistProfileMediaKey;
 		this.artistProfile = artistProfile;
 		this.media = media;
-		this.isPublic = isPublic;
+		this.publicImage = publicImage;
 	}
-
-	public ArtistProfileMedia() {
-		super();
-	}
-
-	
 
 	public ArtistProfileMediaKey getArtistProfileMediaKey() {
 		return artistProfileMediaKey;
@@ -71,12 +79,6 @@ public class ArtistProfileMedia {
 		this.media = media;
 	}
 
-	public boolean isPublic() {
-		return isPublic;
-	}
-
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
+	
 
 }

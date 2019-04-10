@@ -39,7 +39,7 @@ public class ArtistProfileMediaServiceImpl implements ArtistProfileMediaService{
 		
 		artistProfileMedia.setArtistProfile(artistProfile);
 		artistProfileMedia.setMedia(media);
-		artistProfileMedia.setPublic(artistProfileMediaDTO.isPublic());
+		artistProfileMedia.setPublicImage(artistProfileMediaDTO.getPublicImage());
 		
 		artistProfileMedia.setArtistProfileMediaKey(new ArtistProfileMediaKey(artistProfileMediaDTO.getArtistProfileId(),
 				artistProfileMediaDTO.getMediaId()));

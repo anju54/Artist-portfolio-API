@@ -137,9 +137,6 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
 		artistProfile.setProfileName(artistProfileDTO.getProfileName());
 		
-		//artistProfile.setArtistProfileMedia(artistProfileDTO.getArtistProfileMedia()); // list of media.
-		
-		//--------------------------------------------------------
 		List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
 		List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
 		for (String paintingTypeList: paintingTypeLists) {
@@ -148,16 +145,12 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			paintingTypesSet.add(p);	
 		}
 		artistProfile.setPaintingType(paintingTypesSet); // list of painting type.
-		//------------------------------------------------------------
 		
 		UserModel user = userService.getUserByEmail(artistProfileDTO.getEmail());
 		artistProfile.setUser(user);
 		
 		Color existingColor = colorService.getColorByColorName(artistProfileDTO.getColorName());
 		artistProfile.setColorId(existingColor.getId());
-		
-//		Media media = mediaService.getMediaById(artistProfileDTO.getProfilePicId()); //for profile picture.
-//		artistProfile.setMedia(media);
 		
 		// to create a folder by artist profile name
 		Path existingPath = Paths.get("../../Artist_portfolio/ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName());
@@ -175,7 +168,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	}
 	
 	/**
-	 * this is used to create media in list and link to artist profile
+	 * this is used to create media and link to artist profile
 	 * @param List of MediaDTO
 	 * @param profileName
 	 * 			profile name of artist
@@ -187,6 +180,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			Media media = new Media();
 			media.setFileName(mediaDTO.getFileName());
+			media.setFilenameOriginal(mediaDTO.getFileName());
 			
 			media.setPath(mediaDTO.getPath());
 			

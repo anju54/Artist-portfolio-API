@@ -6,7 +6,7 @@ public class ArtistProfileMediaDTO {
 	
 	private int artistProfileId;
 	private int mediaId;
-	private boolean isPublic;
+	private String publicImage;
 	
 	private ArtistProfileMediaKey artistProfileMediaKey;
 	
@@ -28,12 +28,12 @@ public class ArtistProfileMediaDTO {
 	public void setMediaId(int mediaId) {
 		this.mediaId = mediaId;
 	}
-	public boolean isPublic() {
-		return isPublic;
+	public String getPublicImage() {
+		return publicImage;
 	}
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
+	public void setPublicImage(String publicImage) {
+		this.publicImage = publicImage;
 	}
-
+	
 	
 }
