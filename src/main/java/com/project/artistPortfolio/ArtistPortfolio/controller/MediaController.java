@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +31,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
+import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
@@ -60,17 +64,33 @@ public class MediaController {
 	private MediaService mediaService;
 	
 	@Autowired
-	ServletContext servletContext; 
+	ServletContext servletContext;
+	
+	@Autowired
+	private ArtistProfileMediaRepository artistProfileMediaRepository;
+	
+	@GetMapping("/artist/albums/{pageNo}/{pageLimit}/{id}")
+	public List<ArtistProfileMedia> getMediaByPageNo(@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit,@PathVariable("id") int id){
+		
+		//Pageable firstPageWithTwoElements = PageRequest.of(0, 2);
+		
+		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
+				findArtistProfileMediaByArtistProfileId(id, (Pageable) PageRequest.of(pageNo, pageLimit));
+		
+		
+		return artistProfileMediaList;
+	}
 	
 	/**
 	 * This is used to get all paintings of particular artist
 	 * 
 	 * @return list of media object
 	 */
-	@GetMapping("/artist/albums")
-	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication){
+	//@GetMapping("/artist/albums")
+	@GetMapping("/artist/albums/{pageNo}/{pageLimit}")
+	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
 		
-		return mediaService.getMediaByArtistProfileMediaKey(authentication);
+		return mediaService.getMediaByArtistProfileMediaKey(authentication,pageNo,pageLimit);
 	}
 	
 	@GetMapping("/{id}")
@@ -86,10 +106,10 @@ public class MediaController {
 	 * 
 	 * @return list of media object
 	 */
-	@GetMapping("/artist/public-albums")
-	public MediaArtistDTO getPublicMedia(Authentication authentication){
+	@GetMapping("/artist/public-albums/{pageNo}/{pageLimit}")
+	public MediaArtistDTO getPublicMedia(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
 		
-		return mediaService.getPublicMedia(authentication);
+		return mediaService.getPublicMedia(authentication,pageNo,pageLimit);
 	}
 	
 	@PostMapping(value="/upload/profile-pic", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)

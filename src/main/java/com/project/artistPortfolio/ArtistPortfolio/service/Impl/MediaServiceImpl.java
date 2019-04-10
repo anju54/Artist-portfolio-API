@@ -1,12 +1,17 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -43,6 +48,9 @@ public class MediaServiceImpl implements MediaService{
 	@Autowired
 	private  MediaStorageService fileStorageService;
 	
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	private final static Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 	
 	@Override
@@ -62,14 +70,24 @@ public class MediaServiceImpl implements MediaService{
 	 * 
 	 * @return list of media object
 	 */
-	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication) {
+	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageNo,int pageLimit) {
+//		
+//		Query query = entityManager.createQuery("");
+//		int pageNumber = 1;
+//		int pageSize = 10;
+//		query.setFirstResult((pageNumber-1) * pageSize); 
+//		query.setMaxResults(pageSize);
 		
 		List<Media> mediaList = new ArrayList<Media>(); 
 		
 		String email =  userService.getPrincipalUser(authentication).getUsername();
 		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
 		
-		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.findArtistProfileMediaByArtistProfileId(artistProfileId);
+		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
+				findArtistProfileMediaByArtistProfileId(artistProfileId, (Pageable) PageRequest.of(pageNo, pageLimit));
+		
+		
+		//query.getResultList();
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
 			mediaList.add(artistProfileMedia.getMedia());	
@@ -82,7 +100,7 @@ public class MediaServiceImpl implements MediaService{
 	 * 
 	 * @return list of media object
 	 */
-	public MediaArtistDTO getPublicMedia(Authentication authentication){
+	public MediaArtistDTO getPublicMedia(Authentication authentication,int pageNo,int pageLimit){
 		
 		List<Media> mediaList = new ArrayList<Media>(); 
 		
@@ -91,7 +109,9 @@ public class MediaServiceImpl implements MediaService{
 		String email =  userService.getPrincipalUser(authentication).getUsername();
 		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
 		
-		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.findArtistProfileMediaByArtistProfileId(artistProfileId);
+		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
+				findArtistProfileMediaByArtistProfileId(artistProfileId,(Pageable) PageRequest.of(pageNo, pageLimit));
+		
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
 			if(artistProfileMedia.getPublicImage().equalsIgnoreCase("true")) {

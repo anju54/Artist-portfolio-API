@@ -18,8 +18,8 @@ public interface MediaService {
 	
 	void updateProfilePic(Authentication authentication,MultipartFile file) throws IOException;
 	
-	List<Media> getMediaByArtistProfileMediaKey(Authentication authentication);
+	List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageno,int pageLimit);
 	
-	MediaArtistDTO getPublicMedia(Authentication authentication);
+	MediaArtistDTO getPublicMedia(Authentication authentication,int pageno,int pageLimit);
 
 }
