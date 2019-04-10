@@ -19,6 +19,7 @@ import io.jsonwebtoken.Jwts;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin
 public class LogoutController {
 	
 	private final static Logger logger = LoggerFactory.getLogger(LogoutController.class);
@@ -38,11 +39,9 @@ public class LogoutController {
 		  
 		    if (auth != null){    
 		        new SecurityContextLogoutHandler().logout(request, response, auth);
-		        Jwts.builder().setExpiration(new Date("Thu, 01 Jan 1970 00:00:00 UTC"));
-		        
+		        Jwts.builder().setExpiration(new Date("Thu, 01 Jan 1970 00:00:00 UTC"));      
 		    }
-		    return "Logged out successfully";
-		
+		    return "Logged out successfully";	
 	}
 
 }
