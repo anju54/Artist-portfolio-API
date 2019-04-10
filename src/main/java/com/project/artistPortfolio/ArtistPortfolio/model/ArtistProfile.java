@@ -27,7 +27,7 @@ public class ArtistProfile {
 	@Column(name="artist_profile_id")
 	private int id;
 	 
-	@Column(name = "profile_name")
+	@Column(name = "profile_name",unique=true)
 	@Size(max=20)
 	private String profileName;
 
