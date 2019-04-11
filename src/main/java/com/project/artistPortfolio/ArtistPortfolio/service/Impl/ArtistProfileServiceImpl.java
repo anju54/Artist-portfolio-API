@@ -14,20 +14,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.project.artistPortfolio.ArtistPortfolio.DTO.*;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileMediaDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
-import com.project.artistPortfolio.ArtistPortfolio.model.*;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
+import com.project.artistPortfolio.ArtistPortfolio.model.Color;
+import com.project.artistPortfolio.ArtistPortfolio.model.Media;
+import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
+import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
-import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
-import com.project.artistPortfolio.ArtistPortfolio.repository.PaintingTypeRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileMediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ColorService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
-import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
+import com.project.artistPortfolio.ArtistPortfolio.service.PaintingTypeService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
 @Service
@@ -45,19 +51,13 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	private MediaService mediaService;
 	
 	@Autowired
-	private PaintingTypeRepository paintingTypeRepo;
+	private PaintingTypeService paintingTypeService;
 	
 	@Autowired
 	private ArtistProfileMediaService artistProfileMediaService;
 	
 	@Autowired
-	private  MediaStorageService fileStorageService;
-	
-	@Autowired
 	private ColorService colorService;
-	
-	@Autowired
-	private MediaRepository mediaRepository;
 	
 	/**
 	 * This is used to get artist profile pic path by profile id
@@ -151,7 +151,8 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
 		for (String paintingTypeList: paintingTypeLists) {
 			
-			PaintingType p = paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
+			PaintingType p = paintingTypeService.getPaintingTypeByPaintingName(paintingTypeList);
+					//paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
 			paintingTypesSet.add(p);	
 		}
 		artistProfile.setPaintingType(paintingTypesSet); // list of painting type.
@@ -163,18 +164,22 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		artistProfile.setColorId(existingColor.getId());
 		
 		// to create a folder by artist profile name
-		Path existingPath = Paths.get("../../Artist_portfolio/ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName());
+		Path existingPath = Paths.get("../ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName());
 		boolean flag = Files.notExists(existingPath);
 		if(!flag) {
 			logger.info("folder exists");
 		}else {
 		
-			File parentDir = new File("../../Artist_portfolio/ArtistPortfolioAPI/media/");
+			File parentDir = new File("../ArtistPortfolioAPI/media/");
 			File newDir = new File(parentDir, artistProfileDTO.getProfileName());
 			newDir.mkdir();
 		}
-		
+		try {
 		artistProfileRepository.save(artistProfile);	
+		}catch(RuntimeException e){
+			throw new CustomException(ExceptionMessage.Profile_Name_alreay_exists, HttpStatus.BAD_REQUEST);
+			
+		}
 	}
 	
 	/**
@@ -187,21 +192,14 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	@Override
 	public void addArtistProfileMedia(MediaDTO mediaDTO,String profileName)  {
 		
-		
-			
 		Media media = new Media();
-		media.setFileName(mediaDTO.getFileName());
-		media.setFilenameOriginal(mediaDTO.getFileName());
 		
+		// for renaming the fileName
+		media.setFileName( mediaDTO.getFileName() );
+		media.setFilenameOriginal( mediaDTO.getFileName());
 		media.setPath(mediaDTO.getPath());
 		
 		int mediaId = mediaService.createMedia(media).getId();
-		
-		
-		// for renaming the fileName
-//		media.setFilenameOriginal(mediaId+mediaDTO.getFileName());
-//		media.setFileName(mediaId+mediaDTO.getFileName());
-//		mediaRepository.save(media);
 		
 		ArtistProfile exsitingArtistProfile = artistProfileRepository.findByProfileName(profileName);
 		int artistProfileId = exsitingArtistProfile.getId();
@@ -236,7 +234,8 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
 			for (String paintingTypeList: paintingTypeLists) {
 				
-				PaintingType p = paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
+				PaintingType p = paintingTypeService.getPaintingTypeByPaintingName(paintingTypeList);
+						//findPaintingTypeByPaintingName(paintingTypeList);
 				paintingTypesSet.add(p);	
 			}
 			existingRecord.setPaintingType(paintingTypesSet); // list of painting type.
@@ -277,7 +276,23 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}
 	}
 	
-	
+	/**
+	 * This is used to return all the id of artist
+	 * @return List<Integer>
+	 * 			list of artist profile id.
+	 */
+	public List<Integer> getAllArtistId() {
+		
+		List<Integer> listOfIds =  new ArrayList<Integer>();
+		
+		List<ArtistProfile> artistProfiles = artistProfileRepository.findAll();
+		for(ArtistProfile artistProfile: artistProfiles) {
+			
+			int id = artistProfile.getId();
+			listOfIds.add(id);
+		}
+		return listOfIds;
+	}
 	
 	public String deleteByid(int id) {
 		

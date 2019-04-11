@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/user/set_password/**").permitAll()
 		.antMatchers("/api/artist/registration").permitAll()
 		.antMatchers("/media/**").permitAll()
+		.antMatchers("/api/media/all/artist/profile-pics/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)

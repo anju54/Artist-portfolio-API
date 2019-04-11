@@ -28,7 +28,7 @@ public interface ArtistProfileService {
 	
 	Media getProfilePicByArtistProfileId(int id);
 	
-	
+	List<Integer> getAllArtistId();
 	
 	//void addPainintingType(List<PaintingTypeDTO> paintingTypeDTOs, int id);
 

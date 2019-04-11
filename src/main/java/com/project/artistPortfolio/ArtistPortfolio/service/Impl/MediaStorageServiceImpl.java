@@ -28,8 +28,9 @@ public class MediaStorageServiceImpl implements MediaStorageService{
 			
 			 newFile = new File(location + "profile-pic-" + file.getOriginalFilename());
 		}else {
-
-			 newFile = new File(location +( ZonedDateTime.now().toInstant().toEpochMilli() ) +file.getOriginalFilename());
+			String renameFileName =  String.valueOf(System.currentTimeMillis()/1000)  + file.getOriginalFilename();
+			 newFile = new File(location + renameFileName );
+//			 newFile.renameTo(renameFileName);
 		}
 		
 		newFile.createNewFile();

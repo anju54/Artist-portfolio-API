@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -25,7 +26,7 @@ public class ArtistProfileMedia {
     private ArtistProfile artistProfile;
 	
 	@JsonIgnore
-	@ManyToOne
+	@OneToOne
     @MapsId("media_id")
     @JoinColumn(name = "media_id")
     private Media media;

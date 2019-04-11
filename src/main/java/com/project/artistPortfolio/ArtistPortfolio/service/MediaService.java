@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
@@ -21,5 +22,9 @@ public interface MediaService {
 	List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageno,int pageLimit);
 	
 	MediaArtistDTO getPublicMedia(Authentication authentication,int pageno,int pageLimit);
+	
+	void setPublicOrPrivateImage(String publicImage, String fileName);
+	
+	public List<ArtistProfilePic> getAllProfilePicOfArtist();
 
 }

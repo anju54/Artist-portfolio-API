@@ -1,6 +1,5 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
-import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
@@ -63,6 +64,32 @@ public class MediaServiceImpl implements MediaService{
 			logger.error(e.getMessage());
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	/**
+	 * This is used to get all the profile pic of artist
+	 * @return List of media object
+	 */
+	public List<ArtistProfilePic> getAllProfilePicOfArtist() {
+		
+		List<ArtistProfilePic> allArtistProfilePic = new ArrayList<ArtistProfilePic>();
+		
+		List<Integer> listOfIds = artistProfileService.getAllArtistId();
+		for(int id: listOfIds) {
+			
+			Media media = artistProfileService.getArtistProfileById(id).getMedia();
+			
+			ArtistProfilePic artistProfilePic = new ArtistProfilePic();
+			
+			artistProfilePic.setMedia(media);
+			artistProfilePic.setProfileName(artistProfileService.getArtistProfileById(id).getProfileName());
+			UserModel user = artistProfileService.getArtistProfileById(id).getUser();
+			artistProfilePic.setFullName(user.getFname()+" "+user.getLname());
+			artistProfilePic.setArtistProfileId(id);
+			
+			allArtistProfilePic.add(artistProfilePic);
+		}
+		return allArtistProfilePic;
 	}
 	
 	/**
@@ -157,6 +184,20 @@ public class MediaServiceImpl implements MediaService{
 		mediaRepository.save(existingMedia);	
 	}
 	
+	/**
+	 * This is used to set image is public or private
+	 * @param publicImage
+	 * @param file
+	 * 	
+	 */
+	public void setPublicOrPrivateImage(String publicImage, String fileName) {
+		
+		Media media = getMediaDataByFileName(fileName);
+		
+		ArtistProfileMedia artistProfileMedia = media.getArtistProfileMedia();
+		artistProfileMedia.setPublicImage(publicImage);
+		artistProfileMediaRepository.save(artistProfileMedia);		
+	}
 	
 	@Override
 	public void updateMedia(int id,Media media) {

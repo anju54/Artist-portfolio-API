@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
@@ -133,7 +134,8 @@ public class MediaController {
 		String email = userService.getPrincipalUser(authentication).getUsername();
 		UserModel user  = userService.getUserByEmail(email);
 		
-		ArtistProfile artistProfile =  user.getArtistProfile();
+		ArtistProfile artistProfile =  new ArtistProfile();
+		artistProfile =  user.getArtistProfile();
 		
 		Media media = new Media();
 		media.setPath("/media/artist-profile-pics/");
@@ -141,6 +143,10 @@ public class MediaController {
 		media.setFilenameOriginal(filename);
 		
 		Media savedMedia = mediaService.createMedia(media);
+		
+//		if(artistProfile!=null) {
+//			
+//		}
 		
 		artistProfile.setMedia(savedMedia);
 		artistProfileRepository.save(artistProfile);
@@ -155,19 +161,32 @@ public class MediaController {
 		UserModel user = userService.getUserByEmail(username);
 		String profileName = user.getArtistProfile().getProfileName();
 		
+		MediaDTO mediaDTO = new MediaDTO();
+		
 		String paintingUploadLocation = "../ArtistPortfolioAPI/media/" + profileName +"/";
 			
 		String filename = file.getOriginalFilename();
+		logger.info("............................"+filename);
 		String fileType = "paintings";
+		
 		fileStorageService.uploadFile(file,paintingUploadLocation,fileType);
-		
-		MediaDTO mediaDTO = new MediaDTO();
-		mediaDTO.setFileName(filename);
-		
+		mediaDTO.setFileName( String.valueOf(System.currentTimeMillis()/1000) + filename );
 		mediaDTO.setPath("/media/"+profileName+"/");
 		
 		artistProfileService.addArtistProfileMedia(mediaDTO, profileName);
 		return null;	
+	}
+	
+	/**
+	 * This is used to set image is public or private
+	 * @param publicImage
+	 * @param file
+	 * 	
+	 */
+	@PutMapping("/isPublic/{isPublic}/{fileName}")
+	public void setPublicOrPrivateImage(@PathVariable("isPublic") String publicImage,@PathVariable("fileName") String fileName) {
+		
+		mediaService.setPublicOrPrivateImage(publicImage, fileName);		
 	}
 	
 	/**
@@ -180,6 +199,15 @@ public class MediaController {
 	public void updateProfilePic(Authentication authentication,MultipartFile file) throws IOException {
 		
 		mediaService.updateProfilePic(authentication, file);
+	}
+	
+	/**
+	 * This is used to get all the profile pic of artist
+	 * @return List of media object
+	 */
+	@GetMapping("/all/artist/profile-pics")
+	public List<ArtistProfilePic> getAllProfilePicOfArtist(){
+		return mediaService.getAllProfilePicOfArtist();
 	}
 	
 	@PutMapping("/{id}")
