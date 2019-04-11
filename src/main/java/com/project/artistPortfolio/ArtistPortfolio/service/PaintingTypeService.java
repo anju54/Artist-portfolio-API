@@ -11,5 +11,6 @@ public interface PaintingTypeService {
 	void updatePainting(PaintingType paintingType, int id);
 	List<PaintingType> getAllPaintingType();
 	void deletePaintingById(int id);
+	PaintingType getPaintingTypeByPaintingName(String paintingName);
 
 }

@@ -84,6 +84,22 @@ public class PaintingTypeServiceImpl implements PaintingTypeService{
 		return paintingType;	
 	}
 	
+	/**
+	 * This is used to get PaintingType by paintingName
+	 * @param paintingName
+	 * @return PaintingType object
+	 */
+	public PaintingType getPaintingTypeByPaintingName(String paintingName) {
+		
+		try {
+			return paintingTypeRepository.findPaintingTypeByPaintingName(paintingName);
+		}catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
+		}
+		 
+	}
+	
 	/***
 	 * this is used to delete painting type by id
 	 * 
