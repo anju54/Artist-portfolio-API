@@ -70,11 +70,11 @@ public class MediaServiceImpl implements MediaService{
 	 * This is used to get all the profile pic of artist
 	 * @return List of media object
 	 */
-	public List<ArtistProfilePic> getAllProfilePicOfArtist() {
+	public List<ArtistProfilePic> getAllProfilePicOfArtist(int pageNo,int pageLimit) {
 		
 		List<ArtistProfilePic> allArtistProfilePic = new ArrayList<ArtistProfilePic>();
 		
-		List<Integer> listOfIds = artistProfileService.getAllArtistId();
+		List<Integer> listOfIds = artistProfileService.getAllArtistId(pageNo,pageLimit);
 		for(int id: listOfIds) {
 			
 			Media media = artistProfileService.getArtistProfileById(id).getMedia();
@@ -121,14 +121,14 @@ public class MediaServiceImpl implements MediaService{
 	 * 
 	 * @return list of media object
 	 */
-	public MediaArtistDTO getPublicMedia(Authentication authentication,int pageNo,int pageLimit){
+	public MediaArtistDTO getPublicMedia(int  artistProfileId,int pageNo,int pageLimit){
 		
 		List<Media> mediaList = new ArrayList<Media>(); 
 		
 		MediaArtistDTO mediaArtistDTO = new MediaArtistDTO();
 		
-		String email =  userService.getPrincipalUser(authentication).getUsername();
-		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
+		//String email =  userService.getPrincipalUser(authentication).getUsername();
+		//int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
 		
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
 				findArtistProfileMediaByArtistProfileId(artistProfileId,(Pageable) PageRequest.of(pageNo, pageLimit));
@@ -190,9 +190,9 @@ public class MediaServiceImpl implements MediaService{
 	 * @param file
 	 * 	
 	 */
-	public void setPublicOrPrivateImage(String publicImage, String fileName) {
+	public void setPublicOrPrivateImage(String publicImage, int id) {
 		
-		Media media = getMediaDataByFileName(fileName);
+		Media media = getMediaById(id);
 		
 		ArtistProfileMedia artistProfileMedia = media.getArtistProfileMedia();
 		artistProfileMedia.setPublicImage(publicImage);

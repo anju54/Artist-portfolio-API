@@ -33,11 +33,11 @@ public class Media {
 	private String pathThumb;
 	
 	@JsonIgnore
-	@OneToOne(mappedBy = "media") 
+	@OneToOne(mappedBy = "media", cascade = CascadeType.ALL) 
 	private ArtistProfileMedia artistProfileMedia;
 	
 	@JsonIgnore
-	@OneToOne(mappedBy="media", cascade = CascadeType.ALL,orphanRemoval = true)
+	@OneToOne(mappedBy="media", cascade = CascadeType.ALL)
 	private ArtistProfile artistProfile;
 
 	public ArtistProfile getArtistProfile() {

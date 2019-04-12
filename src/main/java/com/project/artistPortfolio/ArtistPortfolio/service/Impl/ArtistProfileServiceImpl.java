@@ -11,8 +11,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
@@ -95,30 +97,40 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @param profileName
 	 * 		artist profile name.
 	 */
-	public ProfileDTO getArtistPublicProfileInfo(Authentication authentication) {
+	public ProfileDTO getArtistPublicProfileInfo(int artistProfileId) {
 		
-		String currentUser = userService.getPrincipalUser(authentication).getUsername();
-		UserModel user = userService.getUserByEmail(currentUser);
-		int id = user.getArtistProfile().getId();
+//		String currentUser = userService.getPrincipalUser(authentication).getUsername();
+//		UserModel user = get
+//		int id = user.getArtistProfile().getId();
+		try {
+			ProfileDTO profileDTO = new ProfileDTO();
+			
+			ArtistProfile artistProfile = getArtistProfileById(artistProfileId);
+			
+			UserModel user = artistProfile.getUser();
+			
+			profileDTO.setAboutMe(artistProfile.getAboutMe());
+			profileDTO.setFacebookUrl(artistProfile.getFacebookUrl());
+			profileDTO.setLinkedinUrl(artistProfile.getLinkedinUrl());
+			profileDTO.setTwitterUrl(artistProfile.getTwitterUrl());
+			profileDTO.setProfileName(artistProfile.getProfileName());
+			profileDTO.setPaintingType(artistProfile.getPaintingType());
+			
+			profileDTO.setFname(user.getFname());
+			profileDTO.setLname(user.getLname());
+			profileDTO.setEmail(user.getEmail());
+			
+			Color color = colorService.getColorById(artistProfile.getColorId());
+			if(color!=null) {
+				profileDTO.setColorName(color.getColorName());
+			}
+			
+			return profileDTO;
+		}catch (Exception e) {
+			logger.info(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
+		}
 		
-		ProfileDTO profileDTO = new ProfileDTO();
-		
-		ArtistProfile artistProfile = getArtistProfileById(id);
-		
-		profileDTO.setAboutMe(artistProfile.getAboutMe());
-		profileDTO.setFacebookUrl(artistProfile.getFacebookUrl());
-		profileDTO.setLinkedinUrl(artistProfile.getLinkedinUrl());
-		profileDTO.setTwitterUrl(artistProfile.getTwitterUrl());
-		profileDTO.setProfileName(artistProfile.getProfileName());
-		profileDTO.setPaintingType(artistProfile.getPaintingType());
-		
-		profileDTO.setFname(user.getFname());
-		profileDTO.setLname(user.getLname());
-		profileDTO.setEmail(user.getEmail());
-		
-		Color color = colorService.getColorById(artistProfile.getColorId());
-		profileDTO.setColorName(color.getColorName());
-		return profileDTO;
 	}
 	
 	/**
@@ -140,41 +152,44 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	public void createArtistProfileRecord(ArtistProfileDTO artistProfileDTO) {
 		
 		ArtistProfile artistProfile = new ArtistProfile();
-		
-		artistProfile.setAboutMe(artistProfileDTO.getAboutMe());
-		artistProfile.setFacebookUrl(artistProfileDTO.getFacebookUrl());
-		artistProfile.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
-		artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
-		artistProfile.setProfileName(artistProfileDTO.getProfileName());
-		
-		List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
-		List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
-		for (String paintingTypeList: paintingTypeLists) {
+		try {
+			artistProfile.setAboutMe(artistProfileDTO.getAboutMe());
+			artistProfile.setFacebookUrl(artistProfileDTO.getFacebookUrl());
+			artistProfile.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
+			artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
+			artistProfile.setProfileName(artistProfileDTO.getProfileName());
 			
-			PaintingType p = paintingTypeService.getPaintingTypeByPaintingName(paintingTypeList);
-					//paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
-			paintingTypesSet.add(p);	
-		}
-		artistProfile.setPaintingType(paintingTypesSet); // list of painting type.
-		
-		UserModel user = userService.getUserByEmail(artistProfileDTO.getEmail());
-		artistProfile.setUser(user);
-		
-		Color existingColor = colorService.getColorByColorName(artistProfileDTO.getColorName());
-		artistProfile.setColorId(existingColor.getId());
-		
-		// to create a folder by artist profile name
-		Path existingPath = Paths.get("../ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName());
-		boolean flag = Files.notExists(existingPath);
-		if(!flag) {
-			logger.info("folder exists");
-		}else {
+			List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
+			List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
+				if(paintingTypeLists!=null) {
+				for (String paintingTypeList: paintingTypeLists) {
+					
+					PaintingType p = paintingTypeService.getPaintingTypeByPaintingName(paintingTypeList);
+							//paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
+					paintingTypesSet.add(p);	
+				}
+				artistProfile.setPaintingType(paintingTypesSet); // list of painting type.
+			}
+			UserModel user = userService.getUserByEmail(artistProfileDTO.getEmail());
+			artistProfile.setUser(user);
+			
+			Color existingColor = colorService.getColorByColorName(artistProfileDTO.getColorName());
+			if(existingColor!=null) {
+				artistProfile.setColorId(existingColor.getId());
+			}
+			
+			// to create a folder by artist profile name
+			Path existingPath = Paths.get("../ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName());
+			boolean flag = Files.notExists(existingPath);
+			if(!flag) {
+				logger.info("folder exists");
+			}else {
 		
 			File parentDir = new File("../ArtistPortfolioAPI/media/");
 			File newDir = new File(parentDir, artistProfileDTO.getProfileName());
 			newDir.mkdir();
 		}
-		try {
+		
 		artistProfileRepository.save(artistProfile);	
 		}catch(RuntimeException e){
 			throw new CustomException(ExceptionMessage.Profile_Name_alreay_exists, HttpStatus.BAD_REQUEST);
@@ -208,6 +223,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		
 		artistProfileMediaDTO.setArtistProfileId(artistProfileId);
 		artistProfileMediaDTO.setMediaId(mediaId);
+		artistProfileMediaDTO.setPublicImage("false");
 		
 		artistProfileMediaDTO.setArtistProfileMediaKey( new ArtistProfileMediaKey(artistProfileId,mediaId));
 		
@@ -241,8 +257,9 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			existingRecord.setPaintingType(paintingTypesSet); // list of painting type.
 			
 			Color existingColor = colorService.getColorByColorName(artistProfileDTO.getColorName());
-			existingRecord.setColorId(existingColor.getId());
-			
+			if(existingColor!=null) {
+				existingRecord.setColorId(existingColor.getId());
+			}
 			existingRecord.setUser(user);
 			
 			artistProfileRepository.save(existingRecord);
@@ -281,11 +298,11 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @return List<Integer>
 	 * 			list of artist profile id.
 	 */
-	public List<Integer> getAllArtistId() {
+	public List<Integer> getAllArtistId(int pageNo,int pageLimit) {
 		
 		List<Integer> listOfIds =  new ArrayList<Integer>();
 		
-		List<ArtistProfile> artistProfiles = artistProfileRepository.findAll();
+		Page<ArtistProfile> artistProfiles = artistProfileRepository.findAll((Pageable) PageRequest.of(pageNo, pageLimit));
 		for(ArtistProfile artistProfile: artistProfiles) {
 			
 			int id = artistProfile.getId();

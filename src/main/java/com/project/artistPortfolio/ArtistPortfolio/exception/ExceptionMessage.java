@@ -10,5 +10,6 @@ public interface ExceptionMessage {
 	String NO_DATA_AVAILABLE = "No Such data found for the request.";
 	String DUPLICATE_email = "Provided email is not unique.";
 	String Record_already_exists = "provided record is already present in the system";
+	String Profile_Name_alreay_exists = "provided profile name is already exists";
 
 }

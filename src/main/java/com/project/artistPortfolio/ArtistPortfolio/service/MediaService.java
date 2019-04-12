@@ -21,10 +21,10 @@ public interface MediaService {
 	
 	List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageno,int pageLimit);
 	
-	MediaArtistDTO getPublicMedia(Authentication authentication,int pageno,int pageLimit);
+	MediaArtistDTO getPublicMedia(int artistProfileId,int pageno,int pageLimit);
 	
-	void setPublicOrPrivateImage(String publicImage, String fileName);
+	void setPublicOrPrivateImage(String publicImage,int id);
 	
-	public List<ArtistProfilePic> getAllProfilePicOfArtist();
+	public List<ArtistProfilePic> getAllProfilePicOfArtist(int pageNo,int pageLimit);
 
 }

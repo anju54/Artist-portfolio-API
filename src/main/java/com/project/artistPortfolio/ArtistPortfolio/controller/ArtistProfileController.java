@@ -2,6 +2,8 @@ package com.project.artistPortfolio.ArtistPortfolio.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +26,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
+import com.project.artistPortfolio.ArtistPortfolio.service.Impl.MediaServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -35,6 +38,8 @@ public class ArtistProfileController {
 	
 	@Autowired
 	private UserService userService;
+	
+	private final static Logger logger = LoggerFactory.getLogger(ArtistProfileController.class);
 	
 	/**
 	 * This is used to get artist profile pic path by profile id
@@ -54,15 +59,22 @@ public class ArtistProfileController {
 	/**
 	 * This is used to get artist profile information that will be display over 
 	 * artist profile page 
-	 * @param id
-	 * 		user id.
+	 * @param artistProfileId
+	 * 		artist Profile id.
 	 * @param profileName
 	 * 		artist profile name.
 	 */
 	@GetMapping("/info")
-	public ProfileDTO getArtistProfile(Authentication authentication) {
+	public ProfileDTO getArtistProfile(@RequestParam("id") int artistProfileId) {
 		
-		return artistProfileService.getArtistPublicProfileInfo(authentication);
+		return artistProfileService.getArtistPublicProfileInfo(artistProfileId);
+	}
+	
+	@GetMapping("/secured/info/{email}")
+	public ProfileDTO getArtistProfileData(@PathVariable("email") String email) {
+		
+		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
+		return artistProfileService.getArtistPublicProfileInfo(artistProfileId);
 	}
 	
 	/**
@@ -106,4 +118,16 @@ public class ArtistProfileController {
 		artistProfileService.updateArtistProfileRecord(artistProfileDTO,email);
 	}
 	
+	@GetMapping("/loggedIn/{email}")
+	public int getArtistProfileId(@PathVariable("email") String email){
+		int artistProfileId = 0;
+		try {
+			 artistProfileId =  userService.getUserByEmail(email).getArtistProfile().getId();
+			return artistProfileId;
+		}catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+		return artistProfileId;
+		
+	}
 }

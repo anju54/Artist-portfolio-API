@@ -48,6 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/artist/registration").permitAll()
 		.antMatchers("/media/**").permitAll()
 		.antMatchers("/api/media/all/artist/profile-pics/**").permitAll()
+		.antMatchers("/api/media/public-albums/artist/**").permitAll()
+		.antMatchers("/api/artist-profile/info/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)

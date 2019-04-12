@@ -49,8 +49,7 @@ public class EmailServiceImpl  {
 	  */
 	 public SimpleMailMessage registrationCredentialEmail( UserModel user,String token) {
 		 	
-		    String body = " http://127.0.0.1:8085/artist_portfolio/resetpassword.html?token="+token+"&id="+user.getId();
-		    //String body = " http://127.0.0.1:8085/api/user/set_password/valid/"+token+"/"+user.getId();
+		    String body = " http://127.0.0.1:8085/artist_portfolio/artist_portfolio/resetpassword.html?token="+token+"&id="+user.getId();
 		    
 		    return constructEmail("set password", "click here to set password  " + body , user);
 	 }	 	

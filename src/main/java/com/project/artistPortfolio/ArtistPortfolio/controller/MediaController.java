@@ -1,6 +1,7 @@
 package com.project.artistPortfolio.ArtistPortfolio.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,10 +109,10 @@ public class MediaController {
 	 * 
 	 * @return list of media object
 	 */
-	@GetMapping("/artist/public-albums/{pageNo}/{pageLimit}")
-	public MediaArtistDTO getPublicMedia(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
+	@GetMapping("/public-albums/artist")
+	public MediaArtistDTO getPublicMedia(@RequestParam("id") int artistProfileId,Pageable pageable,@RequestParam("pageNo") int pageNo,@RequestParam("pageLimit") int pageLimit){
 		
-		return mediaService.getPublicMedia(authentication,pageNo,pageLimit);
+		return mediaService.getPublicMedia(artistProfileId,pageNo,pageLimit);
 	}
 	
 	@PostMapping(value="/upload/profile-pic", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -135,6 +137,7 @@ public class MediaController {
 		UserModel user  = userService.getUserByEmail(email);
 		
 		ArtistProfile artistProfile =  new ArtistProfile();
+		System.out.println(user);
 		artistProfile =  user.getArtistProfile();
 		
 		Media media = new Media();
@@ -169,8 +172,20 @@ public class MediaController {
 		logger.info("............................"+filename);
 		String fileType = "paintings";
 		
-		fileStorageService.uploadFile(file,paintingUploadLocation,fileType);
-		mediaDTO.setFileName( String.valueOf(System.currentTimeMillis()/1000) + filename );
+		File newFile;
+		String renameFileName =  String.valueOf(System.currentTimeMillis()/1000)  + file.getOriginalFilename();
+		newFile = new File(paintingUploadLocation + renameFileName );
+
+		newFile.createNewFile();
+			
+		// Open output stream to new file and write from file to be uploaded
+		FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+		fileOutputStream.write(file.getBytes());
+		logger.info("closing the file");
+		fileOutputStream.close();
+		
+		//fileStorageService.uploadFile(file,paintingUploadLocation,fileType);
+		mediaDTO.setFileName( renameFileName );
 		mediaDTO.setPath("/media/"+profileName+"/");
 		
 		artistProfileService.addArtistProfileMedia(mediaDTO, profileName);
@@ -183,10 +198,10 @@ public class MediaController {
 	 * @param file
 	 * 	
 	 */
-	@PutMapping("/isPublic/{isPublic}/{fileName}")
-	public void setPublicOrPrivateImage(@PathVariable("isPublic") String publicImage,@PathVariable("fileName") String fileName) {
+	@PutMapping("/isPublic/{isPublic}/{id}")
+	public void setPublicOrPrivateImage(@PathVariable("isPublic") String publicImage,@PathVariable("id") int id) {
 		
-		mediaService.setPublicOrPrivateImage(publicImage, fileName);		
+		mediaService.setPublicOrPrivateImage(publicImage, id);		
 	}
 	
 	/**
@@ -205,9 +220,9 @@ public class MediaController {
 	 * This is used to get all the profile pic of artist
 	 * @return List of media object
 	 */
-	@GetMapping("/all/artist/profile-pics")
-	public List<ArtistProfilePic> getAllProfilePicOfArtist(){
-		return mediaService.getAllProfilePicOfArtist();
+	@GetMapping("/all/artist/profile-pics/{pageNo}/{pageLimit}")
+	public List<ArtistProfilePic> getAllProfilePicOfArtist(@PathVariable("pageNo") int pageNo, @PathVariable("pageLimit") int pageLimit){
+		return mediaService.getAllProfilePicOfArtist(pageNo,pageLimit);
 	}
 	
 	@PutMapping("/{id}")
@@ -217,8 +232,8 @@ public class MediaController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable("id") int id) {
 		
-		mediaService.deleteMediaById(id);
+		return mediaService.deleteMediaById(id);
 	}
 }
