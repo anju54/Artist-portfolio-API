@@ -21,7 +21,6 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
@@ -112,8 +111,6 @@ public class MediaServiceImpl implements MediaService{
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
 				findArtistProfileMediaByArtistProfileId(artistProfileId, (Pageable) PageRequest.of(pageNo, pageLimit));
 		
-		
-		//query.getResultList();
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
 			mediaList.add(artistProfileMedia.getMedia());	

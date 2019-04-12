@@ -56,6 +56,13 @@ public class ArtistProfileController {
 		return artistProfileService.getProfilePicByArtistProfileId(id);
 	}
 	
+	@GetMapping("/public/profile-pic")
+	public Media getPublicProfilePic(@RequestParam("id") int artistProfileId) {
+		
+		Media media = artistProfileService.getArtistProfileById(artistProfileId).getMedia();
+		return media;
+	}
+	
 	/**
 	 * This is used to get artist profile information that will be display over 
 	 * artist profile page 
