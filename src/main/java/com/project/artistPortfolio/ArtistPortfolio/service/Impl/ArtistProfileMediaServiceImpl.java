@@ -29,6 +29,10 @@ public class ArtistProfileMediaServiceImpl implements ArtistProfileMediaService{
 	
 	private final static Logger logger = LoggerFactory.getLogger(ArtistProfileMediaServiceImpl.class);
 
+	/**
+	 * This is used for creating link between artistProfile and media
+	 * @param ArtistProfileDTO
+	 */
 	public void createArtistProfileMediaLink(ArtistProfileMediaDTO artistProfileMediaDTO) {
 		
 		ArtistProfileMedia artistProfileMedia = new ArtistProfileMedia();

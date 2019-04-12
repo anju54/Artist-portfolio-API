@@ -38,6 +38,12 @@ import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.PaintingTypeService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
+/**
+ * This service class is used for handling all the operation related to artistProfile.
+ * @author anju.kumari
+ *
+ *@version 1.0
+ */
 @Service
 public class ArtistProfileServiceImpl implements ArtistProfileService{
 	
@@ -230,6 +236,13 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		artistProfileMediaService.createArtistProfileMediaLink(artistProfileMediaDTO);	
 	}
 	
+	/**
+	 * This is used for updating the artist profile record
+	 * 
+	 * @param ArtistProfileDTO
+	 * 
+	 * @param email id
+	 */
 	@Override
 	public void updateArtistProfileRecord(ArtistProfileDTO artistProfileDTO,String email) {
 		
@@ -266,6 +279,13 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}
 	}
 	
+	/**
+	 * This is used to get ArtistProfile by artist id.
+	 * @param id
+	 * 			artistProfileID,
+	 * 
+	 * @return ArtistProfile object
+	 */
 	@Override
 	public ArtistProfile getArtistProfileById(int id) {
 		
@@ -282,6 +302,13 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}
 	}
 	
+	/**
+	 * This is used to get artist by artist by email id
+	 * 
+	 * @param profile name
+	 * 
+	 * @return ArtistProfile object
+	 */
 	public ArtistProfile getArtistProfileByProfileName(String profileName) {
 		
 		try {
@@ -311,6 +338,12 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		return listOfIds;
 	}
 	
+	/***
+	 * This is used to delete artist profile by id.
+	 * 
+	 * @param id
+	 * 			artistProfileId.
+	 */
 	public String deleteByid(int id) {
 		
 		artistProfileRepository.deleteById(id);

@@ -136,7 +136,7 @@ public class MediaServiceImpl implements MediaService{
 		//int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
 		
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
-				findArtistProfileMediaByArtistProfileId(artistProfileId,(Pageable) PageRequest.of(pageNo, pageLimit));
+				findArtistProfileMediaByArtistProfileIdAndpublicImage(artistProfileId,(Pageable) PageRequest.of(pageNo, pageLimit));
 		
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			

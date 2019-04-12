@@ -79,9 +79,13 @@ public class MediaController {
 		
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
 				findArtistProfileMediaByArtistProfileId(id, (Pageable) PageRequest.of(pageNo, pageLimit));
-		
-		
 		return artistProfileMediaList;
+	}
+	
+	@GetMapping("/all/public/images")
+	public List<ArtistProfileMedia> list(@RequestParam("id") int id,@RequestParam("pageNo") int pageNo,@RequestParam("pageLimit") int pageLimit){
+		
+		return artistProfileMediaRepository.findArtistProfileMediaByArtistProfileIdAndpublicImage(id,(Pageable) PageRequest.of(pageNo, pageLimit));
 	}
 	
 	/**
