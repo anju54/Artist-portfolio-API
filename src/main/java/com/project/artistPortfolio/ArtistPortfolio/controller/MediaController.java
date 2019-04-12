@@ -231,6 +231,19 @@ public class MediaController {
 		mediaService.updateMedia(id, media);
 	}
 	
+	@DeleteMapping("/profile-pic/{email}")
+	public String deleteProfilePic(@PathVariable("email") String email) {
+		
+		ArtistProfile artistProfile = userService.getUserByEmail(email).getArtistProfile();
+		mediaService.deleteMediaById(artistProfile.getMedia().getId());
+		
+		artistProfile.setMedia(null);
+		artistProfileRepository.save(artistProfile);
+		
+		return "profile pic deleted.";
+	}
+	
+	
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
 		

@@ -21,10 +21,12 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
+import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
@@ -45,6 +47,9 @@ public class MediaServiceImpl implements MediaService{
 	
 	@Autowired
 	private ArtistProfileMediaRepository artistProfileMediaRepository;
+	
+	@Autowired
+	private ArtistProfileRepository artistProfileRepository;
 	
 	@Autowired
 	private  MediaStorageService fileStorageService;
@@ -234,5 +239,15 @@ public class MediaServiceImpl implements MediaService{
 		mediaRepository.deleteById(id);
 		return "media deleted";
 	}
+	
+//	public String deleteProfilePic(int id,String email) {
+//		
+//		ArtistProfile artistProfile = userService.getUserByEmail(email).getArtistProfile();
+//		artistProfile.setMedia(null);
+//		artistProfileRepository.save(artistProfile);
+//		deleteMediaById(id);
+//		
+//		return "profile pic deleted.";
+//	}
 
 }

@@ -37,7 +37,7 @@ public class Media {
 	private ArtistProfileMedia artistProfileMedia;
 	
 	@JsonIgnore
-	@OneToOne(mappedBy="media", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy="media")
 	private ArtistProfile artistProfile;
 
 	public ArtistProfile getArtistProfile() {
