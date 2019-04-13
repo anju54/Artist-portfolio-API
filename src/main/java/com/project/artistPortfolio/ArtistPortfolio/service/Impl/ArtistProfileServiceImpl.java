@@ -194,6 +194,10 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			File parentDir = new File("../ArtistPortfolioAPI/media/");
 			File newDir = new File(parentDir, artistProfileDTO.getProfileName());
 			newDir.mkdir();
+			File thumbnail = new File("../ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName()+"/");
+			File newThumbnailDir = new File(thumbnail,"thumbnail");
+			newThumbnailDir.mkdir();
+			
 		}
 		
 		artistProfileRepository.save(artistProfile);	
@@ -216,9 +220,11 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		Media media = new Media();
 		
 		// for renaming the fileName
-		media.setFileName( mediaDTO.getFileName() );
+		media.setFileName( "thumb"+mediaDTO.getFileName() );
 		media.setFilenameOriginal( mediaDTO.getFileName());
 		media.setPath(mediaDTO.getPath());
+		media.setPathThumb(mediaDTO.getPath()+"thumbnail/");
+
 		
 		int mediaId = mediaService.createMedia(media).getId();
 		

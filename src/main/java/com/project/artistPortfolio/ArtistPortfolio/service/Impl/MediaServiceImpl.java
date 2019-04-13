@@ -1,12 +1,19 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+import org.imgscalr.Scalr.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +32,6 @@ import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
-import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
@@ -46,10 +52,7 @@ public class MediaServiceImpl implements MediaService{
 	
 	@Autowired
 	private ArtistProfileMediaRepository artistProfileMediaRepository;
-	
-	@Autowired
-	private ArtistProfileRepository artistProfileRepository;
-	
+		
 	@Autowired
 	private  MediaStorageService fileStorageService;
 	
@@ -230,6 +233,16 @@ public class MediaServiceImpl implements MediaService{
 		
 	}
 	
+	public void thumnailOfImage(String path,String inputFileName) throws IOException {
+		
+		File f = new File(path+inputFileName);
+		BufferedImage img = ImageIO.read(f); // load image
+		BufferedImage thumbImg = Scalr.resize(img, Method.QUALITY,Mode.AUTOMATIC, 200,200, Scalr.OP_ANTIALIAS); 
+		  
+		  File f2 = new File(path+"thumbnail/"+"thumb"+inputFileName);
+		  ImageIO.write(thumbImg, "jpg", f2);	
+	}
+	                          
 	@Override
 	public String deleteMediaById(int id) {
 		

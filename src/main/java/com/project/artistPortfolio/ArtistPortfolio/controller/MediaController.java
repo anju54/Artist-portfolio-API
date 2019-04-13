@@ -44,6 +44,8 @@ import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/media")
@@ -174,7 +176,7 @@ public class MediaController {
 			
 		String filename = file.getOriginalFilename();
 		logger.info("............................"+filename);
-		String fileType = "paintings";
+		//String fileType = "paintings";
 		
 		File newFile;
 		String renameFileName =  String.valueOf(System.currentTimeMillis()/1000)  + file.getOriginalFilename();
@@ -189,6 +191,9 @@ public class MediaController {
 		fileOutputStream.close();
 		
 		//fileStorageService.uploadFile(file,paintingUploadLocation,fileType);
+		
+		mediaService.thumnailOfImage(paintingUploadLocation, renameFileName);
+		
 		mediaDTO.setFileName( renameFileName );
 		mediaDTO.setPath("/media/"+profileName+"/");
 		

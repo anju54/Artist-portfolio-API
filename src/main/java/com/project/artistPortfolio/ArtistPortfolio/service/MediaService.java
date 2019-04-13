@@ -26,5 +26,7 @@ public interface MediaService {
 	void setPublicOrPrivateImage(String publicImage,int id);
 	
 	public List<ArtistProfilePic> getAllProfilePicOfArtist(int pageNo,int pageLimit);
+	
+	public void thumnailOfImage(String path,String inputFileName) throws IOException;
 
 }
