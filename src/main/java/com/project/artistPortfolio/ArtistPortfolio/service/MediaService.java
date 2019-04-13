@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.PaintingsDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
 public interface MediaService {
@@ -19,7 +20,7 @@ public interface MediaService {
 	
 	void updateProfilePic(Authentication authentication,MultipartFile file) throws IOException;
 	
-	List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageno,int pageLimit);
+	List<PaintingsDTO> getMediaByArtistProfileMediaKey(Authentication authentication,int pageno,int pageLimit);
 	
 	MediaArtistDTO getPublicMedia(int artistProfileId,int pageno,int pageLimit);
 	

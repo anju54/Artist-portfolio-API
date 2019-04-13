@@ -1,7 +1,6 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,17 +25,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.PaintingsDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
-import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
-import com.project.artistPortfolio.ArtistPortfolio.model.Media;
-import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
+import com.project.artistPortfolio.ArtistPortfolio.model.*;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
-import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
-import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
-import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
-import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
+import com.project.artistPortfolio.ArtistPortfolio.service.*;
 
 @Service
 public class MediaServiceImpl implements MediaService{
@@ -100,27 +95,31 @@ public class MediaServiceImpl implements MediaService{
 	}
 	
 	/**
-	 * This is used to get all paintings of particular artist
+	 * This is used to get all public and private paintings of particular artist 
 	 * 
-	 * @return list of media object
+	 * @return list of PaintingsDTO object
 	 */
-	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,int pageNo,int pageLimit) {
+	public List<PaintingsDTO> getMediaByArtistProfileMediaKey(Authentication authentication,int pageNo,int pageLimit) {
 		
-		List<Media> mediaList = new ArrayList<Media>(); 
+		List<PaintingsDTO> dtos = new ArrayList<PaintingsDTO>();
 		
-		String email =  userService.getPrincipalUser(authentication).getUsername();
-		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
+		int artistProfileId = userService.getUserByEmail( userService.getPrincipalUser
+				(authentication).getUsername() ).getArtistProfile().getId();
 		
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
 				findArtistProfileMediaByArtistProfileId(artistProfileId, (Pageable) PageRequest.of(pageNo, pageLimit));
 		
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
-			mediaList.add(artistProfileMedia.getMedia());	
+			PaintingsDTO dto = new PaintingsDTO();
+			dto.setMedia(artistProfileMedia.getMedia());
+			dto.setPublicImage(artistProfileMedia.getPublicImage());
+			dtos.add(dto);
 		}
-		return mediaList;	
+		return dtos;
+			
 	}
-	
+		
 	/**
 	 * This is used to get all public paintings of particular artist
 	 * 

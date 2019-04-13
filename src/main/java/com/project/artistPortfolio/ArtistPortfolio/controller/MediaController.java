@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.PaintingsDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
@@ -43,8 +44,6 @@ import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
-
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 
 @RestController
 @CrossOrigin
@@ -74,15 +73,15 @@ public class MediaController {
 	@Autowired
 	private ArtistProfileMediaRepository artistProfileMediaRepository;
 	
-	@GetMapping("/artist/albums/{pageNo}/{pageLimit}/{id}")
-	public List<ArtistProfileMedia> getMediaByPageNo(@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit,@PathVariable("id") int id){
-		
-		//Pageable firstPageWithTwoElements = PageRequest.of(0, 2);
-		
-		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
-				findArtistProfileMediaByArtistProfileId(id, (Pageable) PageRequest.of(pageNo, pageLimit));
-		return artistProfileMediaList;
-	}
+//	@GetMapping("/artist/albums/{pageNo}/{pageLimit}/{id}")
+//	public List<ArtistProfileMedia> getMediaByPageNo(@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit,@PathVariable("id") int id){
+//		
+//		//Pageable firstPageWithTwoElements = PageRequest.of(0, 2);
+//		
+//		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
+//				findArtistProfileMediaByArtistProfileId(id, (Pageable) PageRequest.of(pageNo, pageLimit));
+//		return artistProfileMediaList;
+//	}
 	
 	@GetMapping("/all/public/images")
 	public List<ArtistProfileMedia> list(@RequestParam("id") int id,@RequestParam("pageNo") int pageNo,@RequestParam("pageLimit") int pageLimit){
@@ -95,9 +94,8 @@ public class MediaController {
 	 * 
 	 * @return list of media object
 	 */
-	//@GetMapping("/artist/albums")
 	@GetMapping("/artist/albums/{pageNo}/{pageLimit}")
-	public List<Media> getMediaByArtistProfileMediaKey(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
+	public List<PaintingsDTO> getMediaByArtistProfileMediaKey(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
 		
 		return mediaService.getMediaByArtistProfileMediaKey(authentication,pageNo,pageLimit);
 	}
@@ -252,6 +250,27 @@ public class MediaController {
 		return "profile pic deleted.";
 	}
 	
+//	@GetMapping("/artist-test/albums/{pageNo}/{pageLimit}")
+//	public List<PaintingsDTO> getMediaWithSettings(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
+//		
+//		List<PaintingsDTO> dtos = new ArrayList<PaintingsDTO>();
+//		
+//		int artistProfileId = userService.getUserByEmail( userService.getPrincipalUser
+//				(authentication).getUsername() ).getArtistProfile().getId();
+//		
+//		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
+//				findArtistProfileMediaByArtistProfileId(artistProfileId, (Pageable) PageRequest.of(pageNo, pageLimit));
+//		
+//		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
+//			
+//			PaintingsDTO dto = new PaintingsDTO();
+//			dto.setMedia(artistProfileMedia.getMedia());
+//			dto.setPublicImage(artistProfileMedia.getPublicImage());
+//			dtos.add(dto);
+//		}
+//		return dtos;
+//		
+//	}
 	
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
