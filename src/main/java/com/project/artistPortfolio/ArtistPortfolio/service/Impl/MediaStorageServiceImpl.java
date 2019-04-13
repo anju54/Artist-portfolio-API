@@ -17,21 +17,12 @@ public class MediaStorageServiceImpl implements MediaStorageService{
 	private final static Logger logger = LoggerFactory.getLogger(MediaStorageServiceImpl.class);
 
 	@Override
-	public void uploadFile(MultipartFile file, String location, String fileType) throws IOException {
+	public void uploadFile(MultipartFile file, String location) throws IOException {
 		
 		logger.info("trying to upload file");
-		File newFile;
 		
-		// Create a blank new file in the upload location
-		if(fileType.equalsIgnoreCase("profile-pic")) {
-			
-			 newFile = new File(location + "profile-pic-" + file.getOriginalFilename());
-		}else {
-			String renameFileName =  String.valueOf(System.currentTimeMillis()/1000)  + file.getOriginalFilename();
-			 newFile = new File(location + renameFileName );
-//			 newFile.renameTo(renameFileName);
-		}
-		
+		// Create a blank new file in the upload location	
+		File newFile = new File(location + "profile-pic-" + file.getOriginalFilename());
 		newFile.createNewFile();
 		
 		// Open output stream to new file and write from file to be uploaded

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
@@ -22,16 +24,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfilePic;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.PaintingsDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
-import com.project.artistPortfolio.ArtistPortfolio.model.*;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileExtensionNotValidException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileSizeExceeded;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
+import com.project.artistPortfolio.ArtistPortfolio.model.Media;
+import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileMediaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.MediaRepository;
-import com.project.artistPortfolio.ArtistPortfolio.service.*;
+import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
+import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
+import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
+import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
 @Service
 public class MediaServiceImpl implements MediaService{
@@ -53,6 +64,14 @@ public class MediaServiceImpl implements MediaService{
 	
 	@PersistenceContext
 	private EntityManager entityManager;
+	
+	 private Pattern pattern;
+		
+	 private Matcher matcher;
+	 
+ private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+	 
+	 public static final long TEN_MB_IN_BYTES = 10485760;
 	
 	private final static Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 	
@@ -171,21 +190,50 @@ public class MediaServiceImpl implements MediaService{
 		UserModel existingUser = userService.getUserByEmail((userService.getPrincipalUser(authentication).getUsername()));
 		Media existingMedia = existingUser.getArtistProfile().getMedia();
 		
-		String filename = file.getOriginalFilename();
-		String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
-		String fileType = "profile-pic";
-		fileStorageService.uploadFile(file,uploadLocation,fileType);
+		pattern = Pattern.compile(IMAGE_PATTERN);
+		matcher = pattern.matcher(file.getOriginalFilename());
 		
-		existingMedia.setPath("/media/artist-profile-pics/");
-		existingMedia.setFileName("profile-pic-"+filename);
-		existingMedia.setFilenameOriginal(filename);
+		try {
+			String filename = file.getOriginalFilename();
+			
+			if(file.getOriginalFilename().isEmpty()) {
+				logger.info("empty file");
+				throw new FileNotFound( "file upload required");
+			}else if( !matcher.matches() ) {
+				logger.info("not matched");
+				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, bmp ");
+			} 
+			else if (file.getSize() <= TEN_MB_IN_BYTES) {
+				logger.info("size exceeded");
+				System.out.println(file.getSize());
+				throw new FileSizeExceeded( "file size excedded. supported file size upto 10 MB");
+			}
+			String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
+			//String fileType = "profile-pic";
+			fileStorageService.uploadFile(file,uploadLocation);
+			
+			existingMedia.setPath("/media/artist-profile-pics/");
+			existingMedia.setFileName("profile-pic-"+filename);
+			existingMedia.setFilenameOriginal(filename);
+			
+//			ArtistProfile artistProfile = existingMedia.getArtistProfile();
+//			
+//			artistProfile.setMedia(existingMedia);
+//			artistProfileRepository.save(artistProfile);
+			
+			mediaRepository.save(existingMedia);
 		
-//		ArtistProfile artistProfile = existingMedia.getArtistProfile();
-//		
-//		artistProfile.setMedia(existingMedia);
-//		artistProfileRepository.save(artistProfile);
-		
-		mediaRepository.save(existingMedia);	
+		}catch (FileSizeExceeded e) {
+			logger.info("file size exception caught");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "file size excedded. supported file size upto 10 MB");
+		}catch (FileExtensionNotValidException e) {
+			logger.info(e.getMessage());	
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid file type!! supported file type : jpg, png, bmp");
+		}catch (FileNotFound e) {
+			logger.info(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "file upload required");
+		}
+			
 	}
 	
 	/**

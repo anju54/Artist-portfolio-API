@@ -158,6 +158,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	public void createArtistProfileRecord(ArtistProfileDTO artistProfileDTO) {
 		
 		ArtistProfile artistProfile = new ArtistProfile();
+		
 		try {
 			artistProfile.setAboutMe(artistProfileDTO.getAboutMe());
 			artistProfile.setFacebookUrl(artistProfileDTO.getFacebookUrl());
@@ -167,11 +168,12 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
 			List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
-				if(paintingTypeLists!=null) {
+				
+			if(paintingTypeLists!=null) {
+				
 				for (String paintingTypeList: paintingTypeLists) {
 					
 					PaintingType p = paintingTypeService.getPaintingTypeByPaintingName(paintingTypeList);
-							//paintingTypeRepo.findPaintingTypeByPaintingName(paintingTypeList);
 					paintingTypesSet.add(p);	
 				}
 				artistProfile.setPaintingType(paintingTypesSet); // list of painting type.
