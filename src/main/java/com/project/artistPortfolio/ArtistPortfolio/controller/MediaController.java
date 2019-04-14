@@ -85,7 +85,7 @@ public class MediaController {
 	
 	 private Matcher matcher;
 	 
-	 private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+	 private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)";
 	 
 	 public static final long TEN_MB_IN_BYTES = 10485760;
 		
