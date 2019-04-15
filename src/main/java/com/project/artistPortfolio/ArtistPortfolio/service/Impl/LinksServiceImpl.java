@@ -21,6 +21,11 @@ import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
+/**
+ * This is used to handle all the operation related  to LinkService.
+ * @author anjuk
+ *
+ */
 @Service
 public class LinksServiceImpl implements LinksService {
 	

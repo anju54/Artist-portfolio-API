@@ -15,6 +15,11 @@ import com.project.artistPortfolio.ArtistPortfolio.model.LinkTypes;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksTypesRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinkTypesService;
 
+/**
+ * This is used to handle operation related to LinkTypeService
+ * @author anjuk
+ *
+ */
 @Service
 public class LinkTypesServiceImpl implements LinkTypesService{
 	

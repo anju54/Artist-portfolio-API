@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.CurrentUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
@@ -194,6 +193,14 @@ public class UserServiceImpl implements UserService{
 		return users;
 	}
 	
+	/**
+	 * This is used to get user by email id
+	 * 
+	 * @param email
+	 * 			email id
+	 * 
+	 * @return UserModel object
+	 */
 	public UserModel getUserByEmail(String email) {
 		
 		try {

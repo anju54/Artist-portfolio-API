@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Jwts;
 
+/**
+ * This is used to map logout request
+ * @author anjuk
+ *
+ */
 @RestController
 @RequestMapping("/api")
 @CrossOrigin

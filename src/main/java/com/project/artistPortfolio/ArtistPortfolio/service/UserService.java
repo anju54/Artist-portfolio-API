@@ -10,6 +10,7 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 
 /**
+ * UserService Interface contains operatio related to user
  * @author anjuk
  *
  */

@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -45,7 +44,7 @@ public class ArtistProfile {
 	private String linkedinUrl;
 	
 	//@Lob
-	@Column(name = "about_me"/*,columnDefinition="CLOB"*/)
+	@Column(name = "about_me")
 	private String aboutMe;
 	
 	@Column(name = "color_id")

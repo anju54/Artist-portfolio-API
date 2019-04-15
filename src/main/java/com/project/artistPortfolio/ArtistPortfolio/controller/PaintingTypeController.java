@@ -30,6 +30,14 @@ public class PaintingTypeController {
 	@Autowired
 	private PaintingTypeService paintingTypeService;
 	
+	/***
+	 * This is used to get the painting type by id
+	 * 
+	 * @param id
+	 * 		painting type id
+	 * 
+	 * @return paintingType object
+	 */
 	@GetMapping("/{id}")
 	public @ResponseBody PaintingType getPaintingTypeById(@PathVariable("id") int id) {
 		
@@ -37,17 +45,36 @@ public class PaintingTypeController {
 		return paintingTypeService.getPaintingById(id);	
 	}
 	
+	/***
+	 * This is used to create new paintingType
+	 * 
+	 * @param  PaintingType
+	 */
 	@PostMapping("/new")
 	public void create(@RequestBody PaintingType paintingType) {
 		paintingTypeService.createPainting(paintingType);
 	}
 	
+
+	/***
+	 * This is used to update paintingType
+	 * 
+	 * @param PaintingType
+	 * @param id
+	 * 			Painting Type id
+	 */
 	@PutMapping("/{id}")
 	public void update(@PathVariable("id") int id, @RequestBody PaintingType paintingType) {
 		
 		paintingTypeService.updatePainting(paintingType, id);
 	}
 	
+	/***
+	 * this is used to delete painting type by id
+	 * 
+	 * @param id
+	 * 		painting type id
+	 */
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable("id") int id) {
 		

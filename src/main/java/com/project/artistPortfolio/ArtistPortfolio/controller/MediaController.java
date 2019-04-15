@@ -55,6 +55,11 @@ import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
+/**
+ * This is used for mapping all the operation related to media
+ * @author anjuk
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/api/media")
@@ -123,6 +128,12 @@ public class MediaController {
 		return mediaService.getMediaByArtistProfileMediaKey(authentication,pageNo,pageLimit);
 	}
 	
+	/**
+	 * This is used to get media by media id
+	 * @param id
+	 * 			media id
+	 * @return Media object
+	 */
 	@GetMapping("/{id}")
 	public @ResponseBody Media getMediaById(@PathVariable("id") int id) {
 		
@@ -206,6 +217,13 @@ public class MediaController {
 		return null;
 	}
 	
+	/**
+	 * This is used for uploading the painting images of artist
+	 * @param file
+	 * @param authentication
+	 * @return
+	 * @throws FileSizeLimitExceededException
+	 */
 	@PostMapping(value="/upload/paintings", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<?> uploadpaintings(MultipartFile file,Authentication authentication) throws FileSizeLimitExceededException  {
 
@@ -347,19 +365,25 @@ public class MediaController {
 //		
 //	}
 	
-	@GetMapping("/test/{id}")
-	public List<ArtistProfileMedia> test(@PathVariable("id") int id){
-		int artistProfileId = id;
-		int pageNumber = 1;
-		int pageSize = 2;
-		Query query = entityManager.createQuery("From ArtistProfileMedia apm where apm.artistProfileMediaKey.artistProfileId=:arg1");
-		query.setParameter("arg1", artistProfileId);
-		query.setFirstResult((pageNumber-1) * pageSize); 
-		query.setMaxResults(pageSize);
-		List <ArtistProfileMedia> fooList = query.getResultList();
-		return fooList;
-	}
+//	@GetMapping("/test/{id}")
+//	public List<ArtistProfileMedia> test(@PathVariable("id") int id){
+//		int artistProfileId = id;
+//		int pageNumber = 1;
+//		int pageSize = 2;
+//		Query query = entityManager.createQuery("From ArtistProfileMedia apm where apm.artistProfileMediaKey.artistProfileId=:arg1");
+//		query.setParameter("arg1", artistProfileId);
+//		query.setFirstResult((pageNumber-1) * pageSize); 
+//		query.setMaxResults(pageSize);
+//		List <ArtistProfileMedia> fooList = query.getResultList();
+//		return fooList;
+//	}
 	
+	/***
+	 * This is used to delete media by media id
+	 * 
+	 * @param id
+	 * 		media id
+	 */
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
 		

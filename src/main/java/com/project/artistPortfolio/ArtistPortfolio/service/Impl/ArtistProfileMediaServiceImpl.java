@@ -15,6 +15,11 @@ import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileMediaSer
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 
+/**
+ * This is used to handle all the operation related to ArtistProfileMedia
+ * @author anjuk
+ *
+ */
 @Service
 public class ArtistProfileMediaServiceImpl implements ArtistProfileMediaService{
 	

@@ -31,9 +31,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private UserRepository userRepository;
-	
 	private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	/**
@@ -48,14 +45,29 @@ public class UserController {
 		userService.createUser(registrationDTO);
 	}
 	
+	/**
+	 * this is used to update user personal information
+	 * @param id
+	 * 			user id
+	 * @param UpdateUserDTO
+	 * 		this is holding the user's personal information
+	 */
 	@PutMapping("/{id}")
 	public @ResponseBody void updateUser(@PathVariable("id") int id, @Valid @RequestBody UpdateUserDTO updateUserDTO) {
 		userService.updateUser(id, updateUserDTO);
 	}
 	
+	/***
+	 * This is used to get particular user by id
+	 * 
+	 * @param id
+	 * 		user id
+	 * @return UserModel
+	 */
 	@GetMapping("/{id}")
 	public @ResponseBody UserModel getUserByUserId(@PathVariable("id") int id) {
 		
+		logger.info("tyring to get user by user id");
 		return userService.getUserById(id);
 	}
 	

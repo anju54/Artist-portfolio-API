@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.rest.webmvc.support.HttpMethodHandlerMethodArgumentResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -101,14 +100,12 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}catch (FileNotFound e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile pic not uploaded");
 		}catch (ArtistNotFound e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist account has not been created");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist account has not been created!create first then proceed with uploading image.");
 		}
 		
 		catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile pic not loaded");
-		}
-		
-		 
+		}	 
 	}
 		
 	/**
@@ -134,9 +131,6 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 */
 	public ProfileDTO getArtistPublicProfileInfo(int artistProfileId) {
 		
-//		String currentUser = userService.getPrincipalUser(authentication).getUsername();
-//		UserModel user = get
-//		int id = user.getArtistProfile().getId();
 		try {
 			ProfileDTO profileDTO = new ProfileDTO();
 			
@@ -164,8 +158,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}catch (Exception e) {
 			logger.info(e.getMessage());
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
-		}
-		
+		}	
 	}
 	
 	/**
@@ -190,6 +183,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		
 		try {
 			artistProfile.setAboutMe(artistProfileDTO.getAboutMe());
+			
 			artistProfile.setFacebookUrl(artistProfileDTO.getFacebookUrl());
 			artistProfile.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
 			artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
@@ -320,7 +314,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			for (String paintingTypeList: paintingTypeLists) {
 				
 				PaintingType p = paintingTypeService.getPaintingTypeByPaintingName(paintingTypeList);
-						//findPaintingTypeByPaintingName(paintingTypeList);
+						
 				paintingTypesSet.add(p);	
 			}
 			existingRecord.setPaintingType(paintingTypesSet); // list of painting type.

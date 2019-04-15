@@ -1,5 +1,6 @@
 package com.project.artistPortfolio.ArtistPortfolio.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -30,6 +31,11 @@ import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
+/**
+ * This is used for mapping all the operation related to artist
+ * @author anjuk
+ *
+ */
 @RestController
 @CrossOrigin
 @RequestMapping("/api/artist-profile")
@@ -58,6 +64,13 @@ public class ArtistProfileController {
 		return artistProfileService.getProfilePicByArtistProfileId(id);
 	}
 	
+	/**
+	 * This is used to get ArtistProfile by artist id.
+	 * @param id
+	 * 			artistProfileID,
+	 * 
+	 * @return ArtistProfile object
+	 */
 	@GetMapping("/public/profile-pic")
 	public Media getPublicProfilePic(@RequestParam("id") int artistProfileId) {
 		
@@ -104,37 +117,73 @@ public class ArtistProfileController {
 		
 		return artistProfileService.getListOfPaintingType(id);
 	}
-		
+	
+	/**
+	 * This is used to get ArtistProfile by artist id.
+	 * @param id
+	 * 			artistProfileID,
+	 * 
+	 * @return ArtistProfile object
+	 */
 	@GetMapping("/{id}")
 	public ArtistProfile getArtistProfileByid(@PathVariable("id") int id) {
 		
 		return artistProfileService.getArtistProfileById(id);
 	}
 	
+	/***
+	 * This is used to delete artist profile by id.
+	 * 
+	 * @param id
+	 * 			artistProfileId.
+	 */
 	@DeleteMapping("/{id}")
 	public void deleteArtistProfile(int id) {
 		
 		artistProfileService.deleteByid(id);
 	}
 	
+	/**
+	 * This is used to create artist profile basic information with painting type
+	 * @param ArtistProfileDTO
+	 */
 	@PostMapping("/basic-info")
 	public void create(@RequestBody ArtistProfileDTO artistProfileDTO) {
 		
 		artistProfileService.createArtistProfileRecord(artistProfileDTO);
 	}
 	
+	/**
+	 * this is used to create media and link to artist profile
+	 * @param List of MediaDTO
+	 * @param profileName
+	 * 			profile name of artist
+	 * @throws IOException 
+	 */
 	@PostMapping("/link/media")
 	public void createLinkArtistProlfileMedia(@RequestBody MediaDTO mediaList,@RequestParam("profileName")
 																					String profileName) {
 		artistProfileService.addArtistProfileMedia(mediaList, profileName);
 	}
 
+	/**
+	 * This is used for updating the artist profile record
+	 * 
+	 * @param ArtistProfileDTO
+	 * 
+	 * @param email id
+	 */
 	@PutMapping("/basic-info/{email}")
 	public void update(@RequestBody ArtistProfileDTO artistProfileDTO,@PathVariable("email") String email) {
 		
 		artistProfileService.updateArtistProfileRecord(artistProfileDTO,email);
 	}
 	
+	/**
+	 * This is used for getting the artistId from user module if it is artist
+	 * @param email
+	 * @return artistProfileId.
+	 */
 	@GetMapping("/loggedIn/{email}")
 	public int getArtistProfileId(@PathVariable("email") String email){
 		int artistProfileId = 0;

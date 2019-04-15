@@ -11,6 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 
+/**
+ * This is used for uploading images
+ * @author anju.kumari
+ *
+ */
 @Service
 public class MediaStorageServiceImpl implements MediaStorageService{
 	

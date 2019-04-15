@@ -11,6 +11,11 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.PaintingsDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
+/**
+ * MediaService is used to handle all the opeartion related to Media.
+ * @author anjuk
+ *
+ */
 public interface MediaService {
 	
 	Media getMediaById(int id);

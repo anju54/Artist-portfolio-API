@@ -23,15 +23,7 @@ public class Linkcontroller {
 	private LinksService linksService;
 	
 	private final static Logger logger = LoggerFactory.getLogger(LinksServiceImpl.class);
-	
-//	@PostMapping("/{text}/{email}/{id}")
-//	public void createLink(@PathVariable("text") String text, @PathVariable("email")
-//							String email, @PathVariable("id") int id) {
-//		
-//		logger.info("trying to create link");
-//		linksService.createLinks(text,email,id);		
-//	}
-	
+		
 	@GetMapping("/{id}")
 	public @ResponseBody Links getLinkById(@PathVariable("id") int id) {
 		

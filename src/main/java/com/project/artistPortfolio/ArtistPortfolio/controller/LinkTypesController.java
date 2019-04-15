@@ -25,6 +25,9 @@ public class LinkTypesController {
 	
 	private final static Logger logger = LoggerFactory.getLogger(LinkTypesController.class);
 	
+	/***
+	 * This is used for creating the link to reference id for token generation
+	 */
 	@PostMapping("/links_types")
 	public void createLinkTypes(@RequestBody LinkTypes linkTypes) {
 		

@@ -4,6 +4,12 @@ import java.util.List;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 
+/**
+ * PaintingTypeService handle  add , update ,
+ * delete , get operation related to painting type
+ * @author anju.kumari
+ *
+ */
 public interface PaintingTypeService {
 	
 	PaintingType getPaintingById(int id);

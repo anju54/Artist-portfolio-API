@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.Color;
 
+/**
+ * This is used to handle all the operation related to color
+ * @author anjuk
+ *
+ */
 public interface ColorService {
 	
 	void create(Color color);

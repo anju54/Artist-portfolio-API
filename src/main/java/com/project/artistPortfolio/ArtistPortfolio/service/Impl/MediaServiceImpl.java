@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -46,6 +45,11 @@ import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
+/**
+ * This service class is used to map all the request related to media
+ * @author anjuk
+ *
+ */
 @Service
 public class MediaServiceImpl implements MediaService{
 	
@@ -67,16 +71,22 @@ public class MediaServiceImpl implements MediaService{
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	 private Pattern pattern;
+	private Pattern pattern;
 		
-	 private Matcher matcher;
+	private Matcher matcher;
 	 
-	 private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+	private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
 	 
-	 public static final long TEN_MB_IN_BYTES = 10485760;
+	public static final long TEN_MB_IN_BYTES = 10485760;
 	
 	private final static Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 	
+	/**
+	 * This is used to get media by media id
+	 * @param id
+	 * 			media id
+	 * @return Media object
+	 */
 	@Override
 	public Media getMediaById(int id) {
 		
@@ -128,8 +138,6 @@ public class MediaServiceImpl implements MediaService{
 				(authentication).getUsername() ).getArtistProfile().getId();
 		
 		List<ArtistProfileMedia> artistProfileMediaList = getMediaByArtistId(artistProfileId,pageNo, pageLimit);
-//				artistProfileMediaRepository.
-//				findArtistProfileMediaByArtistProfileId(artistProfileId,  PageRequest.of(pageNo, pageLimit));
 		
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
@@ -152,9 +160,6 @@ public class MediaServiceImpl implements MediaService{
 		List<Media> mediaList = new ArrayList<Media>(); 
 		
 		MediaArtistDTO mediaArtistDTO = new MediaArtistDTO();
-		
-		//String email =  userService.getPrincipalUser(authentication).getUsername();
-		//int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
 		
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
 				findArtistProfileMediaByArtistProfileIdAndpublicImage(artistProfileId,(Pageable) PageRequest.of(pageNo, pageLimit));
@@ -212,17 +217,12 @@ public class MediaServiceImpl implements MediaService{
 				throw new FileSizeExceeded( "file size excedded. supported file size upto 10 MB");
 			}
 			String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
-			//String fileType = "profile-pic";
+			
 			fileStorageService.uploadFile(file,uploadLocation,existingUser.getId());
 			
 			existingMedia.setPath("/media/artist-profile-pics/");
 			existingMedia.setFileName("profile-pic-"+existingUser.getId()+"-"+filename);
 			existingMedia.setFilenameOriginal(filename);
-			
-//			ArtistProfile artistProfile = existingMedia.getArtistProfile();
-//			
-//			artistProfile.setMedia(existingMedia);
-//			artistProfileRepository.save(artistProfile);
 			
 			mediaRepository.save(existingMedia);
 		
@@ -283,6 +283,13 @@ public class MediaServiceImpl implements MediaService{
 		
 	}
 	
+	/**
+	 * This is used for creating thumbnail of images
+	 * @param path
+	 * 		image location
+	 * @param inputFileName
+	 * 			image name
+	 */
 	public void thumnailOfImage(String path,String inputFileName) throws IOException {
 		
 		File f = new File(path+inputFileName);
@@ -292,7 +299,13 @@ public class MediaServiceImpl implements MediaService{
 		  File f2 = new File(path+"thumbnail/"+"thumb"+inputFileName);
 		  ImageIO.write(thumbImg, "jpg", f2);	
 	}
-	                          
+	
+	/***
+	 * This is used to delete media by media id
+	 * 
+	 * @param id
+	 * 		media id
+	 */
 	@Override
 	public String deleteMediaById(int id) {
 		
@@ -300,6 +313,13 @@ public class MediaServiceImpl implements MediaService{
 		return "media deleted";
 	}
 	
+	/**
+	 * This is used to get ArtistProfileMedia record by ArtistProfile id
+	 * @param artistProfileId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @return List of ArtistProfile object
+	 */
 	public List<ArtistProfileMedia> getMediaByArtistId(int artistProfileId,int pageNumber, int pageSize) {
 		
 		Query query = entityManager.createQuery("From ArtistProfileMedia apm where apm.artistProfileMediaKey.artistProfileId=:arg1");
@@ -310,15 +330,5 @@ public class MediaServiceImpl implements MediaService{
 		return fooList;
 		
 	}
-	
-//	public String deleteProfilePic(int id,String email) {
-//		
-//		ArtistProfile artistProfile = userService.getUserByEmail(email).getArtistProfile();
-//		artistProfile.setMedia(null);
-//		artistProfileRepository.save(artistProfile);
-//		deleteMediaById(id);
-//		
-//		return "profile pic deleted.";
-//	}
 
 }

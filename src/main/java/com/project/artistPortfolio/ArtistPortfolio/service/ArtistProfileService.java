@@ -9,9 +9,13 @@ import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 
+/**
+ * This is used to handle all the operation related to ArtistProfile
+ * @author anjuk
+ *
+ */
 public interface ArtistProfileService {
 	
-	//void processArtistProfile(ArtistProfile artistProfile);
 	void createArtistProfileRecord(ArtistProfileDTO artistProfileDTO);
 	void updateArtistProfileRecord(ArtistProfileDTO artistProfileDTO, String email);
 	ArtistProfile getArtistProfileById(int id);
@@ -27,7 +31,5 @@ public interface ArtistProfileService {
 	Media getProfilePicByArtistProfileId(int id);
 	
 	List<Integer> getAllArtistId(int pageNo,int pageLimit);
-	
-	//void addPainintingType(List<PaintingTypeDTO> paintingTypeDTOs, int id);
 
 }
