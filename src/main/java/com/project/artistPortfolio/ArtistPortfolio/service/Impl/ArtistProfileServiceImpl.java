@@ -14,15 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.rest.webmvc.support.HttpMethodHandlerMethodArgumentResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileMediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.exception.ArtistNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.DataNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
@@ -31,6 +36,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.ArtistProfileRepository;
+import com.project.artistPortfolio.ArtistPortfolio.repository.UserRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileMediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.ColorService;
@@ -67,6 +73,9 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	@Autowired
 	private ColorService colorService;
 	
+	@Autowired
+	private UserRepository userRepository;
+	
 	/**
 	 * This is used to get artist profile pic path by profile id
 	 * @param id
@@ -74,12 +83,32 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @return Media object
 	 */
 	public Media getProfilePicByArtistProfileId(int id) {
+		try {
+			
+			ArtistProfile artistProfile = userService.getUserById(id).getArtistProfile();
+			if(artistProfile==null) {
+				throw new ArtistNotFound("Artist account has not been created! create first then proceed with uploading image.");
+			}
+			
+			Media media = artistProfile.getMedia();
+			
+			if(media==null) {
+				throw new FileNotFound("profile pic not uploaded!");
+			}
+			File a = new File(media.getPath());
+			
+			return artistProfile.getMedia();	
+		}catch (FileNotFound e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile pic not uploaded");
+		}catch (ArtistNotFound e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist account has not been created");
+		}
 		
-		ArtistProfile artistProfile = userService.getUserById(id).getArtistProfile();
-		File a = new File(artistProfile.getMedia().getPath());
-		logger.info(a.getAbsolutePath());
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile pic not loaded");
+		}
 		
-		return artistProfile.getMedia();	 
+		 
 	}
 		
 	/**
@@ -166,6 +195,11 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
 			artistProfile.setProfileName(artistProfileDTO.getProfileName());
 			
+			ArtistProfile existingArtistProfile = getArtistProfileByProfileName(artistProfileDTO.getProfileName());
+			if(existingArtistProfile!=null) {
+				throw new DataNotFound("profile name already taken");
+			}
+			
 			List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
 			List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
 				
@@ -203,7 +237,10 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}
 		
 		artistProfileRepository.save(artistProfile);	
-		}catch(RuntimeException e){
+		}catch (DataNotFound e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "profile name already taken");
+		}
+		catch(RuntimeException e){
 			throw new CustomException(ExceptionMessage.Profile_Name_alreay_exists, HttpStatus.BAD_REQUEST);
 			
 		}
@@ -254,6 +291,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	@Override
 	public void updateArtistProfileRecord(ArtistProfileDTO artistProfileDTO,String email) {
 		
+		try {
 		UserModel user = userService.getUserByEmail(email);
 		int artistId = user.getArtistProfile().getId();
 		
@@ -261,11 +299,21 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		
 		if(existingRecord!=null) {
 			
+			user.setFname(artistProfileDTO.getfName());
+			user.setLname(artistProfileDTO.getlName());
+			logger.info("-------------------------------");
+			logger.info(artistProfileDTO.getlName());
+			
 			existingRecord.setAboutMe(artistProfileDTO.getAboutMe());
 			existingRecord.setFacebookUrl(artistProfileDTO.getFacebookUrl());
 			existingRecord.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
 			existingRecord.setTwitterUrl(artistProfileDTO.getTwitterUrl());
-			existingRecord.setProfileName(artistProfileDTO.getProfileName());
+			//existingRecord.setProfileName(artistProfileDTO.getProfileName());
+			
+			ArtistProfile existingArtistProfile = getArtistProfileByProfileName(artistProfileDTO.getProfileName());
+			if(existingArtistProfile!=null) {
+				throw new DataNotFound("profile name already taken");
+			}
 			
 			List<PaintingType> paintingTypesSet = new ArrayList<PaintingType>(); // empty list
 			List<String> paintingTypeLists = artistProfileDTO.getPaintingType(); // input list of painting type
@@ -284,6 +332,12 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			existingRecord.setUser(user);
 			
 			artistProfileRepository.save(existingRecord);
+			userRepository.save(user);
+		}
+		}catch (DataNotFound e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "profile name already taken");
+		}catch (Exception e) {
+			logger.info(e.getMessage());
 		}
 	}
 	

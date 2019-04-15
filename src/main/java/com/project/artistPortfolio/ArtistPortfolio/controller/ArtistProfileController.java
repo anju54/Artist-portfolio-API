@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,17 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
-import com.project.artistPortfolio.ArtistPortfolio.service.Impl.MediaServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -80,8 +82,16 @@ public class ArtistProfileController {
 	@GetMapping("/secured/info/{email}")
 	public ProfileDTO getArtistProfileData(@PathVariable("email") String email) {
 		
-		int artistProfileId = userService.getUserByEmail(email).getArtistProfile().getId();
-		return artistProfileService.getArtistPublicProfileInfo(artistProfileId);
+		try {
+			ArtistProfile artistProfile = userService.getUserByEmail(email).getArtistProfile();
+			if(artistProfile==null) {
+				throw new FileNotFound("artist not found!");
+			}
+			int artistProfileId = artistProfile.getId();
+			return artistProfileService.getArtistPublicProfileInfo(artistProfileId);		
+		}catch (FileNotFound e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"artist not found");
+		}
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -69,7 +71,7 @@ public class MediaServiceImpl implements MediaService{
 		
 	 private Matcher matcher;
 	 
- private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+	 private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
 	 
 	 public static final long TEN_MB_IN_BYTES = 10485760;
 	
@@ -125,8 +127,9 @@ public class MediaServiceImpl implements MediaService{
 		int artistProfileId = userService.getUserByEmail( userService.getPrincipalUser
 				(authentication).getUsername() ).getArtistProfile().getId();
 		
-		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
-				findArtistProfileMediaByArtistProfileId(artistProfileId, (Pageable) PageRequest.of(pageNo, pageLimit));
+		List<ArtistProfileMedia> artistProfileMediaList = getMediaByArtistId(artistProfileId,pageNo, pageLimit);
+//				artistProfileMediaRepository.
+//				findArtistProfileMediaByArtistProfileId(artistProfileId,  PageRequest.of(pageNo, pageLimit));
 		
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
@@ -155,7 +158,7 @@ public class MediaServiceImpl implements MediaService{
 		
 		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
 				findArtistProfileMediaByArtistProfileIdAndpublicImage(artistProfileId,(Pageable) PageRequest.of(pageNo, pageLimit));
-		
+
 		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
 			
 			if(artistProfileMedia.getPublicImage().equalsIgnoreCase("true")) {
@@ -203,17 +206,17 @@ public class MediaServiceImpl implements MediaService{
 				logger.info("not matched");
 				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, bmp ");
 			} 
-			else if (file.getSize() <= TEN_MB_IN_BYTES) {
+			else if (file.getSize() > TEN_MB_IN_BYTES) {
 				logger.info("size exceeded");
 				System.out.println(file.getSize());
 				throw new FileSizeExceeded( "file size excedded. supported file size upto 10 MB");
 			}
 			String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
 			//String fileType = "profile-pic";
-			fileStorageService.uploadFile(file,uploadLocation);
+			fileStorageService.uploadFile(file,uploadLocation,existingUser.getId());
 			
 			existingMedia.setPath("/media/artist-profile-pics/");
-			existingMedia.setFileName("profile-pic-"+filename);
+			existingMedia.setFileName("profile-pic-"+existingUser.getId()+"-"+filename);
 			existingMedia.setFilenameOriginal(filename);
 			
 //			ArtistProfile artistProfile = existingMedia.getArtistProfile();
@@ -295,6 +298,17 @@ public class MediaServiceImpl implements MediaService{
 		
 		mediaRepository.deleteById(id);
 		return "media deleted";
+	}
+	
+	public List<ArtistProfileMedia> getMediaByArtistId(int artistProfileId,int pageNumber, int pageSize) {
+		
+		Query query = entityManager.createQuery("From ArtistProfileMedia apm where apm.artistProfileMediaKey.artistProfileId=:arg1");
+		query.setParameter("arg1", artistProfileId);
+		query.setFirstResult((pageNumber-1) * pageSize); 
+		query.setMaxResults(pageSize);
+		List <ArtistProfileMedia> fooList = query.getResultList();
+		return fooList;
+		
 	}
 	
 //	public String deleteProfilePic(int id,String email) {

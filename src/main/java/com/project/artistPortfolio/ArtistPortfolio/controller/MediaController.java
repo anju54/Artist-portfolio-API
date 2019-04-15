@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -76,6 +79,9 @@ public class MediaController {
 	
 	@Autowired
 	ServletContext servletContext;
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 	
 	@Autowired
 	private ArtistProfileMediaRepository artistProfileMediaRepository;
@@ -162,10 +168,10 @@ public class MediaController {
 				throw new FileSizeExceeded( "file size excedded. supported file size upto 10 MB");
 			}
 			
-			fileStorageService.uploadFile(file,uploadLocation);
-			
 			String email = userService.getPrincipalUser(authentication).getUsername();
 			UserModel user  = userService.getUserByEmail(email);
+			
+			fileStorageService.uploadFile(file,uploadLocation,user.getId());
 			
 			ArtistProfile artistProfile =  new ArtistProfile();
 			System.out.println(user);
@@ -173,7 +179,7 @@ public class MediaController {
 			
 			Media media = new Media();
 			media.setPath("/media/artist-profile-pics/");
-			media.setFileName("profile-pic-"+filename);
+			media.setFileName("profile-pic-"+user.getId()+"-"+filename);
 			media.setFilenameOriginal(filename);
 			
 			Media savedMedia = mediaService.createMedia(media);
@@ -340,6 +346,19 @@ public class MediaController {
 //		return dtos;
 //		
 //	}
+	
+	@GetMapping("/test/{id}")
+	public List<ArtistProfileMedia> test(@PathVariable("id") int id){
+		int artistProfileId = id;
+		int pageNumber = 1;
+		int pageSize = 2;
+		Query query = entityManager.createQuery("From ArtistProfileMedia apm where apm.artistProfileMediaKey.artistProfileId=:arg1");
+		query.setParameter("arg1", artistProfileId);
+		query.setFirstResult((pageNumber-1) * pageSize); 
+		query.setMaxResults(pageSize);
+		List <ArtistProfileMedia> fooList = query.getResultList();
+		return fooList;
+	}
 	
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
