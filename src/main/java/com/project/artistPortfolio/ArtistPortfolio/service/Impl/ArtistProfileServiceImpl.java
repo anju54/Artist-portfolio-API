@@ -25,8 +25,12 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ArtistNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.DataNotFound;
+import com.project.artistPortfolio.ArtistPortfolio.exception.DataTooLong;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FacebookURLException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
+import com.project.artistPortfolio.ArtistPortfolio.exception.LinkdInURLException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.TwitterURLException;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMedia;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
@@ -183,10 +187,31 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		
 		try {
 			artistProfile.setAboutMe(artistProfileDTO.getAboutMe());
-			
+			if(artistProfileDTO.getAboutMe().length()>=255) {
+				throw new DataTooLong("about me can only conatins 255 char!! You have entered "+artistProfileDTO.getAboutMe().length()+"chars");
+			}
 			artistProfile.setFacebookUrl(artistProfileDTO.getFacebookUrl());
+		
+			String regex = "((http|https)://)?(www[.])?facebook.com/.+";
+			boolean reg = artistProfileDTO.getFacebookUrl().matches(regex);
+			if(!reg) {
+				throw new FacebookURLException("Facebook URL is not valid!!");
+			}
+			
 			artistProfile.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
+			String regexLinkedIn = "((http|https)://)?(www[.])?linkedin.com/.+";
+			boolean regL = artistProfileDTO.getLinkedinUrl().matches(regexLinkedIn);
+			if(!regL) {
+				throw new LinkdInURLException("linkdIn url is not valid!!");
+			}
+			
 			artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
+			String pattern = "/^(https?:\\/\\/)?((w{3}\\.)?)twitter\\.com\\/(#!\\/)?[a-z0-9_]+$/i";
+			if( !(artistProfileDTO.getTwitterUrl().matches(pattern)) ) {
+				throw new TwitterURLException("twitter url is not valid ");
+				
+			}
+			
 			artistProfile.setProfileName(artistProfileDTO.getProfileName());
 			
 			ArtistProfile existingArtistProfile = getArtistProfileByProfileName(artistProfileDTO.getProfileName());
@@ -226,17 +251,27 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			newDir.mkdir();
 			File thumbnail = new File("../ArtistPortfolioAPI/media/"+artistProfileDTO.getProfileName()+"/");
 			File newThumbnailDir = new File(thumbnail,"thumbnail");
-			newThumbnailDir.mkdir();
-			
+			newThumbnailDir.mkdir();	
 		}
 		
-		artistProfileRepository.save(artistProfile);	
+		artistProfileRepository.save(artistProfile);
+		
 		}catch (DataNotFound e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "profile name already taken");
 		}
 		catch(RuntimeException e){
 			throw new CustomException(ExceptionMessage.Profile_Name_alreay_exists, HttpStatus.BAD_REQUEST);
 			
+		} catch (DataTooLong e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "about me can only conatins 255 char!!"
+					+ " You have entered "+artistProfileDTO.getAboutMe().length()+"chars");
+		} catch (FacebookURLException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Facebook URL is not valid!!");
+		}catch (TwitterURLException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Twitter URL is not valid");
+		
+		}catch (LinkdInURLException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"linkdIn url is not valid!!");
 		}
 	}
 	
@@ -295,13 +330,33 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			user.setFname(artistProfileDTO.getfName());
 			user.setLname(artistProfileDTO.getlName());
-			logger.info("-------------------------------");
-			logger.info(artistProfileDTO.getlName());
 			
 			existingRecord.setAboutMe(artistProfileDTO.getAboutMe());
+			if(artistProfileDTO.getAboutMe().length()>=255) {
+				throw new DataTooLong("about me can only conatins 255 char!! You have entered "
+										+artistProfileDTO.getAboutMe().length()+"chars");
+			}
+			
 			existingRecord.setFacebookUrl(artistProfileDTO.getFacebookUrl());
+			String regex = "((http|https)://)?(www[.])?facebook.com/.+";
+			boolean reg = artistProfileDTO.getFacebookUrl().matches(regex);
+			if(!reg) {
+				throw new FacebookURLException("Facebook URL is not valid!!");
+			}
+			
 			existingRecord.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
+			String regexLinkedIn = "((http|https)://)?(www[.])?linkedin.com/.+";
+			boolean regL = artistProfileDTO.getLinkedinUrl().matches(regexLinkedIn);
+			if(!regL) {
+				throw new LinkdInURLException("linkdIn url is not valid!!");
+			}
+			
 			existingRecord.setTwitterUrl(artistProfileDTO.getTwitterUrl());
+			String pattern = "/^(https?:\\/\\/)?((w{3}\\.)?)twitter\\.com\\/(#!\\/)?[a-z0-9_]+$/i";
+			if( !(artistProfileDTO.getTwitterUrl().matches(pattern)) ) {
+				throw new TwitterURLException("twitter url is not valid ");
+				
+			}
 			//existingRecord.setProfileName(artistProfileDTO.getProfileName());
 			
 			ArtistProfile existingArtistProfile = getArtistProfileByProfileName(artistProfileDTO.getProfileName());
@@ -330,7 +385,18 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		}
 		}catch (DataNotFound e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "profile name already taken");
-		}catch (Exception e) {
+		}catch (DataTooLong e) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "about me can only conatins 255 char!!"
+						+ " You have entered "+artistProfileDTO.getAboutMe().length()+"chars"); 
+		}catch (FacebookURLException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Facebook URL is not valid!!");
+		}catch (TwitterURLException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Twitter URL is not valid");
+		
+		}catch (LinkdInURLException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"linkdIn url is not valid!!");
+		}
+		catch (Exception e) {
 			logger.info(e.getMessage());
 		}
 	}
