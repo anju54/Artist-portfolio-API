@@ -103,7 +103,7 @@ public class ArtistProfileController {
 			int artistProfileId = artistProfile.getId();
 			return artistProfileService.getArtistPublicProfileInfo(artistProfileId);		
 		}catch (FileNotFound e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"artist not found");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Please enter your data to create an artist profile.");
 		}
 	}
 	
@@ -148,9 +148,9 @@ public class ArtistProfileController {
 	 * @param ArtistProfileDTO
 	 */
 	@PostMapping("/basic-info")
-	public void create(@RequestBody ArtistProfileDTO artistProfileDTO) {
+	public int create(@RequestBody ArtistProfileDTO artistProfileDTO) {
 		
-		artistProfileService.createArtistProfileRecord(artistProfileDTO);
+		return artistProfileService.createArtistProfileRecord(artistProfileDTO);
 	}
 	
 	/**

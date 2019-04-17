@@ -16,7 +16,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
  */
 public interface ArtistProfileService {
 	
-	void createArtistProfileRecord(ArtistProfileDTO artistProfileDTO);
+	int createArtistProfileRecord(ArtistProfileDTO artistProfileDTO);
 	void updateArtistProfileRecord(ArtistProfileDTO artistProfileDTO, String email);
 	ArtistProfile getArtistProfileById(int id);
 	String deleteByid(int id);

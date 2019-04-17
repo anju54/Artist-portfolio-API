@@ -75,7 +75,7 @@ public class MediaServiceImpl implements MediaService{
 		
 	private Matcher matcher;
 	 
-	private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp))$)";
+	private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)";
 	 
 	public static final long TEN_MB_IN_BYTES = 10485760;
 	
@@ -209,7 +209,7 @@ public class MediaServiceImpl implements MediaService{
 				throw new FileNotFound( "file upload required");
 			}else if( !matcher.matches() ) {
 				logger.info("not matched");
-				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, bmp ");
+				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, jpeg ");
 			} 
 			else if (file.getSize() > TEN_MB_IN_BYTES) {
 				logger.info("size exceeded");

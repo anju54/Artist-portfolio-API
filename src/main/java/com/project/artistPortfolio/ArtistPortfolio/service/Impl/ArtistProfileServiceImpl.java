@@ -102,14 +102,19 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			
 			return artistProfile.getMedia();	
 		}catch (FileNotFound e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile pic not uploaded");
+			//throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile pic not uploaded");
+			logger.error(e.getMessage());
 		}catch (ArtistNotFound e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist account has not been created!create first then proceed with uploading image.");
+			//throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist account has not been created!create first then proceed with uploading image.");
+			logger.info(e.getMessage());
+			logger.info("Artist Not found exception caught");
 		}
 		
 		catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile pic not loaded");
-		}	 
+			//throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile pic not loaded");
+			logger.error(e.getMessage());
+		}	
+		return null;
 	}
 		
 	/**
@@ -181,7 +186,7 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 	 * @param ArtistProfileDTO
 	 */
 	@Override
-	public void createArtistProfileRecord(ArtistProfileDTO artistProfileDTO) {
+	public int createArtistProfileRecord(ArtistProfileDTO artistProfileDTO) {
 		
 		ArtistProfile artistProfile = new ArtistProfile();
 		
@@ -192,24 +197,34 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			}
 			artistProfile.setFacebookUrl(artistProfileDTO.getFacebookUrl());
 		
-			String regex = "((http|https)://)?(www[.])?facebook.com/.+";
-			boolean reg = artistProfileDTO.getFacebookUrl().matches(regex);
-			if(!reg) {
-				throw new FacebookURLException("Facebook URL is not valid!!");
-			}
-			
-			artistProfile.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
-			String regexLinkedIn = "((http|https)://)?(www[.])?linkedin.com/.+";
-			boolean regL = artistProfileDTO.getLinkedinUrl().matches(regexLinkedIn);
-			if(!regL) {
-				throw new LinkdInURLException("linkdIn url is not valid!!");
-			}
-			
-			artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
-			String pattern = "/^(https?:\\/\\/)?((w{3}\\.)?)twitter\\.com\\/(#!\\/)?[a-z0-9_]+$/i";
-			if( !(artistProfileDTO.getTwitterUrl().matches(pattern)) ) {
-				throw new TwitterURLException("twitter url is not valid ");
+			if(artistProfileDTO.getFacebookUrl().length()>0) {
 				
+				logger.info(artistProfileDTO.getFacebookUrl());
+				String regex = "((http|https)://)?(www[.])?facebook.com/.+";
+				boolean reg = artistProfileDTO.getFacebookUrl().matches(regex);
+				if(!reg) {
+					throw new FacebookURLException("Facebook URL is not valid!!");
+				}
+			}
+			
+			if(artistProfileDTO.getLinkedinUrl().length()>0) {
+				
+				artistProfile.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
+				String regexLinkedIn = "((http|https)://)?(www[.])?linkedin.com/.+";
+				boolean regL = artistProfileDTO.getLinkedinUrl().matches(regexLinkedIn);
+				if(!regL) {
+					throw new LinkdInURLException("linkdIn url is not valid!!");
+				}
+			}
+			
+			if(artistProfileDTO.getTwitterUrl().length()>0) {
+				
+				artistProfile.setTwitterUrl(artistProfileDTO.getTwitterUrl());
+				String pattern = "((http|https)://)?(www[.])?twitter.com/.+";
+				if( !(artistProfileDTO.getTwitterUrl().matches(pattern)) ) {
+					throw new TwitterURLException("twitter url is not valid ");
+					
+				}
 			}
 			
 			artistProfile.setProfileName(artistProfileDTO.getProfileName());
@@ -257,13 +272,13 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		artistProfileRepository.save(artistProfile);
 		
 		}catch (DataNotFound e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "profile name already taken");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile name already taken");
 		}
 		catch(RuntimeException e){
 			throw new CustomException(ExceptionMessage.Profile_Name_alreay_exists, HttpStatus.BAD_REQUEST);
 			
 		} catch (DataTooLong e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "about me can only conatins 255 char!!"
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "About me can only conatins 255 char!!"
 					+ " You have entered "+artistProfileDTO.getAboutMe().length()+"chars");
 		} catch (FacebookURLException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Facebook URL is not valid!!");
@@ -271,8 +286,11 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Twitter URL is not valid");
 		
 		}catch (LinkdInURLException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"linkdIn url is not valid!!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"LinkdIn url is not valid!!");
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Opps!! Error occured while saving data");
 		}
+		return getArtistProfileByProfileName(artistProfileDTO.getProfileName()).getId();
 	}
 	
 	/**
@@ -338,25 +356,35 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 			}
 			
 			existingRecord.setFacebookUrl(artistProfileDTO.getFacebookUrl());
-			String regex = "((http|https)://)?(www[.])?facebook.com/.+";
-			boolean reg = artistProfileDTO.getFacebookUrl().matches(regex);
-			if(!reg) {
-				throw new FacebookURLException("Facebook URL is not valid!!");
+			if(artistProfileDTO.getFacebookUrl().length()>0) {
+				
+				String regex = "((http|https)://)?(www[.])?facebook.com/.+";
+				boolean reg = artistProfileDTO.getFacebookUrl().matches(regex);
+				if(!reg) {
+					throw new FacebookURLException("Facebook URL is not valid!!");
+				}	
 			}
 			
 			existingRecord.setLinkedinUrl(artistProfileDTO.getLinkedinUrl());
-			String regexLinkedIn = "((http|https)://)?(www[.])?linkedin.com/.+";
-			boolean regL = artistProfileDTO.getLinkedinUrl().matches(regexLinkedIn);
-			if(!regL) {
-				throw new LinkdInURLException("linkdIn url is not valid!!");
+			if(artistProfileDTO.getLinkedinUrl().length()>0) {
+				
+				String regexLinkedIn = "((http|https)://)?(www[.])?linkedin.com/.+";
+				boolean regL = artistProfileDTO.getLinkedinUrl().matches(regexLinkedIn);
+				if(!regL) {
+					throw new LinkdInURLException("linkdIn url is not valid!!");
+				}
 			}
 			
 			existingRecord.setTwitterUrl(artistProfileDTO.getTwitterUrl());
-			String pattern = "/^(https?:\\/\\/)?((w{3}\\.)?)twitter\\.com\\/(#!\\/)?[a-z0-9_]+$/i";
-			if( !(artistProfileDTO.getTwitterUrl().matches(pattern)) ) {
-				throw new TwitterURLException("twitter url is not valid ");
+			if(artistProfileDTO.getTwitterUrl().length()>0) {
 				
+				String pattern = "((http|https)://)?(www[.])?twitter.com/.+";
+				if( !(artistProfileDTO.getTwitterUrl().matches(pattern)) ) {
+					throw new TwitterURLException("twitter url is not valid ");
+					
+				}
 			}
+			
 			//existingRecord.setProfileName(artistProfileDTO.getProfileName());
 			
 			ArtistProfile existingArtistProfile = getArtistProfileByProfileName(artistProfileDTO.getProfileName());

@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -99,18 +98,7 @@ public class MediaController {
 	 private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)";
 	 
 	 public static final long TEN_MB_IN_BYTES = 10485760;
-		
-	
-//	@GetMapping("/artist/albums/{pageNo}/{pageLimit}/{id}")
-//	public List<ArtistProfileMedia> getMediaByPageNo(@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit,@PathVariable("id") int id){
-//		
-//		//Pageable firstPageWithTwoElements = PageRequest.of(0, 2);
-//		
-//		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
-//				findArtistProfileMediaByArtistProfileId(id, (Pageable) PageRequest.of(pageNo, pageLimit));
-//		return artistProfileMediaList;
-//	}
-	
+			
 	@GetMapping("/all/public/images")
 	public List<ArtistProfileMedia> list(@RequestParam("id") int id,@RequestParam("pageNo") int pageNo,@RequestParam("pageLimit") int pageLimit){
 		
@@ -158,7 +146,7 @@ public class MediaController {
 		
 		try {
 			String filename = file.getOriginalFilename();
-//			File a = new File(filename);
+			//File a = new File(filename);
 			
 			//append server IP and port number to read the image
 			String uploadLocation = "../ArtistPortfolioAPI/media/artist-profile-pics/";
@@ -252,7 +240,7 @@ public class MediaController {
 				throw new FileNotFound( "file upload required");
 			}else if( !matcher.matches() ) {
 				logger.info("not matched");
-				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, bmp ");
+				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, jpeg ");
 			}
 			 else if (file.getSize() > TEN_MB_IN_BYTES) {
 				logger.info("size exceeded");
@@ -342,42 +330,7 @@ public class MediaController {
 		
 		return "profile pic deleted.";
 	}
-	
-//	@GetMapping("/artist-test/albums/{pageNo}/{pageLimit}")
-//	public List<PaintingsDTO> getMediaWithSettings(Authentication authentication,Pageable pageable,@PathVariable("pageNo") int pageNo,@PathVariable("pageLimit") int pageLimit){
-//		
-//		List<PaintingsDTO> dtos = new ArrayList<PaintingsDTO>();
-//		
-//		int artistProfileId = userService.getUserByEmail( userService.getPrincipalUser
-//				(authentication).getUsername() ).getArtistProfile().getId();
-//		
-//		List<ArtistProfileMedia> artistProfileMediaList = artistProfileMediaRepository.
-//				findArtistProfileMediaByArtistProfileId(artistProfileId, (Pageable) PageRequest.of(pageNo, pageLimit));
-//		
-//		for(ArtistProfileMedia artistProfileMedia: artistProfileMediaList) {
-//			
-//			PaintingsDTO dto = new PaintingsDTO();
-//			dto.setMedia(artistProfileMedia.getMedia());
-//			dto.setPublicImage(artistProfileMedia.getPublicImage());
-//			dtos.add(dto);
-//		}
-//		return dtos;
-//		
-//	}
-	
-//	@GetMapping("/test/{id}")
-//	public List<ArtistProfileMedia> test(@PathVariable("id") int id){
-//		int artistProfileId = id;
-//		int pageNumber = 1;
-//		int pageSize = 2;
-//		Query query = entityManager.createQuery("From ArtistProfileMedia apm where apm.artistProfileMediaKey.artistProfileId=:arg1");
-//		query.setParameter("arg1", artistProfileId);
-//		query.setFirstResult((pageNumber-1) * pageSize); 
-//		query.setMaxResults(pageSize);
-//		List <ArtistProfileMedia> fooList = query.getResultList();
-//		return fooList;
-//	}
-	
+		
 	/***
 	 * This is used to delete media by media id
 	 * 
