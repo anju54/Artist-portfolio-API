@@ -1,5 +1,10 @@
 package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
+/**
+ * This DTO is holding the information of Principal User.
+ * @author anjuk
+ *
+ */
 public class CurrentUserDTO {
 	
 	private String username;

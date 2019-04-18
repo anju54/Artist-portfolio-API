@@ -1,8 +1,8 @@
 package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
 /**
- * 
- * @author anjuk
+ * RegistrationDTO is POJO class used for mapping registration requests of user.
+ * @author anju.kumari
  *
  */
 public class RegistrationDTO {

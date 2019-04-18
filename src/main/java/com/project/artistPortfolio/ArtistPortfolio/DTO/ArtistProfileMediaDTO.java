@@ -2,6 +2,11 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfileMediaKey;
 
+/**
+ * This DTO is used for mapping the ArtistProfileMedia model.
+ * @author anjuk
+ *
+ */
 public class ArtistProfileMediaDTO {
 	
 	private int artistProfileId;

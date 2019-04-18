@@ -3,7 +3,7 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
 /**
- * DTO for displaying all the public and private paintings of artist
+ * DTO for displaying all the public and private paintings of artist.
  * @author anju.kumari
  *
  */

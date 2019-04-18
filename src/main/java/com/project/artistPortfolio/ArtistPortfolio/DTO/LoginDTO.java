@@ -5,6 +5,11 @@ import javax.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is POJO class used to model Login requests.
+ * @author anjuk
+ *
+ */
 public class LoginDTO 
 {
 	/*

@@ -2,13 +2,17 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
+/**
+ * This DTO is used for Mapping the user request for Profile pic along with user information.
+ * @author anjuk
+ *
+ */
 public class ArtistProfilePic {
 	
 	private Media media;
 	private String profileName;
 	private String fullName;
 	private int artistProfileId;
-	
 	
 	public int getArtistProfileId() {
 		return artistProfileId;

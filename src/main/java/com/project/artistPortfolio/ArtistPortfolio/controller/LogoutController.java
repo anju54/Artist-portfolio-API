@@ -1,7 +1,5 @@
 package com.project.artistPortfolio.ArtistPortfolio.controller;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,8 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import io.jsonwebtoken.Jwts;
 
 /**
  * This is used to map logout request
@@ -44,7 +40,7 @@ public class LogoutController {
 		  
 		    if (auth != null){    
 		        new SecurityContextLogoutHandler().logout(request, response, auth);
-		        Jwts.builder().setExpiration(new Date("Thu, 01 Jan 1970 00:00:00 UTC"));      
+		        //Jwts.builder().setExpiration(new Date("Thu, 01 Jan 1970 00:00:00 UTC"));      
 		    }
 		    return "Logged out successfully";	
 	}

@@ -21,7 +21,4 @@ public class UpdateUserDTO {
 	public void setLname(String lname) {
 		this.lname = lname;
 	}
-	
-	
-
 }

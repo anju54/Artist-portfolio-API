@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
 
+/**
+ * This DTO is used for mapping Artist Profile model.
+ * @author anjuk
+ *
+ */
 public class ProfileDTO {
 	
 	private String fname;

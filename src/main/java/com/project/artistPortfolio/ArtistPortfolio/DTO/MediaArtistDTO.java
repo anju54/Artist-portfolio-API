@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 
+/**
+ * This DTO is used for mapping media model with profile name of artist.
+ * @author anjuk
+ *
+ */
 public class MediaArtistDTO {
 	
 	private String profileName;

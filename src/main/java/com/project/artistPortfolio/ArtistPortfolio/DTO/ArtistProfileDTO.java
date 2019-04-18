@@ -2,6 +2,11 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
 import java.util.List;
 
+/**
+ * This DTO is used for mapping Artist Profile model.
+ * @author anjuk
+ *
+ */
 public class ArtistProfileDTO {
 	
 	private String fName;
@@ -14,11 +19,9 @@ public class ArtistProfileDTO {
 	private String email;
 	private List<String> paintingType;
 	private String colorName;
-	//private List<ArtistProfileMedia> artistProfileMedia;
 	
 	// setter and getters 
-	
-	
+
 	public String getProfileName() {
 		return profileName;
 	}

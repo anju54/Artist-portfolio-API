@@ -1,5 +1,10 @@
 package com.project.artistPortfolio.ArtistPortfolio.DTO;
 
+/**
+ * This DTO is used for mapping the Media model class.
+ * @author anjuk
+ *
+ */
 public class MediaDTO {
 	
 	private String fileName;
