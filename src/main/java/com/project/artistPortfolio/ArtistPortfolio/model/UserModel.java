@@ -51,6 +51,9 @@ public class UserModel {
 	 
 	@OneToOne(mappedBy="user")
 	private ArtistProfile artistProfile;
+	
+	@OneToOne(mappedBy="user")
+	private Organizer organizer;
 	 
 	public UserModel() {
 		super();
@@ -64,6 +67,14 @@ public class UserModel {
 		this.email = email;
 		this.password = password;
 		//this.role = role;
+	}
+	
+	public Organizer getOrganizer() {
+		return organizer;
+	}
+
+	public void setOrganizer(Organizer organizer) {
+		this.organizer = organizer;
 	}
 
 	public Role getRole() {
