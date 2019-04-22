@@ -12,10 +12,10 @@ import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
-import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService2;
+import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 
 @Service
-public class OrgStaffServiceImpl implements OrgStaffService2{
+public class OrgStaffServiceImpl implements OrgStaffService{
 	
 	private final static Logger logger = LoggerFactory.getLogger(LinksServiceImpl.class);
 	
