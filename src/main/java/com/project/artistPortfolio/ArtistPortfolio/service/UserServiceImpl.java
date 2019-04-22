@@ -31,17 +31,17 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserRepository userRepository;
 	
-	 @Autowired
-	 public JavaMailSender mailSender;
+	@Autowired
+	public JavaMailSender mailSender;
 	 
-	 @Autowired
-	 private EmailServiceImpl emailService;
+	@Autowired
+	private EmailServiceImpl emailService;
 	 
-	 @Autowired
+	@Autowired
 	private LinksService linksService;
 	 
-	 @Autowired
-	 private RoleRepository roleRepository;
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	 /**
 	 * This is used to display Artist profile information
@@ -59,8 +59,11 @@ public class UserServiceImpl implements UserService{
 		UserModel user = userRepository.findByEmail(username);
 		String name = user.getFname() + " " + user.getLname();
 		
+		String role = user.getRole().getRole();
+		
 		currentUserDTO.setFullName(name);
 		currentUserDTO.setUsername(username);
+		currentUserDTO.setUserType(role);
 		return currentUserDTO;
 		
 		}catch (Exception e) {
