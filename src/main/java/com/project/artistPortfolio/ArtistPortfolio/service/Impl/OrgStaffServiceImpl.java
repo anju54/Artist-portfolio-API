@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
+import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
+import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
 
 @Service
 public class OrgStaffServiceImpl implements OrgStaffService{
@@ -22,6 +25,11 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	@Autowired
 	private OrgStaffRepository orgStaffRepository;
 	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private OrganizationService organizationService;
 	
 	/**
 	 * This is used to create new orgStaff.
@@ -29,8 +37,11 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * @param OrgStaff object
 	 */
 	@Override
-	public void addOrgStaff(OrgStaff orgStaff) {
+	public void addOrgStaff(OrgStaffDTO orgStaffDTO) {
 		
+		OrgStaff orgStaff = new OrgStaff();
+		orgStaff.setUser(userService.getUserByEmail(orgStaffDTO.getEmail()));
+		orgStaff.setOrganizationId(organizationService.getOrganizationByName(orgStaffDTO.getOrganizationName()).getOrganizationId());
 		orgStaffRepository.save(orgStaff);	
 	}
 	

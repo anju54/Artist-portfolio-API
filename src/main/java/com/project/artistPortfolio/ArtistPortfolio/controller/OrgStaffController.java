@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 
@@ -34,9 +35,10 @@ public class OrgStaffController {
 	 * @param orgStaff object
 	 */
 	@PostMapping("/")
-	public void createNeworgStaff(@RequestBody OrgStaff orgStaff) {
+	public void createNeworgStaff(@RequestBody OrgStaffDTO orgStaffDTO) {
 		
-		orgStaffService.addOrgStaff(orgStaff);
+		
+		orgStaffService.addOrgStaff(orgStaffDTO);
 	}
 	
 	/**
