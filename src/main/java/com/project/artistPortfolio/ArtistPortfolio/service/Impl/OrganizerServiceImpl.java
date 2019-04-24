@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.project.artistPortfolio.ArtistPortfolio.DTO.OrganizerDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organizer;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizerRepository;
@@ -39,12 +39,13 @@ public class OrganizerServiceImpl implements OrganizerService{
 	 * @param OrganizerDTO 
 	 */
 	@Override
-	public void addOrganizer(OrganizerDTO organizerDTO,Authentication authentication) {
+	public void addOrganizer(String organizationName,Authentication authentication) {
 		
 		Organizer organizer = new Organizer();
 		
 		int organizationId = organizationService.
-				getOrganizationByName(organizerDTO.getOrganizationName()).getOrganizationId();
+				getOrganizationByName(organizationName).getOrganizationId();
+		
 		UserModel user = userService.getUserByEmail( ( userService.getPrincipalUser(authentication).getUsername() ) );
 		
 		organizer.setOrganizationId(organizationId);
@@ -72,6 +73,7 @@ public class OrganizerServiceImpl implements OrganizerService{
 	 * 			organizer id.
 	 * @return Organizer object.
 	 */
+	@Override
 	public Organizer getOrganizerById(int id) {
 		
 		try {
@@ -81,6 +83,31 @@ public class OrganizerServiceImpl implements OrganizerService{
 			logger.error(e.getMessage());
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	/**
+	 * This is used to get organization detail by organizer id
+	 * @param id
+	 * 			organizer id
+	 * @return Organization object;
+	 */
+	public Organization getOrganizationByOrganizerId(int id) {  //organizer id
+		
+		Organizer organizer = getOrganizerById(id);
+		Organization org = organizationService.getOrganizationById(organizer.getOrganizationId());
+		
+		return org;
+		
+	}
+	
+	/**
+	 * This is used to get Organizer id by token
+	 * @return organizer id
+	 */
+	public int getOrganizerIdbytoken(Authentication authentication) {
+		
+		UserModel user = userService.getUserByEmail( userService.getPrincipalUser(authentication).getUsername() );
+		return user.getOrganizer().getOrganizerId();	
 	}
 	
 	/**
@@ -100,4 +127,6 @@ public class OrganizerServiceImpl implements OrganizerService{
 		
 		organizerRepository.deleteById(id);
 	}
+
+	
 }

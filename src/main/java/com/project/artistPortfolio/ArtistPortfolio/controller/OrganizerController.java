@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.artistPortfolio.ArtistPortfolio.DTO.OrganizerDTO;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organizer;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizerService;
 
@@ -31,14 +32,36 @@ public class OrganizerController {
 	private OrganizerService organizerService;
 	
 	/**
+	 * This is used to get organization detail by organizer id
+	 * @param id
+	 * 			organizer id
+	 * @return Organization object;
+	 */
+	@GetMapping("/{id}/organization")
+	public Organization getOrganization(@PathVariable("id") int id) {
+		
+		return organizerService.getOrganizationByOrganizerId(id);
+	}
+	
+	/**
+	 * This is used to get Organizer id by token
+	 * @return organizer id
+	 */
+	@GetMapping("/id")
+	public int getOrganizerId(Authentication authentication) {
+		
+		return organizerService.getOrganizerIdbytoken(authentication);
+	}
+	
+	/**
 	 * This is used to create new organizer.
 	 * 
 	 * @param organizer object
 	 */
-	@PostMapping("/")
-	public void createNeworganizer(@RequestBody OrganizerDTO organizerDTO,Authentication authentication) {
+	@PostMapping("/new")
+	public void createNeworganizer(@RequestParam("organization") String organizationName,Authentication authentication) {
 		
-		organizerService.addOrganizer(organizerDTO,authentication);
+		organizerService.addOrganizer(organizationName,authentication);
 	}
 	
 	/**

@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.project.artistPortfolio.ArtistPortfolio.DTO.OrganizerDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
@@ -49,9 +48,8 @@ public class OrganizationServiceImpl implements OrganizationService{
 	public void addOrganization(Organization organization,Authentication authentication) {
 		
 		organizationRepository.save(organization);
-		OrganizerDTO organizerDTO = new OrganizerDTO();
-		organizerDTO.setOrganizationName(organization.getOrganizationName());
-		organizerService.addOrganizer(organizerDTO, authentication);	
+		
+		organizerService.addOrganizer(organization.getOrganizationName(), authentication);	
 	}
 	
 	/**
