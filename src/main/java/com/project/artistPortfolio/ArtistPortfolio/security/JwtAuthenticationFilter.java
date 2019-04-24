@@ -1,7 +1,9 @@
 package com.project.artistPortfolio.ArtistPortfolio.security;
 
+import static com.project.artistPortfolio.ArtistPortfolio.security.Constants.HEADER_STRING;
+import static com.project.artistPortfolio.ArtistPortfolio.security.Constants.TOKEN_PREFIX;
+
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,8 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
-
-import static com.project.artistPortfolio.ArtistPortfolio.security.Constants.*;
 
 /**
  * Filters all requests before passing them, the filter is applied before web
@@ -66,11 +65,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
 	    if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-			userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
-		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-		logger.info("authenticated user " + username + ", setting security context");
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+	    	 UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.getAuthentication(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
+             //UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+             logger.info("authenticated user " + username + ", setting security context");
+             SecurityContextHolder.getContext().setAuthentication(authentication);
 	    }
 	}
 
