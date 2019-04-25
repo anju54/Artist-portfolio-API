@@ -38,7 +38,7 @@ public class EmailServiceImpl  {
 		    email.setText(body);
 		    email.setTo(user.getEmail());
 		    email.setFrom("anju.k302@gmail.com");
-		    
+		    logger.info(user.getEmail());
 		    logger.info("mail has been sent to "+user.getEmail());
 		    return email;
 	 }
@@ -51,8 +51,9 @@ public class EmailServiceImpl  {
 	  */
 	 public SimpleMailMessage registrationCredentialEmail( UserModel user,String token) {
 		 	
-		    String body = Const.RESET_PASSWORD_LINK +"?token="+token+"&id="+user.getId();
+		    String msg =  "Hi "+user.getFname()+",\n" ;
+		    String body =  Const.RESET_PASSWORD_LINK +"?token="+token+"&id="+user.getId();
 		    
-		    return constructEmail("set password", "click here to set password  " + body , user);
+		    return constructEmail("set password",msg+ " Use this link to set password for the first time \n" + body+"\n" +"This link is valid for one hour only ", user);
 	 }	 	
 }
