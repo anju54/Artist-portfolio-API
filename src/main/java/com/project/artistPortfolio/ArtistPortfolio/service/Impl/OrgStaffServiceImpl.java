@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
@@ -63,13 +64,10 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * 			orgStaff id.
 	 * @param OrgStaff object.
 	 */
-	public void updateOrgStaff(int id,OrgStaff orgStaff) {
+	public void updateOrgStaff(int id,UpdateUserDTO updateUserDTO) {
 		
-//		OrgStaff existingOrgStaff = getOrgStaffById(id);
-//		
-//		
-//		
-//		orgStaffRepository.save(existingOrgStaff);
+		OrgStaff existingOrgStaff = orgStaffRepository.findById(id).get();
+		userService.updateUser(existingOrgStaff.getUser().getId(), updateUserDTO);
 	}
 	
 	/**
@@ -79,11 +77,16 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * 			orgStaff id.
 	 * @return OrgStaff object.
 	 */
-	public OrgStaff getOrgStaffById(int id) {
+	public OrgStaffDTO getOrgStaffById(int id) {
 		
+		OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
 		try {
 			OrgStaff existingOrgStaff = orgStaffRepository.findById(id).get();
-			return existingOrgStaff;
+			orgStaffDTO.setfName(existingOrgStaff.getUser().getFname());
+			orgStaffDTO.setlName(existingOrgStaff.getUser().getLname());
+			orgStaffDTO.setEmail(existingOrgStaff.getUser().getEmail());
+			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(existingOrgStaff.getOrganizationId()).getOrganizationName());
+			return orgStaffDTO;
 		}catch (Exception e) {
 			logger.error(e.getMessage());
 			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
@@ -99,31 +102,35 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		
 		List<OrgStaff> staffList = orgStaffRepository.findAll();
 		
-		
 		List<OrgStaffDTO> orgStaffDTOs = new ArrayList<OrgStaffDTO>();
 		
 		for(OrgStaff orgStaff : staffList) {
 			
 			OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
 			
+			orgStaffDTO.setOrgStaffId(orgStaff.getId());
 			orgStaffDTO.setEmail(orgStaff.getUser().getEmail());
 			orgStaffDTO.setfName(orgStaff.getUser().getFname());
 			orgStaffDTO.setlName(orgStaff.getUser().getLname());
 			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(orgStaff.getOrganizationId()).getOrganizationName());
 			
 			orgStaffDTOs.add(orgStaffDTO);
-			
 		}
-		
 		return orgStaffDTOs;
 	}
 	
 	/**
 	 * This is used for deleting the orgStaff.
+	 * @param id
+	 * 			OrgStaff id
 	 */
 	public void deleteOrgStaff(int id) {
 		
+		OrgStaff existingOrgStaff = orgStaffRepository.findById(id).get();
+		userService.deleteUser(existingOrgStaff.getUser().getId());
 		orgStaffRepository.deleteById(id);
 	}
+
+	
 
 }

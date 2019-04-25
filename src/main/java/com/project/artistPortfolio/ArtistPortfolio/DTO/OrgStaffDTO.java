@@ -7,7 +7,14 @@ public class OrgStaffDTO {
 	private String lName;
 	private String organizationName;
 	private String roleName;
+	private int orgStaffId;
 	
+	public int getOrgStaffId() {
+		return orgStaffId;
+	}
+	public void setOrgStaffId(int orgStaffId) {
+		this.orgStaffId = orgStaffId;
+	}
 	public String getRoleName() {
 		return roleName;
 	}
