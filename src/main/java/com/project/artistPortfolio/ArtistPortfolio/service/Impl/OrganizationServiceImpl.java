@@ -66,7 +66,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 		existingOrganization.setContactNumber(organization.getContactNumber());
 		existingOrganization.setOrganizationName(organization.getOrganizationName());
 		existingOrganization.setOrganizationWebsite(organization.getOrganizationWebsite());
-		
+		existingOrganization.setOrganizationAddress(organization.getOrganizationAddress());
 		organizationRepository.save(existingOrganization);
 	}
 	

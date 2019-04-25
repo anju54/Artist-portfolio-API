@@ -35,6 +35,11 @@ public class Organization {
 	@Column(name = "organization_website", unique = true)
 	@Size(max=100)
 	private String organizationWebsite;
+	
+	@NotNull
+	@Column(name = "address",unique = true)
+	@Size(max=100)
+	private String organizationAddress;
 	 
 	@NotNull
 	@Column(name = "contactNumber", unique = true)
@@ -47,8 +52,14 @@ public class Organization {
 	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
 	private List<OrgStaff> orgStaff;
 	
-	
-	
+	public String getOrganizationAddress() {
+		return organizationAddress;
+	}
+
+	public void setOrganizationAddress(String organizationAddress) {
+		this.organizationAddress = organizationAddress;
+	}
+
 	public List<OrgStaff> getOrgStaff() {
 		return orgStaff;
 	}
