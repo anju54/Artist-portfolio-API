@@ -1,5 +1,6 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
@@ -40,6 +42,15 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	public void addOrgStaff(OrgStaffDTO orgStaffDTO) {
 		
 		OrgStaff orgStaff = new OrgStaff();
+		
+		RegistrationDTO regDTO = new RegistrationDTO();
+		regDTO.setEmail(orgStaffDTO.getEmail());
+		regDTO.setFname(orgStaffDTO.getfName());
+		regDTO.setLname(orgStaffDTO.getlName());
+		regDTO.setRoleName(orgStaffDTO.getRoleName());
+		userService.createUser(regDTO); // for storing user detail in user table
+		System.out.println(orgStaffDTO.getEmail());
+		System.out.println(userService.getUserByEmail(orgStaffDTO.getEmail()).getEmail());
 		orgStaff.setUser(userService.getUserByEmail(orgStaffDTO.getEmail()));
 		orgStaff.setOrganizationId(organizationService.getOrganizationByName(orgStaffDTO.getOrganizationName()).getOrganizationId());
 		orgStaffRepository.save(orgStaff);	
@@ -84,9 +95,27 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * 
 	 * @return List<OrgStaff>.
 	 */
-	public List<OrgStaff> getallOrgStaff(){
+	public List<OrgStaffDTO> getallOrgStaff(){
 		
-		return orgStaffRepository.findAll();
+		List<OrgStaff> staffList = orgStaffRepository.findAll();
+		
+		
+		List<OrgStaffDTO> orgStaffDTOs = new ArrayList<OrgStaffDTO>();
+		
+		for(OrgStaff orgStaff : staffList) {
+			
+			OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
+			
+			orgStaffDTO.setEmail(orgStaff.getUser().getEmail());
+			orgStaffDTO.setfName(orgStaff.getUser().getFname());
+			orgStaffDTO.setlName(orgStaff.getUser().getLname());
+			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(orgStaff.getOrganizationId()).getOrganizationName());
+			
+			orgStaffDTOs.add(orgStaffDTO);
+			
+		}
+		
+		return orgStaffDTOs;
 	}
 	
 	/**

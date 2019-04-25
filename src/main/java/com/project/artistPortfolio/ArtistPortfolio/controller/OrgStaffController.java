@@ -72,7 +72,7 @@ public class OrgStaffController {
 	 * @return List<orgStaff>.
 	 */
 	@GetMapping("/all")
-	public List<OrgStaff> getAllorgStaff(int id){
+	public List<OrgStaffDTO> getAllorgStaff(){
 		return orgStaffService.getallOrgStaff();
 	}
 
