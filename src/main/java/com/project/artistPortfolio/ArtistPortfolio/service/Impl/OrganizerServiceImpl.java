@@ -39,7 +39,9 @@ public class OrganizerServiceImpl implements OrganizerService{
 	 * @param OrganizerDTO 
 	 */
 	@Override
-	public void addOrganizer(String organizationName,Authentication authentication) {
+	public int addOrganizer(String organizationName,Authentication authentication) {
+		
+		logger.info("trying to create organizer for "+organizationName);
 		
 		Organizer organizer = new Organizer();
 		
@@ -51,6 +53,10 @@ public class OrganizerServiceImpl implements OrganizerService{
 		organizer.setOrganizationId(organizationId);
 		organizer.setUser(user);
 		organizerRepository.save(organizer);	
+		
+		logger.info("organizer has been created now returning id");
+		logger.info(null,organizationId);
+		return organizationId;
 	}
 	
 	/**

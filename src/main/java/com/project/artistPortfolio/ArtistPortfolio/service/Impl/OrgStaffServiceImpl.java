@@ -14,8 +14,11 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.model.Links;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
+import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
+import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
@@ -33,6 +36,12 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	
 	@Autowired
 	private OrganizationService organizationService;
+	
+	@Autowired
+	private LinksService linksService;
+	
+	@Autowired
+	private LinksRepository linksRepository;
 	
 	/**
 	 * This is used to create new orgStaff.
@@ -127,7 +136,10 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	public void deleteOrgStaff(int id) {
 		
 		OrgStaff existingOrgStaff = orgStaffRepository.findById(id).get();
+		Links link = linksRepository.findByRefrenceId(existingOrgStaff.getUser().getId());
+		linksService.deleteLink(link.getId());
 		userService.deleteUser(existingOrgStaff.getUser().getId());
+		
 		orgStaffRepository.deleteById(id);
 	}
 
