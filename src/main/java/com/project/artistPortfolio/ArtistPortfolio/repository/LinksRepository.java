@@ -7,5 +7,6 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Links;
 public interface LinksRepository extends JpaRepository<Links, Integer>{
 	
 	Links findByToken(String token);
+	Links findByRefrenceId(int refrenceId);
 
 }

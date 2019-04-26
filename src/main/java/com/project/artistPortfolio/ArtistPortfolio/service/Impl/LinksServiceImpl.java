@@ -101,5 +101,10 @@ public class LinksServiceImpl implements LinksService {
 			// TODO: handle exception
 		}
 	}
+	
+	public void deleteLink(int id) {
+		
+		linksRepository.deleteById(id);
+	}
 
 }

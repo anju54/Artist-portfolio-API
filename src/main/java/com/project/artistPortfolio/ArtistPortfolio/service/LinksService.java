@@ -12,5 +12,6 @@ public interface LinksService {
 	
 	void createLinks(String text,  String email, int id,String token);
 	Links getLinksById(int id);
+	void deleteLink(int id);
 
 }
