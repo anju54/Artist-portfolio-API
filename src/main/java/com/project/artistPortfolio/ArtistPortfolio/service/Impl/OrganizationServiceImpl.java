@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.OrganizationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
+import com.project.artistPortfolio.ArtistPortfolio.model.OrganizationDomain;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizationRepository;
+import com.project.artistPortfolio.ArtistPortfolio.service.DomainService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizerService;
 
@@ -26,6 +29,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 	
 	@Autowired
 	private OrganizerService organizerService;
+	
+	@Autowired
+	private DomainService domainService;
 	
 	/**
 	 * This is used to get Organization by id.
@@ -45,11 +51,23 @@ public class OrganizationServiceImpl implements OrganizationService{
 	 * 
 	 * @param Organization object
 	 */
-	public void addOrganization(Organization organization,Authentication authentication) {
+	public void addOrganization(OrganizationDTO organizationDTO,Authentication authentication) {
+		
+		Organization organization = new Organization();
+		organization.setOrganizationName(organizationDTO.getOrgName());
+		organization.setOrganizationAddress(organizationDTO.getOrgAddress());
+		organization.setOrganizationWebsite(organizationDTO.getWebsite());
+		organization.setContactNumber(organizationDTO.getContactNo());
 		
 		organizationRepository.save(organization);
 		
-		organizerService.addOrganizer(organization.getOrganizationName(), authentication);	
+		OrganizationDomain domain = new OrganizationDomain();
+		domain.setDomainName(organizationDTO.getDomainName());
+		
+		System.out.println(organizationDTO.getOrgName());
+		int organizationID = organizerService.addOrganizer(organizationDTO.getOrgName(), authentication);	
+		
+		domainService.create(domain,organizationID);
 	}
 	
 	/**

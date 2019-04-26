@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.OrganizationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
 
@@ -35,7 +36,7 @@ public class OrganizationController {
 	 * @param Organization object
 	 */
 	@PostMapping("/")
-	public void createNewOrganization(@RequestBody Organization organization,Authentication authentication) {
+	public void createNewOrganization(@RequestBody OrganizationDTO organization,Authentication authentication) {
 		
 		organizationService.addOrganization(organization,authentication);
 	}

@@ -52,6 +52,17 @@ public class Organization {
 	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
 	private List<OrgStaff> orgStaff;
 	
+	@OneToMany(mappedBy="organization",cascade = CascadeType.ALL)
+	private List<OrganizationDomain> domain;
+	
+	public List<OrganizationDomain> getDomain() {
+		return domain;
+	}
+
+	public void setDomain(List<OrganizationDomain> domain) {
+		this.domain = domain;
+	}
+
 	public String getOrganizationAddress() {
 		return organizationAddress;
 	}
