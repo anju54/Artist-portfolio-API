@@ -1,5 +1,6 @@
 package com.project.artistPortfolio.ArtistPortfolio.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ public class OrganizationDomain {
 	
 	@JsonIgnore
 	@ManyToOne
-    @JoinColumn(name="organization_id", nullable=false)
+    @JoinColumn(name="organization_id")
     private Organization organization;
 	
 	public Organization getOrganization() {

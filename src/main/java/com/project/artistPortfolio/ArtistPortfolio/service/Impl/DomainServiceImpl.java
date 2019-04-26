@@ -12,9 +12,11 @@ import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrganizationDomain;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organizer;
 import com.project.artistPortfolio.ArtistPortfolio.repository.DomainRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizationRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.DomainService;
+import com.project.artistPortfolio.ArtistPortfolio.service.OrganizerService;
 
 /***
  * This class is used for handling all the operation related to domain of the artist profile
@@ -29,6 +31,9 @@ public class DomainServiceImpl implements DomainService{
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;
+	
+	@Autowired
+	private OrganizerService organizerService;
 	
 	private final static Logger logger = LoggerFactory.getLogger(DomainServiceImpl.class);
 	
@@ -150,5 +155,19 @@ public class DomainServiceImpl implements DomainService{
 		Organization org = organizationRepository.findById(id).get();
 		return org.getDomain();
 	}
+	
+	/**
+	 * This is used to get domain by organization id
+	 * @param id
+	 * 			organizer id
+	 * @return List of OrganizationDomain 
+	 */
+	public List<OrganizationDomain> getDomainByOrganizerId(int id) {
+		
+		Organizer organizer = organizerService.getOrganizerById(id);
+		Organization org = organizationRepository.findById(organizer.getOrganizationId()).get();
+		return org.getDomain();
+	}
+	
 
 }

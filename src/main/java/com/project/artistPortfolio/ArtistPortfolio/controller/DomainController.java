@@ -43,6 +43,18 @@ public class DomainController {
 		return domainService.getDomainByOrganizatioId(id);
 	}
 	
+	/**
+	 * This is used to get domain by organization id
+	 * @param id
+	 * 			organization id
+	 * @return List of OrganizationDomain 
+	 */
+	@GetMapping("/organizer/{id}")
+	public List<OrganizationDomain> getDomainByOrganizerId(@PathVariable("id") int id){
+		
+		return domainService.getDomainByOrganizerId(id);
+	}
+	
 	@GetMapping("/{id}")
 	public @ResponseBody OrganizationDomain getDomainById(@PathVariable("id") int id) {
 		

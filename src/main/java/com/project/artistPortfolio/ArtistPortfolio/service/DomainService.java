@@ -19,5 +19,6 @@ public interface DomainService {
 	OrganizationDomain getDomainByName(String name);
 	OrganizationDomain getDomainByDomainName(String domainName);
 	List<OrganizationDomain> getDomainByOrganizatioId(int id);
+	List<OrganizationDomain> getDomainByOrganizerId(int id);
 
 }
