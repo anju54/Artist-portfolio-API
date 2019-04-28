@@ -10,7 +10,14 @@ public class CurrentUserDTO {
 	private String username;
 	private String fullName;
 	private String userType;
+	private int userId;
 	
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	public String getUserType() {
 		return userType;
 	}

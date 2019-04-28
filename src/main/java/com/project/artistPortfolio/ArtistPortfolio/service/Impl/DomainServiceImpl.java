@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.DomainNameExists;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrganizationDomain;
@@ -46,16 +48,38 @@ public class DomainServiceImpl implements DomainService{
 	 */
 	public void create(OrganizationDomain domain,int id) {
 		
-		OrganizationDomain existingDomain = getDomainByName(domain.getDomainName());
+		try {
+			logger.info("Trying to create domain");
+			System.out.println("organizatio id "+id);
+			Organization org =  organizationRepository.findById(id).get();
+			
+			if(org==null) {
+				throw new DomainNameExists( "organization not found");
+			}
+			
+//			List<OrganizationDomain> list = org.getDomain();
+//			if(list.size()>0) {
+//				
+//				for(OrganizationDomain orgDomain : list) {
+//					
+//					if(orgDomain.getDomainName().equals(domain.getDomainName())) {
+//						throw new DomainNameExists("Entered domain is already registered with this organization");
+//					}
+//				}
+//			}else {
+//				
+//			}
+			
+			domain.setOrganization(org);
+			domainRepository.save(domain);	
+			logger.info("domain has been created!!");
+			
+		}catch (DomainNameExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Organization not found");
+		}catch (Exception e) {
+			logger.info(e.getMessage());
+		}
 		
-		Organization org =  organizationRepository.findById(id).get();
-		domain.setOrganization(org);
-		
-		if(existingDomain==null) {
-			domainRepository.save(domain);
-		}else {
-			throw  new CustomException(ExceptionMessage.Record_already_exists, HttpStatus.BAD_REQUEST);
-		}	
 	}
 	
 	/***

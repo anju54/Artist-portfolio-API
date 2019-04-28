@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService{
 		currentUserDTO.setFullName(name);
 		currentUserDTO.setUsername(username);
 		currentUserDTO.setUserType(role);
+		currentUserDTO.setUserId(user.getId());
 		return currentUserDTO;
 		
 		}catch (Exception e) {
@@ -153,8 +154,8 @@ public class UserServiceImpl implements UserService{
 		UserModel existingUseruser = getUserById(id);
 		if (existingUseruser!=null) {
 			
-			existingUseruser.setFname(updateUserDTO.getFname());
-			existingUseruser.setLname(updateUserDTO.getLname());
+			existingUseruser.setFname(updateUserDTO.getfName());
+			existingUseruser.setLname(updateUserDTO.getlName());
 			userRepository.save(existingUseruser);	
 		}
 	}

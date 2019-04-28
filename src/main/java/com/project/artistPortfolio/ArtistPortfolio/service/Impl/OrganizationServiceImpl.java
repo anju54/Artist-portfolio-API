@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrganizationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.exception.OrgContactExists;
+import com.project.artistPortfolio.ArtistPortfolio.exception.OrgNameExists;
+import com.project.artistPortfolio.ArtistPortfolio.exception.OrgWebsiteExists;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrganizationDomain;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizationRepository;
@@ -54,20 +58,45 @@ public class OrganizationServiceImpl implements OrganizationService{
 	public void addOrganization(OrganizationDTO organizationDTO,Authentication authentication) {
 		
 		Organization organization = new Organization();
-		organization.setOrganizationName(organizationDTO.getOrgName());
-		organization.setOrganizationAddress(organizationDTO.getOrgAddress());
-		organization.setOrganizationWebsite(organizationDTO.getWebsite());
-		organization.setContactNumber(organizationDTO.getContactNo());
+		try {
+			organization.setOrganizationName(organizationDTO.getOrgName());
+			Organization org = organizationRepository.findByOrganizationName(organizationDTO.getOrgName());
+			if(org!=null) {
+				throw new OrgNameExists("org name is already taken");
+			}
+			organization.setOrganizationAddress(organizationDTO.getOrgAddress());
+			
+			organization.setOrganizationWebsite(organizationDTO.getWebsite());
+			Organization orgWebsite = organizationRepository.findByOrganizationWebsite(organizationDTO.getOrgName());
+			if(orgWebsite!=null) {
+				throw new OrgWebsiteExists("org website is already taken");
+			}
+			
+			organization.setContactNumber(organizationDTO.getContactNo());
+			Organization orgContactNo = organizationRepository.findByContactNumber(organizationDTO.getOrgName());
+			if(orgContactNo!=null) {
+				throw new OrgContactExists("org contact is already taken");
+			}
+			organizationRepository.save(organization);
+			
+			OrganizationDomain domain = new OrganizationDomain();
+			domain.setDomainName(organizationDTO.getDomainName());
+			
+			int organizationID = organizerService.addOrganizer(organizationDTO.getOrgName(), authentication);	
+			
+			domainService.create(domain,organizationID);
+			
+		}catch (OrgNameExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Organization is already registered with us!!");
+		}catch (OrgWebsiteExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This website is already registered with us!!");
+		}catch (OrgContactExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This contact number has already taken!!");
+		}
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Opps!! error occured while registration.");
+		}
 		
-		organizationRepository.save(organization);
-		
-		OrganizationDomain domain = new OrganizationDomain();
-		domain.setDomainName(organizationDTO.getDomainName());
-		
-		System.out.println(organizationDTO.getOrgName());
-		int organizationID = organizerService.addOrganizer(organizationDTO.getOrgName(), authentication);	
-		
-		domainService.create(domain,organizationID);
 	}
 	
 	/**

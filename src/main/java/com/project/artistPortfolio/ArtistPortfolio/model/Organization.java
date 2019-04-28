@@ -37,12 +37,12 @@ public class Organization {
 	private String organizationWebsite;
 	
 	@NotNull
-	@Column(name = "address",unique = true)
+	@Column(name = "address")
 	@Size(max=100)
 	private String organizationAddress;
 	 
 	@NotNull
-	@Column(name = "contactNumber", unique = true)
+	@Column(name = "contact_number", unique = true)
 	@Size(max=14)
 	private String contactNumber;
 	

@@ -7,18 +7,21 @@ package com.project.artistPortfolio.ArtistPortfolio.DTO;
  */
 public class UpdateUserDTO {
 	
-	private String fname;
-	private String lname;
-	public String getFname() {
-		return fname;
+	private String fName;
+	private String lName;
+	
+	public String getfName() {
+		return fName;
 	}
-	public void setFname(String fname) {
-		this.fname = fname;
+	public void setfName(String fName) {
+		this.fName = fName;
 	}
-	public String getLname() {
-		return lname;
+	public String getlName() {
+		return lName;
 	}
-	public void setLname(String lname) {
-		this.lname = lname;
+	public void setlName(String lName) {
+		this.lName = lName;
 	}
+	
+	
 }

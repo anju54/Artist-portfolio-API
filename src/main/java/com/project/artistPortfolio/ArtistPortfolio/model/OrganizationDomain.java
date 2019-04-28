@@ -1,6 +1,5 @@
 package com.project.artistPortfolio.ArtistPortfolio.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +23,7 @@ public class OrganizationDomain {
 	private int domainId;
 	
 	@NotNull
-	@Column(name = "domain_name",unique = true)
+	@Column(name = "domain_name",unique=true)
 	@Size(max=100)
 	private String domainName;
 	

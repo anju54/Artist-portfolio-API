@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
@@ -55,7 +56,7 @@ public class OrganizerServiceImpl implements OrganizerService{
 		organizerRepository.save(organizer);	
 		
 		logger.info("organizer has been created now returning id");
-		logger.info(null,organizationId);
+		System.out.println(organizationId);;
 		return organizationId;
 	}
 	
@@ -112,8 +113,12 @@ public class OrganizerServiceImpl implements OrganizerService{
 	 */
 	public int getOrganizerIdbytoken(Authentication authentication) {
 		
+		try {
 		UserModel user = userService.getUserByEmail( userService.getPrincipalUser(authentication).getUsername() );
-		return user.getOrganizer().getOrganizerId();	
+		return user.getOrganizer().getOrganizerId();
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Organizer not found!!");
+		}
 	}
 	
 	/**
