@@ -27,7 +27,7 @@ public class OrgStaff {
 	
 	@JsonIgnore
 	@OneToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id",unique=true)
 	private UserModel user;
 	
 	@Column(name="organization_id")
