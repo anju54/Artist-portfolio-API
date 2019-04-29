@@ -8,14 +8,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.DuplicateRecord;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Links;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
+import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
@@ -51,19 +55,28 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	@Override
 	public void addOrgStaff(OrgStaffDTO orgStaffDTO) {
 		
-		OrgStaff orgStaff = new OrgStaff();
-		
-		RegistrationDTO regDTO = new RegistrationDTO();
-		regDTO.setEmail(orgStaffDTO.getEmail());
-		regDTO.setFname(orgStaffDTO.getfName());
-		regDTO.setLname(orgStaffDTO.getlName());
-		regDTO.setRoleName(orgStaffDTO.getRoleName());
-		userService.createUser(regDTO); // for storing user detail in user table
-		System.out.println(orgStaffDTO.getEmail());
-		System.out.println(userService.getUserByEmail(orgStaffDTO.getEmail()).getEmail());
-		orgStaff.setUser(userService.getUserByEmail(orgStaffDTO.getEmail()));
-		orgStaff.setOrganizationId(organizationService.getOrganizationByName(orgStaffDTO.getOrganizationName()).getOrganizationId());
-		orgStaffRepository.save(orgStaff);	
+		try {
+			OrgStaff orgStaff = new OrgStaff();
+			
+			RegistrationDTO regDTO = new RegistrationDTO();
+			regDTO.setEmail(orgStaffDTO.getEmail());
+			regDTO.setFname(orgStaffDTO.getfName());
+			regDTO.setLname(orgStaffDTO.getlName());
+			regDTO.setRoleName(orgStaffDTO.getRoleName());
+			
+			UserModel existingUser = userService.getUserByEmail(orgStaffDTO.getEmail());
+			if(existingUser!=null) {
+				throw new DuplicateRecord("staff already exists");
+			}
+			userService.createUser(regDTO); // for storing user detail in user table
+			
+			orgStaff.setUser(userService.getUserByEmail(orgStaffDTO.getEmail()));
+			orgStaff.setOrganizationId(organizationService.getOrganizationByName(orgStaffDTO.getOrganizationName()).getOrganizationId());
+			orgStaffRepository.save(orgStaff);	
+			
+		}catch (DuplicateRecord e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"This staff is already registered!!");
+		}
 	}
 	
 	/**
@@ -75,8 +88,10 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 */
 	public void updateOrgStaff(int id,UpdateUserDTO updateUserDTO) {
 		
+		logger.info("Trying to update org staff record"+id);
 		OrgStaff existingOrgStaff = orgStaffRepository.findById(id).get();
 		userService.updateUser(existingOrgStaff.getUser().getId(), updateUserDTO);
+		
 	}
 	
 	/**
@@ -143,6 +158,28 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		orgStaffRepository.deleteById(id);
 	}
 
+	public List<OrgStaffDTO> getStaffListByOrganizationId(int id) {
 	
+		Organization org =	organizationService.getOrganizationById(id);
+		
+		List<OrgStaff> staffList = org.getOrgStaff();
+		
+		List<OrgStaffDTO> orgStaffDTOs = new ArrayList<OrgStaffDTO>();
+		
+		for(OrgStaff orgStaff : staffList) {
+			
+			OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
+			
+			orgStaffDTO.setOrgStaffId(orgStaff.getId());
+			orgStaffDTO.setEmail(orgStaff.getUser().getEmail());
+			orgStaffDTO.setfName(orgStaff.getUser().getFname());
+			orgStaffDTO.setlName(orgStaff.getUser().getLname());
+			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(orgStaff.getOrganizationId()).getOrganizationName());
+			
+			orgStaffDTOs.add(orgStaffDTO);
+		}
+		return orgStaffDTOs;
+	
+	}
 
 }

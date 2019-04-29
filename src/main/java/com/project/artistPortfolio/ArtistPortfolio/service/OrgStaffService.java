@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
-import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 
 public interface OrgStaffService {
 
@@ -13,4 +12,5 @@ public interface OrgStaffService {
 	OrgStaffDTO getOrgStaffById(int id);
 	List<OrgStaffDTO> getallOrgStaff();
 	void deleteOrgStaff(int id);
+	List<OrgStaffDTO> getStaffListByOrganizationId(int id);
 }

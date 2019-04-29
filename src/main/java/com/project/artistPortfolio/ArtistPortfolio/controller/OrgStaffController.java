@@ -68,13 +68,23 @@ public class OrgStaffController {
 	}
 	
 	/**
-	 * This is used to get orgStaff by id.
+	 * This is used to get all orgStaff .
 	 * 
 	 * @return List<orgStaff>.
 	 */
 	@GetMapping("/all")
 	public List<OrgStaffDTO> getAllorgStaff(){
 		return orgStaffService.getallOrgStaff();
+	}
+	
+	/**
+	 * This is used to get orgStaff by organization id.
+	 * 
+	 * @return List<orgStaff>.
+	 */
+	@GetMapping("/all/organization/{id}")
+	public List<OrgStaffDTO> getAllorgStaffById(@PathVariable("id") int id){
+		return orgStaffService.getStaffListByOrganizationId(id);
 	}
 	
 	/**
