@@ -67,16 +67,17 @@ public class OrganizationServiceImpl implements OrganizationService{
 			organization.setOrganizationAddress(organizationDTO.getOrgAddress());
 			
 			organization.setOrganizationWebsite(organizationDTO.getWebsite());
-			Organization orgWebsite = organizationRepository.findByOrganizationWebsite(organizationDTO.getOrgName());
+			Organization orgWebsite = organizationRepository.findByOrganizationWebsite(organizationDTO.getWebsite());
 			if(orgWebsite!=null) {
 				throw new OrgWebsiteExists("org website is already taken");
 			}
 			
 			organization.setContactNumber(organizationDTO.getContactNo());
-			Organization orgContactNo = organizationRepository.findByContactNumber(organizationDTO.getOrgName());
+			Organization orgContactNo = organizationRepository.findByContactNumber(organizationDTO.getContactNo());
 			if(orgContactNo!=null) {
 				throw new OrgContactExists("org contact is already taken");
 			}
+			
 			organizationRepository.save(organization);
 			
 			OrganizationDomain domain = new OrganizationDomain();

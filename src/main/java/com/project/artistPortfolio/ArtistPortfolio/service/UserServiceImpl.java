@@ -151,12 +151,14 @@ public class UserServiceImpl implements UserService{
 	 */
 	public void updateUser(int id,UpdateUserDTO updateUserDTO ) {
 		
+		logger.info("trying to update user");
 		UserModel existingUseruser = getUserById(id);
 		if (existingUseruser!=null) {
 			
 			existingUseruser.setFname(updateUserDTO.getfName());
 			existingUseruser.setLname(updateUserDTO.getlName());
 			userRepository.save(existingUseruser);	
+			logger.info("data updated in user table.");
 		}
 	}
 	
