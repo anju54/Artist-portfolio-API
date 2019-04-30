@@ -53,6 +53,9 @@ public class UserModel {
 	private ArtistProfile artistProfile;
 	
 	@OneToOne(mappedBy="user")
+	private OrgStaff orgStaf;
+	
+	@OneToOne(mappedBy="user")
 	private Organizer organizer;
 	 
 	public UserModel() {
@@ -69,6 +72,14 @@ public class UserModel {
 		//this.role = role;
 	}
 	
+	public OrgStaff getOrgStaf() {
+		return orgStaf;
+	}
+
+	public void setOrgStaf(OrgStaff orgStaf) {
+		this.orgStaf = orgStaf;
+	}
+
 	public Organizer getOrganizer() {
 		return organizer;
 	}

@@ -32,6 +32,18 @@ public class OrgStaff {
 	
 	@Column(name="organization_id")
 	private int organizationId;
+	
+	@OneToOne
+	@JoinColumn(name="profile_pic_id")
+	private Media media;
+
+	public Media getMedia() {
+		return media;
+	}
+
+	public void setMedia(Media media) {
+		this.media = media;
+	}
 
 	public int getId() {
 		return id;

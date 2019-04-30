@@ -39,6 +39,18 @@ public class Media {
 	@JsonIgnore
 	@OneToOne(mappedBy="media")
 	private ArtistProfile artistProfile;
+	
+	@JsonIgnore
+	@OneToOne(mappedBy="media")
+	private OrgStaff orgStaff;
+
+	public OrgStaff getOrgStaff() {
+		return orgStaff;
+	}
+
+	public void setOrgStaff(OrgStaff orgStaff) {
+		this.orgStaff = orgStaff;
+	}
 
 	public ArtistProfile getArtistProfile() {
 		return artistProfile;

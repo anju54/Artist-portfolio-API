@@ -1,28 +1,41 @@
 package com.project.artistPortfolio.ArtistPortfolio.service.Impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
+import com.project.artistPortfolio.ArtistPortfolio.exception.ArtistNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.DuplicateRecord;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileExtensionNotValidException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
+import com.project.artistPortfolio.ArtistPortfolio.exception.FileSizeExceeded;
 import com.project.artistPortfolio.ArtistPortfolio.model.Links;
+import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
+import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
+import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
@@ -39,6 +52,9 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	private UserService userService;
 	
 	@Autowired
+	private MediaService mediaService;
+	
+	@Autowired
 	private OrganizationService organizationService;
 	
 	@Autowired
@@ -46,6 +62,120 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	
 	@Autowired
 	private LinksRepository linksRepository;
+	
+	@Autowired
+	private  MediaStorageService fileStorageService;
+	
+	private Pattern pattern;
+		
+	private Matcher matcher;
+	 
+	private static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|jpeg|bmp))$)";
+	 
+	public static final long TEN_MB_IN_BYTES = 10485760;
+	
+	/**
+	 * This is used to get org staff's profile pic path by profile id
+	 * @param id
+	 * 			user id
+	 * @return Media object
+	 */
+	public Media getProfilePicByUserId(int id) {
+		try {
+			OrgStaff orgStaff = userService.getUserById(id).getOrgStaf();
+			if(orgStaff==null) {
+				throw new ArtistNotFound("staff account has not been created! create first then proceed with uploading image.");
+			}
+			
+			Media media = orgStaff.getMedia();
+			
+			if(media==null) {
+				throw new FileNotFound("profile pic not uploaded!");
+			}
+//			File a = new File(media.getPath());
+			
+			return media;
+			
+		}catch (FileNotFound e) {
+			//throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile pic not uploaded");
+			logger.error(e.getMessage());
+		}catch (ArtistNotFound e) {
+			//throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist account has not been created!create first then proceed with uploading image.");
+			logger.info(e.getMessage());
+			logger.info("org staff Not found exception caught");
+		}
+		catch (Exception e) {
+			//throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile pic not loaded");
+			logger.error(e.getMessage());
+		}
+		return null;
+	}
+	
+	/**
+	 * This is used to update profile pic of particular user
+	 * @param email
+	 * @param file
+	 * @return 
+	 * @throws IOException
+	 */
+	public ResponseEntity<?> uploadprofilePicForOrgStaff(Authentication authentication,MultipartFile file) throws IOException {
+		
+		try {
+			String filename = file.getOriginalFilename();
+			
+			//append server IP and port number to read the image
+			String uploadLocation = "../ArtistPortfolioAPI/media/orgstaff-profilepics/";
+			
+			pattern = Pattern.compile(IMAGE_PATTERN);
+			matcher = pattern.matcher(file.getOriginalFilename());
+			
+			if(file.getOriginalFilename().isEmpty()) {
+				logger.info("empty file");
+				throw new FileNotFound( "file upload required");
+			}else if( !matcher.matches() ) {
+				logger.info("not matched");
+				throw new FileExtensionNotValidException ("invalid file type!! supported file type : jpg, png, bmp ");
+			}else if (file.getSize() > TEN_MB_IN_BYTES) {
+				logger.info("size exceeded");
+				System.out.println(file.getSize());
+				throw new FileSizeExceeded( "file size excedded. supported file size upto 10 MB");
+			}
+			
+			String email = userService.getPrincipalUser(authentication).getUsername();
+			UserModel user  = userService.getUserByEmail(email);
+			
+			OrgStaff orgStaff = user.getOrgStaf();
+			
+			fileStorageService.uploadFile(file,uploadLocation,user.getId());
+			
+			Media media = new Media();
+			media.setPath("/media/orgstaff-profilepics/");
+			media.setFileName("profile-pic-"+user.getId()+"-"+filename);
+			media.setFilenameOriginal(filename);
+			
+			Media savedMedia = mediaService.createMedia(media);
+			
+			orgStaff.setMedia(savedMedia);
+			orgStaffRepository.save(orgStaff);
+			
+			return new ResponseEntity<>( HttpStatus.OK);
+			
+		}catch (FileSizeExceeded e) {
+			logger.info("file size exception caught");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,  "file size excedded. supported file size upto 10 MB");
+		}
+		catch (FileExtensionNotValidException e) {
+			logger.info(e.getMessage());	
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"invalid file type!! supported files type are : jpg, png, bmp");
+		}catch (FileNotFound e) {
+			logger.info(e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "file upload required");
+		}
+		catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+		return null;
+	}
 	
 	/**
 	 * This is used to create new orgStaff.
