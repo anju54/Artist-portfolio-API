@@ -3,8 +3,6 @@ package com.project.artistPortfolio.ArtistPortfolio.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -120,7 +118,9 @@ public class OrgStaffController {
 	/**
 	 * This is used to get orgStaff by organization id.
 	 * 
-	 * @return List<orgStaff>.
+	 * @param id
+	 * 			organization id
+	 * @return List<orgStaffDTO>.
 	 */
 	@GetMapping("/all/organization/{id}")
 	public List<OrgStaffDTO> getAllorgStaffById(@PathVariable("id") int id){

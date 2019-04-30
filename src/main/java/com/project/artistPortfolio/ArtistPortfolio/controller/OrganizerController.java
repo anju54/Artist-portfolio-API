@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organizer;
+import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizerRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizerService;
 
 /**
@@ -30,6 +32,16 @@ public class OrganizerController {
 	
 	@Autowired
 	private OrganizerService organizerService;
+	
+	@Autowired
+	private OrganizerRepository orgRepo;
+	
+	@GetMapping("/{id}/all")
+	public List<Organizer> testing(@PathVariable("id") int id) {
+		
+		return orgRepo.findAllOrganizerByorganizationId(id);
+		
+	}
 	
 	/**
 	 * This is used to get organization detail by organizer id
@@ -62,6 +74,13 @@ public class OrganizerController {
 	public void createNeworganizer(@RequestParam("organization") String organizationName,Authentication authentication) {
 		
 		organizerService.addOrganizer(organizationName,authentication);
+	}
+	
+	@PostMapping("/user")
+	public void adduserAsOrganizer( @RequestBody RegistrationDTO registrationDTO,@RequestParam("organization") String organizationName,
+																	Authentication authentication) {
+		
+		organizerService.adduserAsOrganizer(registrationDTO, organizationName, authentication);
 	}
 	
 	/**

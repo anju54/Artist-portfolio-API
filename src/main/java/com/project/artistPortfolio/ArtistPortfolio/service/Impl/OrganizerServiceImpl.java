@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
@@ -58,6 +59,26 @@ public class OrganizerServiceImpl implements OrganizerService{
 		logger.info("organizer has been created now returning id");
 		System.out.println(organizationId);;
 		return organizationId;
+	}
+	
+	/**
+	 * {@link Authentication} organizer id
+	 */
+	public void adduserAsOrganizer(RegistrationDTO registrationDTO,String organizationName,Authentication authentication) {
+		
+		userService.createUser(registrationDTO);
+		//addOrganizer(organizationName, authentication);
+		int userId = userService.getUserByEmail(registrationDTO.getEmail()).getId();
+		
+		int organizationId = organizationService.
+				getOrganizationByName(organizationName).getOrganizationId();
+		
+		Organizer organizer = new Organizer();
+		
+		organizer.setOrganizationId(organizationId);
+		organizer.setUser(userService.getUserById(userId));
+		organizerRepository.save(organizer);
+		
 	}
 	
 	/**

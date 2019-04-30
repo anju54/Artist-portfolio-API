@@ -30,9 +30,11 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Links;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organizer;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
+import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizerRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
@@ -62,6 +64,9 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	
 	@Autowired
 	private LinksRepository linksRepository;
+	
+	@Autowired
+	private OrganizerRepository organizerRepository;
 	
 	@Autowired
 	private  MediaStorageService fileStorageService;
@@ -288,13 +293,33 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		orgStaffRepository.deleteById(id);
 	}
 
+	/**
+	 * This is used to get orgStaff by organization id.
+	 * 
+	 * @param id
+	 * 			organization id
+	 * @return List<orgStaffDTO>.
+	 */
 	public List<OrgStaffDTO> getStaffListByOrganizationId(int id) {
 	
 		Organization org =	organizationService.getOrganizationById(id);
 		
-		List<OrgStaff> staffList = org.getOrgStaff();
-		
 		List<OrgStaffDTO> orgStaffDTOs = new ArrayList<OrgStaffDTO>();
+		
+		List<Organizer> organizers = organizerRepository.findAllOrganizerByorganizationId(id);
+		for(Organizer organizer : organizers) {
+			
+			OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
+			UserModel user = organizer.getUser();
+			orgStaffDTO.setEmail(user.getEmail());
+			orgStaffDTO.setfName(user.getFname());
+			orgStaffDTO.setlName(user.getLname());
+			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(organizer.getOrganizationId()).getOrganizationName());
+			
+			orgStaffDTOs.add(orgStaffDTO);
+		}
+		
+		List<OrgStaff> staffList = org.getOrgStaff();
 		
 		for(OrgStaff orgStaff : staffList) {
 			
