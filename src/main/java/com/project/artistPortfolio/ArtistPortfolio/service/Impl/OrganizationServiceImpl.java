@@ -110,12 +110,37 @@ public class OrganizationServiceImpl implements OrganizationService{
 	public void updateOrganization(int id,Organization organization) {
 		
 		Organization existingOrganization = getOrganizationById(id);
-		
-		existingOrganization.setContactNumber(organization.getContactNumber());
-		existingOrganization.setOrganizationName(organization.getOrganizationName());
-		existingOrganization.setOrganizationWebsite(organization.getOrganizationWebsite());
-		existingOrganization.setOrganizationAddress(organization.getOrganizationAddress());
-		organizationRepository.save(existingOrganization);
+		try {
+			existingOrganization.setContactNumber(organization.getContactNumber());
+			Organization orgContactNo = organizationRepository.findByContactNumber(organization.getContactNumber());
+			if(orgContactNo!=null && id!=orgContactNo.getOrganizationId()) {
+				throw new OrgContactExists("org contact is already taken");
+			}
+			
+			existingOrganization.setOrganizationName(organization.getOrganizationName());
+			Organization org = organizationRepository.findByOrganizationName(organization.getOrganizationName());
+			if(org!=null && id!=org.getOrganizationId()) {
+				throw new OrgNameExists("org name is already taken");
+			}
+			
+			existingOrganization.setOrganizationWebsite(organization.getOrganizationWebsite());
+			Organization orgWebsite = organizationRepository.findByOrganizationWebsite(organization.getOrganizationWebsite());
+			if(orgWebsite!=null && id!=orgWebsite.getOrganizationId()) {
+				throw new OrgWebsiteExists("org website is already taken");
+			}
+			existingOrganization.setOrganizationAddress(organization.getOrganizationAddress());
+			organizationRepository.save(existingOrganization);
+			
+		}catch (OrgNameExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Organization is already registered with us!!");
+		}catch (OrgWebsiteExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This website is already registered with us!!");
+		}catch (OrgContactExists e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This contact number has already taken!!");
+		}
+		catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Opps!! error occured while registration.");
+		}
 	}
 	
 	/**
