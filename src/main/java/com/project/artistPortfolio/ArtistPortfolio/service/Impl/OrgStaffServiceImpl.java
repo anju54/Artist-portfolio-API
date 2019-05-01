@@ -35,6 +35,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizerRepository;
+import com.project.artistPortfolio.ArtistPortfolio.repository.RoleRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
@@ -52,6 +53,9 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 	
 	@Autowired
 	private MediaService mediaService;
@@ -311,10 +315,12 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 			
 			OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
 			UserModel user = organizer.getUser();
+			orgStaffDTO.setOrgStaffId(organizer.getOrganizerId());
 			orgStaffDTO.setEmail(user.getEmail());
 			orgStaffDTO.setfName(user.getFname());
 			orgStaffDTO.setlName(user.getLname());
 			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(organizer.getOrganizationId()).getOrganizationName());
+			orgStaffDTO.setRoleName(user.getRole().getRole());
 			
 			orgStaffDTOs.add(orgStaffDTO);
 		}
@@ -330,6 +336,7 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 			orgStaffDTO.setfName(orgStaff.getUser().getFname());
 			orgStaffDTO.setlName(orgStaff.getUser().getLname());
 			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(orgStaff.getOrganizationId()).getOrganizationName());
+			orgStaffDTO.setRoleName(orgStaff.getUser().getRole().getRole());
 			
 			orgStaffDTOs.add(orgStaffDTO);
 		}
