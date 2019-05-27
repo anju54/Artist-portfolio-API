@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 
 public interface OrgStaffService {
 
@@ -21,4 +22,7 @@ public interface OrgStaffService {
 	List<OrgStaffDTO> getStaffListByOrganizationId(int id);
 	Media getProfilePicByUserId(int id);
 	ResponseEntity<?> uploadprofilePicForOrgStaff(Authentication authentication,MultipartFile file)throws IOException;
+	int getOrgAdminIdbytoken(Authentication authentication);
+	Organization getOrganizationByOrganizerId(int id);
+	int addOrgStaffAsAdmin(String organizationName, String email);
 }

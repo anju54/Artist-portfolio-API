@@ -55,8 +55,8 @@ public class UserModel {
 	@OneToOne(mappedBy="user")
 	private OrgStaff orgStaf;
 	
-	@OneToOne(mappedBy="user")
-	private Organizer organizer;
+//	@OneToOne(mappedBy="user")
+//	private Organizer organizer;
 	 
 	public UserModel() {
 		super();
@@ -80,13 +80,13 @@ public class UserModel {
 		this.orgStaf = orgStaf;
 	}
 
-	public Organizer getOrganizer() {
-		return organizer;
-	}
-
-	public void setOrganizer(Organizer organizer) {
-		this.organizer = organizer;
-	}
+//	public Organizer getOrganizer() {
+//		return organizer;
+//	}
+//
+//	public void setOrganizer(Organizer organizer) {
+//		this.organizer = organizer;
+//	}
 
 	public Role getRole() {
 		return role;

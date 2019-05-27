@@ -30,11 +30,9 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Links;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
-import com.project.artistPortfolio.ArtistPortfolio.model.Organizer;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
-import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizerRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.RoleRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
@@ -70,9 +68,6 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	private LinksRepository linksRepository;
 	
 	@Autowired
-	private OrganizerRepository organizerRepository;
-	
-	@Autowired
 	private  MediaStorageService fileStorageService;
 	
 	private Pattern pattern;
@@ -83,8 +78,10 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 
 	public static final long TEN_MB_IN_BYTES = 10485760;
 	
+	
+	
 	/**
-	 * This is used to get org staff's profile pic path by profile id
+	 * This is used to get org staff's profile picture path by profile id
 	 * @param id
 	 * 			user id
 	 * @return Media object
@@ -121,7 +118,7 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	}
 	
 	/**
-	 * This is used to update profile pic of particular user
+	 * This is used to update profile picture of particular user
 	 * @param email
 	 * @param file
 	 * @return 
@@ -189,10 +186,10 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	/**
 	 * This is used to create new orgStaff.
 	 * 
-	 * @param OrgStaff object
+	 * @param OrgStaffDTO object
 	 */
-	@Override
 	public void addOrgStaff(OrgStaffDTO orgStaffDTO) {
+		
 		
 		try {
 			OrgStaff orgStaff = new OrgStaff();
@@ -218,21 +215,37 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		}
 	}
 	
-	/**
-	 * This is used to update new orgStaff.
-	 * 
-	 * @param id
-	 * 			orgStaff id.
-	 * @param OrgStaff object.
+	/***
+	 * This is used to add organization admin
+	 * @param email
+	 * 			user email id
+	 * @param organizationName
+	 * 			organization name
 	 */
-	public void updateOrgStaff(int id,UpdateUserDTO updateUserDTO) {
+	@Override
+	public int addOrgStaffAsAdmin(String organizationName,String email) {
 		
-		logger.info("Trying to update org staff record"+id);
-		OrgStaff existingOrgStaff = orgStaffRepository.findById(id).get();
-		userService.updateUser(existingOrgStaff.getUser().getId(), updateUserDTO);
+		logger.info("------------------1-------------------------------");
+		int organizationId = organizationService.
+				getOrganizationByName(organizationName).getOrganizationId();
+		logger.info("org id and name"+organizationId+" "+organizationName);
+		UserModel user = userService.getUserByEmail(email);
+		//OrgStaff existingOrgStaff = user.getOrgStaf();
+		OrgStaff orgStaff = new OrgStaff();
+		
+		orgStaff.setOrganizationId(organizationId);
+		orgStaff.setUser(user);
+		orgStaffRepository.save(orgStaff);
+		
+		return organizationId;
+	}
+
+	@Override
+	public void updateOrgStaff(int id, UpdateUserDTO updateUserDTO) {
+		// TODO Auto-generated method stub
 		
 	}
-	
+
 	/**
 	 * This is used to get OrgStaff by id.
 	 * 
@@ -281,7 +294,7 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		}
 		return orgStaffDTOs;
 	}
-	
+
 	/**
 	 * This is used for deleting the orgStaff.
 	 * @param id
@@ -304,26 +317,12 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * 			organization id
 	 * @return List<orgStaffDTO>.
 	 */
+	@Override
 	public List<OrgStaffDTO> getStaffListByOrganizationId(int id) {
 	
 		Organization org =	organizationService.getOrganizationById(id);
 		
 		List<OrgStaffDTO> orgStaffDTOs = new ArrayList<OrgStaffDTO>();
-		
-		List<Organizer> organizers = organizerRepository.findAllOrganizerByorganizationId(id);
-		for(Organizer organizer : organizers) {
-			
-			OrgStaffDTO orgStaffDTO = new OrgStaffDTO();
-			UserModel user = organizer.getUser();
-			orgStaffDTO.setOrgStaffId(organizer.getOrganizerId());
-			orgStaffDTO.setEmail(user.getEmail());
-			orgStaffDTO.setfName(user.getFname());
-			orgStaffDTO.setlName(user.getLname());
-			orgStaffDTO.setOrganizationName(organizationService.getOrganizationById(organizer.getOrganizationId()).getOrganizationName());
-			orgStaffDTO.setRoleName(user.getRole().getRole());
-			
-			orgStaffDTOs.add(orgStaffDTO);
-		}
 		
 		List<OrgStaff> staffList = org.getOrgStaff();
 		
@@ -342,6 +341,36 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		}
 		return orgStaffDTOs;
 	
+	}
+	
+	/**
+	 * This is used to get organization detail by org staff id
+	 * @param id
+	 * 			org admin id
+	 * @return Organization object;
+	 */
+	@Override
+	public Organization getOrganizationByOrganizerId(int id) {  //organizer id
+		
+		String orgName = getOrgStaffById(id).getOrganizationName() ;
+		Organization org = organizationService.getOrganizationByName(orgName);
+		
+		return org;
+	}
+
+	/**
+	 * This is used to get Organizer id by token
+	 * @return organizer id
+	 */
+	@Override
+	public int getOrgAdminIdbytoken(Authentication authentication) {
+		
+		try {
+		UserModel user = userService.getUserByEmail( userService.getPrincipalUser(authentication).getUsername() );
+		return user.getOrgStaf().getId();
+		}catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Organizer not found!!");
+		}
 	}
 
 }

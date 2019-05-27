@@ -3,7 +3,6 @@ package com.project.artistPortfolio.ArtistPortfolio.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,10 +34,10 @@ public class OrganizationController {
 	 * 
 	 * @param Organization object
 	 */
-	@PostMapping("/")
-	public void createNewOrganization(@RequestBody OrganizationDTO organization,Authentication authentication) {
+	@PostMapping("/{email}")
+	public void createNewOrganization(@RequestBody OrganizationDTO organization,@PathVariable("email") String email) {
 		
-		organizationService.addOrganization(organization,authentication);
+		organizationService.addOrganization(organization,email);
 	}
 	
 	/**

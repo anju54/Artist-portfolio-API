@@ -20,8 +20,8 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrganizationDomain;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrganizationRepository;
 import com.project.artistPortfolio.ArtistPortfolio.service.DomainService;
+import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
-import com.project.artistPortfolio.ArtistPortfolio.service.OrganizerService;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService{
@@ -32,7 +32,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	private OrganizationRepository organizationRepository;
 	
 	@Autowired
-	private OrganizerService organizerService;
+	private OrgStaffService  orgStaffService;
 	
 	@Autowired
 	private DomainService domainService;
@@ -55,7 +55,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 	 * 
 	 * @param Organization object
 	 */
-	public void addOrganization(OrganizationDTO organizationDTO,Authentication authentication) {
+	public void addOrganization(OrganizationDTO organizationDTO,String email) {
 		
 		Organization organization = new Organization();
 		try {
@@ -83,7 +83,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 			OrganizationDomain domain = new OrganizationDomain();
 			domain.setDomainName(organizationDTO.getDomainName());
 			
-			int organizationID = organizerService.addOrganizer(organizationDTO.getOrgName(), authentication);	
+			int organizationID = orgStaffService.addOrgStaffAsAdmin(organizationDTO.getOrgName(), email);	
 			
 			domainService.create(domain,organizationID);
 			
@@ -95,6 +95,7 @@ public class OrganizationServiceImpl implements OrganizationService{
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This contact number has already taken!!");
 		}
 		catch (Exception e) {
+			logger.info(e.getMessage());
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Opps!! error occured while registration.");
 		}
 		

@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
+import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 import com.project.artistPortfolio.ArtistPortfolio.service.UserService;
@@ -77,6 +78,7 @@ public class OrgStaffController {
 	@PostMapping("/")
 	public void createNeworgStaff(@RequestBody OrgStaffDTO orgStaffDTO) {
 		
+		System.out.println("2..............................");
 		orgStaffService.addOrgStaff(orgStaffDTO);
 	}
 	
@@ -103,6 +105,28 @@ public class OrgStaffController {
 	public OrgStaffDTO getorgStaffByid(@PathVariable("id") int id) {
 		
 		return orgStaffService.getOrgStaffById(id);
+	}
+	
+	/**
+	 * This is used to get organization detail by organizer id
+	 * @param id
+	 * 			organizer id
+	 * @return Organization object;
+	 */
+	@GetMapping("/{id}/organization")
+	public Organization getOrganization(@PathVariable("id") int id) {
+		
+		return orgStaffService.getOrganizationByOrganizerId(id);
+	}
+	
+	/**
+	 * This is used to get Organizer id by token
+	 * @return orgStaff(admin) id
+	 */
+	@GetMapping("/current-user-id")
+	public int getOrganizerId(Authentication authentication) {
+		
+		return orgStaffService.getOrgAdminIdbytoken(authentication);
 	}
 	
 	/**

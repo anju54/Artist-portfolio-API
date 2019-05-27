@@ -46,8 +46,8 @@ public class Organization {
 	@Size(max=14)
 	private String contactNumber;
 	
-	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
-	private List<Organizer> organizer;
+//	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
+//	private List<Organizer> organizer;
 	
 	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
 	private List<OrgStaff> orgStaff;
@@ -79,13 +79,13 @@ public class Organization {
 		this.orgStaff = orgStaff;
 	}
 
-	public List<Organizer> getOrganizer() {
-		return organizer;
-	}
-
-	public void setOrganizer(List<Organizer> organizer) {
-		this.organizer = organizer;
-	}
+//	public List<Organizer> getOrganizer() {
+//		return organizer;
+//	}
+//
+//	public void setOrganizer(List<Organizer> organizer) {
+//		this.organizer = organizer;
+//	}
 
 	public int getOrganizationId() {
 		return organizationId;
