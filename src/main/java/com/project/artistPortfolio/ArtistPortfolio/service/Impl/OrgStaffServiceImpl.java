@@ -225,7 +225,6 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	@Override
 	public int addOrgStaffAsAdmin(String organizationName,String email) {
 		
-		logger.info("------------------1-------------------------------");
 		int organizationId = organizationService.
 				getOrganizationByName(organizationName).getOrganizationId();
 		logger.info("org id and name"+organizationId+" "+organizationName);
@@ -241,9 +240,14 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	}
 
 	@Override
-	public void updateOrgStaff(int id, UpdateUserDTO updateUserDTO) {
+	public boolean updateOrgStaff(int id, UpdateUserDTO updateUserDTO) {
 		// TODO Auto-generated method stub
-		
+		boolean isUpdated = false;
+		int userId = orgStaffRepository.findById(id).get().getUser().getId();
+		System.out.println(userId);
+		userService.updateUser(userId, updateUserDTO);
+		isUpdated = true;
+		return isUpdated;
 	}
 
 	/**

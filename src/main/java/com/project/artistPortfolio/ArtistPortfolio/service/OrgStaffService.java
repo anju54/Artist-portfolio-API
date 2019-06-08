@@ -15,7 +15,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 public interface OrgStaffService {
 
 	void addOrgStaff(OrgStaffDTO orgStaffDTO );
-	void updateOrgStaff(int id,UpdateUserDTO updateUserDTO);
+	boolean updateOrgStaff(int id,UpdateUserDTO updateUserDTO);
 	OrgStaffDTO getOrgStaffById(int id);
 	List<OrgStaffDTO> getallOrgStaff();
 	void deleteOrgStaff(int id);

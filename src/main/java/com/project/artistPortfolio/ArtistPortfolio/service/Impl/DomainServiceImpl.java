@@ -52,19 +52,6 @@ public class DomainServiceImpl implements DomainService{
 				throw new DomainNameExists( "organization not found");
 			}
 			
-//			List<OrganizationDomain> list = org.getDomain();
-//			if(list.size()>0) {
-//				
-//				for(OrganizationDomain orgDomain : list) {
-//					
-//					if(orgDomain.getDomainName().equals(domain.getDomainName())) {
-//						throw new DomainNameExists("Entered domain is already registered with this organization");
-//					}
-//				}
-//			}else {
-//				
-//			}
-			
 			domain.setOrganization(org);
 			domainRepository.save(domain);	
 			logger.info("domain has been created!!");

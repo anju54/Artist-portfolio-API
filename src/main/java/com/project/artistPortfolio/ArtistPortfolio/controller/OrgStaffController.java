@@ -90,8 +90,8 @@ public class OrgStaffController {
 	 * @param orgStaff object.
 	 */
 	@PutMapping("/{id}")
-	public void updateorgStaff(@PathVariable("id") int id, @RequestBody UpdateUserDTO updateUserDTO) {
-		orgStaffService.updateOrgStaff(id, updateUserDTO);
+	public boolean updateorgStaff(@PathVariable("id") int id, @RequestBody UpdateUserDTO updateUserDTO) {
+		return orgStaffService.updateOrgStaff(id, updateUserDTO);
 	}
 	
 	/**
