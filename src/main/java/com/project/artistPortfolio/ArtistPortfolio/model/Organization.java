@@ -46,6 +46,9 @@ public class Organization {
 	@Size(max=14)
 	private String contactNumber;
 	
+	@OneToMany(mappedBy = "organizationId", cascade = CascadeType.ALL )
+	private List<Exhibition> exhibition;
+	
 //	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
 //	private List<Organizer> organizer;
 	
@@ -118,4 +121,13 @@ public class Organization {
 	public void setContactNumber(String contactNumber) {
 		this.contactNumber = contactNumber;
 	}
+
+	public List<Exhibition> getExhibition() {
+		return exhibition;
+	}
+
+	public void setExhibition(List<Exhibition> exhibition) {
+		this.exhibition = exhibition;
+	}
+	
 }
