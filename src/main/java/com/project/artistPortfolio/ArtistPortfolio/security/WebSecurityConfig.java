@@ -52,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/artist-profile/info/**").permitAll()
 		.antMatchers("/api/artist-profile/public/profile-pic/**").permitAll()
 		.antMatchers("/api/organizer/**").hasAnyAuthority("ROLE_ORGADMIN")
+		.antMatchers("/api/exhibition/**").hasAnyAuthority("ROLE_ORGADMIN")
 		.antMatchers("/api/organization/**").hasAnyAuthority("ROLE_ORGADMIN")
 		.anyRequest().authenticated()
 		.and()

@@ -44,10 +44,17 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	/**
 	 * This is used to create new organization.
 	 * 
-	 * @param Exhibition object
+	 * @param title 
+	 * 		name or title of the organization
 	 */
-	public void addExhibition(Exhibition exhibition) {
+	public void addExhibition(String title,String organization) {
 		
+		Exhibition exhibition = new Exhibition();
+		
+		Organization org =  organizationService.getOrganizationByName(organization);
+		
+		exhibition.setTitle(title);
+		exhibition.setOrganizationId(org.getOrganizationId());
 		exhibitionRepository.save(exhibition);
 	}
 	
@@ -58,9 +65,16 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	 * 			organization id.
 	 * @param Exhibition object.
 	 */
-	public void updateExhibition(int id,Exhibition organization) {
+	public void updateExhibition(int id,Exhibition exhibition) {
 		
+		Optional<Exhibition> exhibitionOp = exhibitionRepository.findById(id);
+		Exhibition existingExhibition = exhibitionOp.get();
 		
+		existingExhibition.setDate(exhibition.getDate());
+		existingExhibition.setPaintingSlots(exhibition.getPaintingSlots());
+		existingExhibition.setVenue(exhibition.getVenue());
+		
+		exhibitionRepository.save(existingExhibition);
 	}
 	
 	/**
@@ -108,6 +122,19 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 		Organization org = organizationService.getOrganizationById(orgId);
 		List<Exhibition> allExhibition = org.getExhibition();
 		return allExhibition;
+	}
+	
+	/**
+	 * This is used to get list of exhibition by organization id
+	 * @param id
+	 * 			organization id
+	 * @return List<Exhibition>
+	 */
+	@Override
+	public List<Exhibition> exhibitionByOrgId(int id){
+		
+		Organization org =  organizationService.getOrganizationById(id);
+		return org.getExhibition();	
 	}
 	
 	/**

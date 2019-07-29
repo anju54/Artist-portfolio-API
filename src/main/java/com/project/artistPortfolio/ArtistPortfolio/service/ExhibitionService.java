@@ -6,8 +6,9 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
 
 public interface ExhibitionService {
 	
-	void addExhibition(Exhibition exhibition);
+	void addExhibition(String title,String organization);
 	void updateExhibition(int id,Exhibition exhibition);
+	List<Exhibition> exhibitionByOrgId(int id);
 	Exhibition getExhibitionById(int id);
 	Exhibition getExhibitionByName(String name);
 	List<Exhibition> allExhibition();
