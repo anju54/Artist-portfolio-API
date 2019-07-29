@@ -23,6 +23,7 @@ public interface OrgStaffService {
 	Media getProfilePicByUserId(int id);
 	ResponseEntity<?> uploadprofilePicForOrgStaff(Authentication authentication,MultipartFile file)throws IOException;
 	int getOrgAdminIdbytoken(Authentication authentication);
-	Organization getOrganizationByOrganizerId(int id);
 	int addOrgStaffAsAdmin(String organizationName, String email);
+	Organization getOrganizationByOrgStaffId(int id);
+	Organization getOrganizationByUserId(int id);
 }

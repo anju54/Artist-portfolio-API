@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 
 public interface OrgStaffRepository extends JpaRepository<OrgStaff, Integer> {
-
+	
+	OrgStaff getOrgStaffByUserId(int userId);
 }

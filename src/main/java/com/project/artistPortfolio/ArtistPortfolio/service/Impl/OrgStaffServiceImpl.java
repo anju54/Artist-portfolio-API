@@ -350,15 +350,36 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	/**
 	 * This is used to get organization detail by org staff id
 	 * @param id
-	 * 			org admin id
+	 * 			org admin id (org staff id)
 	 * @return Organization object;
 	 */
 	@Override
-	public Organization getOrganizationByOrganizerId(int id) {  //organizer id
+	public Organization getOrganizationByOrgStaffId(int id) {  
 		
 		String orgName = getOrgStaffById(id).getOrganizationName() ;
 		Organization org = organizationService.getOrganizationByName(orgName);
 		
+		return org;
+	}
+	
+	/**
+	 * This is used to get organization detail by user id
+	 * @param id
+	 * 			user id
+	 * @return Organization object;
+	 */
+	@Override
+	public Organization getOrganizationByUserId(int id) {  
+		
+		OrgStaff orgStaff = new OrgStaff();
+		try {
+			 orgStaff = orgStaffRepository.getOrgStaffByUserId(id);
+		}catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
+		}
+		
+		Organization org = organizationService.getOrganizationById(orgStaff.getOrganizationId());
 		return org;
 	}
 

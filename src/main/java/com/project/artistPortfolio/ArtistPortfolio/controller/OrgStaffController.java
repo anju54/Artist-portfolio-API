@@ -108,15 +108,27 @@ public class OrgStaffController {
 	}
 	
 	/**
-	 * This is used to get organization detail by organizer id
+	 * This is used to get organization detail by org staff(admin or staff) id
 	 * @param id
-	 * 			organizer id
+	 * 			org staff id
 	 * @return Organization object;
 	 */
 	@GetMapping("/{id}/organization")
 	public Organization getOrganization(@PathVariable("id") int id) {
 		
-		return orgStaffService.getOrganizationByOrganizerId(id);
+		return orgStaffService.getOrganizationByOrgStaffId(id);
+	}
+	
+	/**
+	 * This is used to get organization detail by user id
+	 * @param id
+	 * 			user id
+	 * @return Organization object;
+	 */
+	@GetMapping("/user/{id}/organization")
+	public Organization getOrganizationByUserId(@PathVariable("id") int id) {
+		
+		return orgStaffService.getOrganizationByUserId(id);
 	}
 	
 	/**
