@@ -2,13 +2,13 @@ package com.project.artistPortfolio.ArtistPortfolio.service;
 
 import java.util.List;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.Response;
 import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
 
 public interface ExhibitionService {
 	
-	void addExhibition(String title,String organization);
-	void updateExhibition(int id,Exhibition exhibition);
-	List<Exhibition> exhibitionByOrgId(int id);
+	Response<Exhibition> addExhibition(String title,String organization);
+	Response<Exhibition> updateExhibition(int id,Exhibition exhibition);
 	Exhibition getExhibitionById(int id);
 	Exhibition getExhibitionByName(String name);
 	List<Exhibition> allExhibition();

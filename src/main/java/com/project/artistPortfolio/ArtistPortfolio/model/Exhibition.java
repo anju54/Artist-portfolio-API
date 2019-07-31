@@ -32,6 +32,7 @@ public class Exhibition {
 	private int paintingSlots;
 	
 	@Column(name = "venue")
+	@Size(max=100)
 	private String venue;
 	
 	@Column(name = "date")

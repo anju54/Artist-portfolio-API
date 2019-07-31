@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.Response;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
@@ -46,8 +47,9 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	 * 
 	 * @param title 
 	 * 		name or title of the organization
+	 * @return 
 	 */
-	public void addExhibition(String title,String organization) {
+	public Response<Exhibition> addExhibition(String title,String organization) {
 		
 		Exhibition exhibition = new Exhibition();
 		
@@ -55,33 +57,57 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 		
 		exhibition.setTitle(title);
 		exhibition.setOrganizationId(org.getOrganizationId());
-		exhibitionRepository.save(exhibition);
+		
+		Response<Exhibition> returnObject = new Response<>();
+		returnObject.setResponse(exhibition);
+		try {
+			exhibitionRepository.save(exhibition);
+			returnObject.setStatus("success");
+			return returnObject;
+		}catch (Exception e) {
+			
+			returnObject.setStatus("failed");
+			return returnObject;	
+		}
+		
 	}
 	
 	/**
-	 * This is used to update new organization.
+	 * This is used to update new exhibition.
 	 * 
 	 * @param id
-	 * 			organization id.
+	 * 			exhibition id.
 	 * @param Exhibition object.
 	 */
-	public void updateExhibition(int id,Exhibition exhibition) {
+	public Response<Exhibition> updateExhibition(int id,Exhibition exhibition) {
 		
-		Optional<Exhibition> exhibitionOp = exhibitionRepository.findById(id);
-		Exhibition existingExhibition = exhibitionOp.get();
+		Exhibition existingExhibition = getExhibitionById(id);
 		
 		existingExhibition.setDate(exhibition.getDate());
 		existingExhibition.setPaintingSlots(exhibition.getPaintingSlots());
 		existingExhibition.setVenue(exhibition.getVenue());
 		
-		exhibitionRepository.save(existingExhibition);
+		Response<Exhibition> returnObject = new Response<>();
+		returnObject.setResponse(exhibition);
+		
+		try {
+			
+			exhibitionRepository.save(existingExhibition);
+			returnObject.setStatus("success");
+			return returnObject;
+		}catch (Exception e) {
+			
+			returnObject.setStatus("failed");
+			//Response.HttpStatusMsg status = Response.HttpStatusMsg.ok;
+			return returnObject;	
+		}
 	}
 	
 	/**
 	 * This is used to get Exhibition by id.
 	 * 
 	 * @param id
-	 * 			organization id.
+	 * 			Exhibition id.
 	 * @return Exhibition object.
 	 */
 	public Exhibition getExhibitionById(int id) {
@@ -117,33 +143,27 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	 * 
 	 * @return List<Exhibition>.
 	 */
+	@Override
 	public List<Exhibition> allExhibitionByOrgId(int orgId){
 		
 		Organization org = organizationService.getOrganizationById(orgId);
 		List<Exhibition> allExhibition = org.getExhibition();
 		return allExhibition;
 	}
-	
-	/**
-	 * This is used to get list of exhibition by organization id
-	 * @param id
-	 * 			organization id
-	 * @return List<Exhibition>
+		
+	 /**
+	  * This is used to delete exhibition by id
+	  * @param id
+	  * 	exhibition id
+	  * @return true or false.
 	 */
 	@Override
-	public List<Exhibition> exhibitionByOrgId(int id){
-		
-		Organization org =  organizationService.getOrganizationById(id);
-		return org.getExhibition();	
-	}
-	
-	/**
-	 * This is used for deleting the organization.
-	 */
 	public boolean deleteExhibition(int id) {
-		
-		exhibitionRepository.deleteById(id);
-		return true;	
+		try {
+			exhibitionRepository.deleteById(id);
+			return true;
+		}catch (Exception e) {
+			return false;}
 	}
 
 	
