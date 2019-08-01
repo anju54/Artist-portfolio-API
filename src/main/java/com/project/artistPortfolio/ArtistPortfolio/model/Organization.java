@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Model class for organization table.
  * @author anju.kumari
@@ -46,15 +48,18 @@ public class Organization {
 	@Size(max=14)
 	private String contactNumber;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "organizationId", cascade = CascadeType.ALL )
 	private List<Exhibition> exhibition;
 	
 //	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
 //	private List<Organizer> organizer;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="organizationId",cascade = CascadeType.ALL)
 	private List<OrgStaff> orgStaff;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="organization",cascade = CascadeType.ALL)
 	private List<OrganizationDomain> domain;
 	
