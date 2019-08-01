@@ -4,14 +4,11 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -44,13 +41,15 @@ public class Exhibition {
 	@OneToMany( mappedBy="media")
 	private List<ExhibitionMedia> exhibitionMedia;
 	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable( name = "exhibition_orgstaff_bridge", joinColumns = @JoinColumn( name = "exhibition_id" ),
-				inverseJoinColumns = @JoinColumn( name = "org_staff_id")  )
-	List<OrgStaff> orgStaffs;
+	@OneToOne(mappedBy="exhibition")
+	private OrgStaff orgStaff;
+	
+	public OrgStaff getOrgStaff() {
+		return orgStaff;
+	}
 
-	public List<OrgStaff> getOrgStaffs() {
-		return orgStaffs;
+	public void setOrgStaff(OrgStaff orgStaff) {
+		this.orgStaff = orgStaff;
 	}
 
 	public List<ExhibitionMedia> getExhibitionMedia() {
@@ -59,10 +58,6 @@ public class Exhibition {
 
 	public void setExhibitionMedia(List<ExhibitionMedia> exhibitionMedia) {
 		this.exhibitionMedia = exhibitionMedia;
-	}
-
-	public void setOrgStaffs(List<OrgStaff> orgStaffs) {
-		this.orgStaffs = orgStaffs;
 	}
 
 	public int getId() {

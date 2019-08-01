@@ -1,14 +1,11 @@
 package com.project.artistPortfolio.ArtistPortfolio.model;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -40,14 +37,15 @@ public class OrgStaff {
 	@JoinColumn(name="profile_pic_id")
 	private Media media;
 	
-	@ManyToMany
-	List<Exhibition> exhibition;
+	@OneToOne
+	@JoinColumn(name="exhibition_id")
+	private Exhibition exhibition;
 
-	public List<Exhibition> getExhibition() {
+	public Exhibition getExhibition() {
 		return exhibition;
 	}
 
-	public void setExhibition(List<Exhibition> exhibition) {
+	public void setExhibition(Exhibition exhibition) {
 		this.exhibition = exhibition;
 	}
 
