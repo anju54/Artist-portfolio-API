@@ -39,6 +39,7 @@ public class Media {
 	@OneToOne(mappedBy = "media", cascade = CascadeType.ALL) 
 	private ArtistProfileMedia artistProfileMedia;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "exhibition")
 	private List<ExhibitionMedia> exhibitionMedia;
 	

@@ -50,20 +50,23 @@ public class ArtistProfile {
 	@Column(name = "color_id")
 	private int colorId;
 
-	@JsonIgnore
+	//@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="user_id")
 	private UserModel user;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "artistProfile") //bridge table
 	private List<ArtistProfileMedia> artistProfileMedia;
 	
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable( name="artist_painting_bridge", joinColumns=@JoinColumn(name="artist_profile_id"), 
 				inverseJoinColumns=@JoinColumn(name = "painting_type_id"))
 	List<PaintingType> paintingType;
 	
-	@OneToOne
+	@JsonIgnore
+	@OneToOne()
 	@JoinColumn(name="profile_pic_id")
 	private Media media;
 	

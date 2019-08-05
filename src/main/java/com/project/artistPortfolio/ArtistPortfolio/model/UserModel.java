@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 /**
@@ -48,10 +50,12 @@ public class UserModel {
 	@ManyToOne
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
-	 
+	
+	@JsonIgnore
 	@OneToOne(mappedBy="user")
 	private ArtistProfile artistProfile;
 	
+	@JsonIgnore
 	@OneToOne(mappedBy="user")
 	private OrgStaff orgStaf;
 	

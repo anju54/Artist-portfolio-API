@@ -12,6 +12,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "exhibition")
 public class Exhibition {
@@ -38,6 +40,7 @@ public class Exhibition {
 	@Column(name = "organization_id")
 	private int organizationId;
 	
+	@JsonIgnore
 	@OneToMany( mappedBy="media")
 	private List<ExhibitionMedia> exhibitionMedia;
 	
