@@ -5,6 +5,7 @@ import java.util.List;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.UserAsArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.PaintingType;
@@ -31,5 +32,7 @@ public interface ArtistProfileService {
 	Media getProfilePicByArtistProfileId(int id);
 	
 	List<Integer> getAllArtistId(int pageNo,int pageLimit);
+	
+	List<UserAsArtistDTO> getAllArtistProfileFullName();
 
 }

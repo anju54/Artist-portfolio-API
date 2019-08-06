@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.UserAsArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
@@ -48,6 +49,17 @@ public class ArtistProfileController {
 	private UserService userService;
 	
 	private final static Logger logger = LoggerFactory.getLogger(ArtistProfileController.class);
+	
+	/**
+	 * This is used to get all the artist
+	 * 
+	 * @return List of artistProfile object.
+	 */
+	@GetMapping("/all")
+	public List<UserAsArtistDTO> getAllArtistProfile() {
+		
+		return  artistProfileService.getAllArtistProfileFullName();
+	}
 	
 	/**
 	 * This is used to get artist profile pic path by profile id

@@ -22,6 +22,7 @@ import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ArtistProfileMediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.MediaDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.ProfileDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.UserAsArtistDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ArtistNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.DataNotFound;
@@ -498,6 +499,33 @@ public class ArtistProfileServiceImpl implements ArtistProfileService{
 		
 		artistProfileRepository.deleteById(id);
 		return "record has been deleted";
+	}
+	
+	/**
+	 * This is used to get all the artist
+	 * 
+	 * @return List of artistProfile object.
+	 */
+	public List<UserAsArtistDTO> getAllArtistProfileFullName(){
+		
+		UserAsArtistDTO userAsArtistDTO;
+		
+		List<UserAsArtistDTO> UserAsArtistDTOList = new ArrayList<>();
+		
+		List<ArtistProfile> allArtistProfile = (List<ArtistProfile>) artistProfileRepository.findAll();
+		
+		for(ArtistProfile ap: allArtistProfile) {
+			userAsArtistDTO = new UserAsArtistDTO();
+			
+			String fullName = ap.getUser().getFname() +" "+ ap.getUser().getLname();
+			userAsArtistDTO.setFullName(fullName);
+			userAsArtistDTO.setArtistId(ap.getId());
+			userAsArtistDTO.setUserId(ap.getUser().getId());
+			
+			UserAsArtistDTOList.add(userAsArtistDTO);
+			
+		}
+		return UserAsArtistDTOList;
 	}
 
 }
