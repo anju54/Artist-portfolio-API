@@ -37,9 +37,18 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	 * @return Exhibition object.
 	 */
 	@Override
-	public Exhibition getExhibitionByName(String name) {
+	public Exhibition getExhibitionByTitle(String title) {
 		
-		return null;
+		try {
+			Exhibition exhibition =exhibitionRepository.findByTitle(title);
+			
+			return  exhibition;
+			
+		}catch (Exception e) {
+			logger.info(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.NOT_FOUND);
+		}
+	
 	}
 	
 	/**

@@ -10,7 +10,7 @@ public interface ExhibitionService {
 	Response<Exhibition> addExhibition(String title,String organization);
 	Response<Exhibition> updateExhibition(int id,Exhibition exhibition);
 	Exhibition getExhibitionById(int id);
-	Exhibition getExhibitionByName(String name);
+	Exhibition getExhibitionByTitle(String title) ;
 	List<Exhibition> allExhibition();
 	boolean deleteExhibition(int id);
 	List<Exhibition> allExhibitionByOrgId(int orgId);

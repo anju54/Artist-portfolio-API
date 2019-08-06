@@ -44,6 +44,7 @@ public class Exhibition {
 	@OneToMany( mappedBy="media")
 	private List<ExhibitionMedia> exhibitionMedia;
 	
+	@JsonIgnore
 	@OneToOne(mappedBy="exhibition")
 	private OrgStaff orgStaff;
 	
