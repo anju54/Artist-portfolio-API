@@ -8,8 +8,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.Response;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
+import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 
 public interface OrgStaffService {
@@ -22,8 +24,9 @@ public interface OrgStaffService {
 	List<OrgStaffDTO> getStaffListByOrganizationId(int id);
 	Media getProfilePicByUserId(int id);
 	ResponseEntity<?> uploadprofilePicForOrgStaff(Authentication authentication,MultipartFile file)throws IOException;
-	int getOrgAdminIdbytoken(Authentication authentication);
 	int addOrgStaffAsAdmin(String organizationName, String email);
 	Organization getOrganizationByOrgStaffId(int id);
 	Organization getOrganizationByUserId(int id);
+	OrgStaff getStaffByStaffId(int id);
+	Response<OrgStaff> assignStaffForExhibition(String exhibitionTitle,int staffId);
 }

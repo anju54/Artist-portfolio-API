@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.RegistrationDTO;
+import com.project.artistPortfolio.ArtistPortfolio.DTO.Response;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ArtistNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
@@ -26,6 +27,7 @@ import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.exception.FileExtensionNotValidException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.FileNotFound;
 import com.project.artistPortfolio.ArtistPortfolio.exception.FileSizeExceeded;
+import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
 import com.project.artistPortfolio.ArtistPortfolio.model.Links;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
@@ -33,7 +35,7 @@ import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
 import com.project.artistPortfolio.ArtistPortfolio.repository.LinksRepository;
 import com.project.artistPortfolio.ArtistPortfolio.repository.OrgStaffRepository;
-import com.project.artistPortfolio.ArtistPortfolio.repository.RoleRepository;
+import com.project.artistPortfolio.ArtistPortfolio.service.ExhibitionService;
 import com.project.artistPortfolio.ArtistPortfolio.service.LinksService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaService;
 import com.project.artistPortfolio.ArtistPortfolio.service.MediaStorageService;
@@ -50,10 +52,10 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	private OrgStaffRepository orgStaffRepository;
 	
 	@Autowired
-	private UserService userService;
+	private ExhibitionService exhibitionService;
 	
 	@Autowired
-	private RoleRepository roleRepository;
+	private UserService userService;
 	
 	@Autowired
 	private MediaService mediaService;
@@ -222,22 +224,22 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * @param organizationName
 	 * 			organization name
 	 */
-	@Override
-	public int addOrgStaffAsAdmin(String organizationName,String email) {
-		
-		int organizationId = organizationService.
-				getOrganizationByName(organizationName).getOrganizationId();
-		logger.info("org id and name"+organizationId+" "+organizationName);
-		UserModel user = userService.getUserByEmail(email);
-		//OrgStaff existingOrgStaff = user.getOrgStaf();
-		OrgStaff orgStaff = new OrgStaff();
-		
-		orgStaff.setOrganizationId(organizationId);
-		orgStaff.setUser(user);
-		orgStaffRepository.save(orgStaff);
-		
-		return organizationId;
-	}
+//	@Override
+//	public int addOrgStaffAsAdmin(String organizationName,String email) {
+//		
+//		int organizationId = organizationService.
+//				getOrganizationByName(organizationName).getOrganizationId();
+//		logger.info("org id and name"+organizationId+" "+organizationName);
+//		UserModel user = userService.getUserByEmail(email);
+//		//OrgStaff existingOrgStaff = user.getOrgStaf();
+//		OrgStaff orgStaff = new OrgStaff();
+//		
+//		orgStaff.setOrganizationId(organizationId);
+//		orgStaff.setUser(user);
+//		orgStaffRepository.save(orgStaff);
+//		
+//		return organizationId;
+//	}
 
 	@Override
 	public boolean updateOrgStaff(int id, UpdateUserDTO updateUserDTO) {
@@ -382,20 +384,58 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		Organization org = organizationService.getOrganizationById(orgStaff.getOrganizationId());
 		return org;
 	}
+	
+	@Override
+	public OrgStaff getStaffByStaffId(int id) {
+		
+		try {
+			OrgStaff orgStaff = orgStaffRepository.findById(id).get();
+			return orgStaff;
+		}catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new CustomException(ExceptionMessage.NO_DATA_AVAILABLE, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@Override
+	public Response<OrgStaff> assignStaffForExhibition(String exhibitionTitle,int staffId) {
+		
+		Response<OrgStaff> returnObject = new Response<>();
+		OrgStaff orgStaff = getStaffByStaffId(staffId);
+		
+		try {
+			
+			Exhibition exhibition = exhibitionService.getExhibitionByTitle(exhibitionTitle);
+			orgStaff.setExhibition(exhibition);
+						
+			orgStaffRepository.save(orgStaff);
+			
+			returnObject.setResponse(orgStaff);
+			returnObject.setStatus("success");
+			return returnObject;
+			
+		}catch (Exception e) {
+			logger.info("error");
+			returnObject.setResponse(orgStaff);
+			returnObject.setStatus("failed");
+			return returnObject;
+		}
+		
+	}
 
 	/**
 	 * This is used to get Organizer id by token
 	 * @return organizer id
 	 */
-	@Override
-	public int getOrgAdminIdbytoken(Authentication authentication) {
-		
-		try {
-		UserModel user = userService.getUserByEmail( userService.getPrincipalUser(authentication).getUsername() );
-		return user.getOrgStaf().getId();
-		}catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Organizer not found!!");
-		}
-	}
+//	@Override
+//	public int getOrgAdminIdbytoken(Authentication authentication) {
+//		
+//		try {
+//		UserModel user = userService.getUserByEmail( userService.getPrincipalUser(authentication).getUsername() );
+//		return user.getOrgStaf().getId();
+//		}catch (Exception e) {
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Organizer not found!!");
+//		}
+//	}
 
 }

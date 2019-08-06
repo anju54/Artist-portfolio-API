@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.Response;
 import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
+import com.project.artistPortfolio.ArtistPortfolio.model.OrgStaff;
 import com.project.artistPortfolio.ArtistPortfolio.service.ExhibitionService;
+import com.project.artistPortfolio.ArtistPortfolio.service.OrgStaffService;
 
 /**
  * This is used for mapping all the operation related to Exhibition
@@ -29,6 +31,9 @@ public class ExhibitionController {
 	
 	 @Autowired
 	 private ExhibitionService exhibitionService;
+	 
+	 @Autowired
+	 private OrgStaffService orgStaffService;
 	
 	/**
 	 * This is used to create new exhibition.
@@ -40,6 +45,19 @@ public class ExhibitionController {
 		
 		return exhibitionService.addExhibition(title, organization);
 	 }
+	 
+	 /**
+		 * This is used to assign staff to exhibition
+		 * @param staffId
+		 * @param title
+		 * 			exhibition title
+		 * @return 
+		 */
+		@PutMapping("/{title}/org-staff/{id}")
+		public Response<OrgStaff> assignStaffForExhibition(@PathVariable("title") String title,@PathVariable("id") int staffId) {
+			
+			return orgStaffService.assignStaffForExhibition( title,staffId );
+		}
 	
 	/**
 	 * This is used to get all Exhibition by org id.

@@ -131,15 +131,7 @@ public class OrgStaffController {
 		return orgStaffService.getOrganizationByUserId(id);
 	}
 	
-	/**
-	 * This is used to get Organizer id by token
-	 * @return orgStaff(admin) id
-	 */
-	@GetMapping("/current-user-id")
-	public int getOrganizerId(Authentication authentication) {
-		
-		return orgStaffService.getOrgAdminIdbytoken(authentication);
-	}
+	
 	
 	/**
 	 * This is used to get all orgStaff .
