@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.OrgStaffDTO;
 import com.project.artistPortfolio.ArtistPortfolio.DTO.UpdateUserDTO;
+import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
 import com.project.artistPortfolio.ArtistPortfolio.model.Media;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.model.UserModel;
@@ -41,6 +42,20 @@ public class OrgStaffController {
 	
 	@Autowired
 	private UserService userService;
+
+	/***
+	 * This is used to get orgStaff id
+	 * 
+	 * @param userId
+	 * 
+	 * @return id
+	 * 			orgStaff id
+	 */
+	@GetMapping("/user/{id}")
+	public int getOrgStaffIdByUserId(@PathVariable("id") int id) {
+		
+		return orgStaffService.getOrgStaffIdByUserId(id);
+	}
 	
 	/**
 	 * This is used to get artist profile pic path by profile id
@@ -154,6 +169,12 @@ public class OrgStaffController {
 	public List<OrgStaffDTO> getAllorgStaffById(@PathVariable("id") int id){
 		return orgStaffService.getStaffListByOrganizationId(id);
 	}
+	
+	@GetMapping("/{id}/exhibition")
+	public Exhibition getExhibitionByOrgStaff(@PathVariable("id") int id) {
+		 
+		 return orgStaffService.getExhibitionByOrgStaff(id);
+	 }
 	
 	/**
 	 * This is used to delete staff by staff id

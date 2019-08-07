@@ -80,7 +80,20 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 
 	public static final long TEN_MB_IN_BYTES = 10485760;
 	
-	
+	/***
+	 * This is used to get orgStaff id
+	 * 
+	 * @param userId
+	 * 
+	 * @return id
+	 * 			orgStaff id
+	 */
+	@Override
+	public int getOrgStaffIdByUserId(int userId) {
+		
+		UserModel user = userService.getUserById(userId);
+		return user.getOrgStaf().getId();
+	}
 	
 	/**
 	 * This is used to get org staff's profile picture path by profile id
@@ -349,6 +362,13 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	
 	}
 	
+	@Override
+	public Exhibition getExhibitionByOrgStaff(int id) {
+		
+		int exhId = getStaffByStaffId(id).getExhibition_id();
+		return exhibitionService.getExhibitionById(exhId);
+	}
+	
 	/**
 	 * This is used to get organization detail by org staff id
 	 * @param id
@@ -406,8 +426,7 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		try {
 			
 			Exhibition exhibition = exhibitionService.getExhibitionByTitle(exhibitionTitle);
-			orgStaff.setExhibition(exhibition);
-						
+			orgStaff.setExhibition_id(exhibition.getId());
 			orgStaffRepository.save(orgStaff);
 			
 			returnObject.setResponse(orgStaff);
@@ -422,6 +441,8 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 		}
 		
 	}
+	
+	
 
 	/**
 	 * This is used to get Organizer id by token

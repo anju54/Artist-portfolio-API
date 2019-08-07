@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -33,20 +34,19 @@ public class OrgStaff {
 	@Column(name="organization_id")
 	private int organizationId;
 	
+	@Column(name="exhibition_id")
+	private int exhibition_id;
+	
 	@OneToOne
 	@JoinColumn(name="profile_pic_id")
 	private Media media;
 	
-	@OneToOne
-	@JoinColumn(name="exhibition_id")
-	private Exhibition exhibition;
-
-	public Exhibition getExhibition() {
-		return exhibition;
+	public int getExhibition_id() {
+		return exhibition_id;
 	}
 
-	public void setExhibition(Exhibition exhibition) {
-		this.exhibition = exhibition;
+	public void setExhibition_id(int exhibition_id) {
+		this.exhibition_id = exhibition_id;
 	}
 
 	public Media getMedia() {
