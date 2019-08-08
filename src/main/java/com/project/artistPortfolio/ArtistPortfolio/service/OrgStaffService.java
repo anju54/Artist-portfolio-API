@@ -25,7 +25,7 @@ public interface OrgStaffService {
 	List<OrgStaffDTO> getStaffListByOrganizationId(int id);
 	Media getProfilePicByUserId(int id);
 	ResponseEntity<?> uploadprofilePicForOrgStaff(Authentication authentication,MultipartFile file)throws IOException;
-	//int addOrgStaffAsAdmin(String organizationName, String email);
+	int addOrgStaffAsAdmin(String organizationName, String email);
 	Organization getOrganizationByOrgStaffId(int id);
 	Organization getOrganizationByUserId(int id);
 	OrgStaff getStaffByStaffId(int id);

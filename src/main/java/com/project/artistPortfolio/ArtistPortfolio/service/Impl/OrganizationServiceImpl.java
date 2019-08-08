@@ -83,9 +83,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 			OrganizationDomain domain = new OrganizationDomain();
 			domain.setDomainName(organizationDTO.getDomainName());
 			
-			int organizationID = orgStaffService.addOrgStaffAsAdmin(organizationDTO.getOrgName(), email);	
+			//int organizationID = orgStaffService.addOrgStaffAsAdmin(organizationDTO.getOrgName(), email);	
 			
-			domainService.create(domain,organizationID);
+			//domainService.create(domain,organizationID);
 			
 		}catch (OrgNameExists e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Organization is already registered with us!!");

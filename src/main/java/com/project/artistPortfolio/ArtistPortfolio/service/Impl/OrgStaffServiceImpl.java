@@ -237,22 +237,22 @@ public class OrgStaffServiceImpl implements OrgStaffService{
 	 * @param organizationName
 	 * 			organization name
 	 */
-//	@Override
-//	public int addOrgStaffAsAdmin(String organizationName,String email) {
-//		
-//		int organizationId = organizationService.
-//				getOrganizationByName(organizationName).getOrganizationId();
-//		logger.info("org id and name"+organizationId+" "+organizationName);
-//		UserModel user = userService.getUserByEmail(email);
-//		//OrgStaff existingOrgStaff = user.getOrgStaf();
-//		OrgStaff orgStaff = new OrgStaff();
-//		
-//		orgStaff.setOrganizationId(organizationId);
-//		orgStaff.setUser(user);
-//		orgStaffRepository.save(orgStaff);
-//		
-//		return organizationId;
-//	}
+	@Override
+	public int addOrgStaffAsAdmin(String organizationName,String email) {
+		
+		int organizationId = organizationService.
+				getOrganizationByName(organizationName).getOrganizationId();
+		logger.info("org id and name"+organizationId+" "+organizationName);
+		UserModel user = userService.getUserByEmail(email);
+		//OrgStaff existingOrgStaff = user.getOrgStaf();
+		OrgStaff orgStaff = new OrgStaff();
+		
+		orgStaff.setOrganizationId(organizationId);
+		orgStaff.setUser(user);
+		orgStaffRepository.save(orgStaff);
+		
+		return organizationId;
+	}
 
 	@Override
 	public boolean updateOrgStaff(int id, UpdateUserDTO updateUserDTO) {
