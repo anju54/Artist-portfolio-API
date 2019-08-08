@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.project.artistPortfolio.ArtistPortfolio.DTO.Response;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
+import com.project.artistPortfolio.ArtistPortfolio.exception.DuplicateRecord;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
 import com.project.artistPortfolio.ArtistPortfolio.model.Exhibition;
 import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
@@ -56,23 +58,33 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	 * 
 	 * @param title 
 	 * 		name or title of the organization
-	 * @return 
+	 * @return Response object
 	 */
 	public Response<Exhibition> addExhibition(String title,String organization) {
 		
 		Exhibition exhibition = new Exhibition();
-		
-		Organization org =  organizationService.getOrganizationByName(organization);
-		
-		exhibition.setTitle(title);
-		exhibition.setOrganizationId(org.getOrganizationId());
-		
 		Response<Exhibition> returnObject = new Response<>();
-		returnObject.setResponse(exhibition);
+		
 		try {
+			Organization org =  organizationService.getOrganizationByName(organization);
+			
+			Exhibition exh = getExhibitionByTitle(title);
+			if(exh!=null) {
+				logger.info("duplicate exhibition title");
+				throw new DuplicateRecord("duplicate ecord");
+			}
+			
+			exhibition.setTitle(title);
+			exhibition.setOrganizationId(org.getOrganizationId());
+			
+			returnObject.setResponse(exhibition);
+			
 			exhibitionRepository.save(exhibition);
 			returnObject.setStatus("success");
 			return returnObject;
+			
+		}catch (DuplicateRecord e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This Exhibition is alredy registered with us!!");
 		}catch (Exception e) {
 			
 			returnObject.setStatus("failed");
@@ -87,29 +99,25 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 	 * @param id
 	 * 			exhibition id.
 	 * @param Exhibition object.
+	 * 
+	 * @return Response object
 	 */
 	public Response<Exhibition> updateExhibition(int id,Exhibition exhibition) {
+		
+		Response<Exhibition> response = new Response<>();
 		
 		Exhibition existingExhibition = getExhibitionById(id);
 		
 		existingExhibition.setDate(exhibition.getDate());
 		existingExhibition.setPaintingSlots(exhibition.getPaintingSlots());
 		existingExhibition.setVenue(exhibition.getVenue());
+	
+		exhibitionRepository.save(existingExhibition);
+		logger.info("data updated");
 		
-		Response<Exhibition> returnObject = new Response<>();
-		returnObject.setResponse(exhibition);
-		
-		try {
-			
-			exhibitionRepository.save(existingExhibition);
-			returnObject.setStatus("success");
-			return returnObject;
-		}catch (Exception e) {
-			
-			returnObject.setStatus("failed");
-			//Response.HttpStatusMsg status = Response.HttpStatusMsg.ok;
-			return returnObject;	
-		}
+		response.setResponse(exhibition);
+		response.setStatus("success");
+		return response;
 	}
 	
 	/**
@@ -124,7 +132,7 @@ public class ExhibitionServiceImpl implements ExhibitionService{
 		try {
 			
 			Optional<Exhibition> exhibition =  exhibitionRepository.findById(id);
-			Exhibition exh = exhibition.get();;
+			Exhibition exh = exhibition.get();
 			return exh;
 		}catch (Exception e) {
 			logger.info(e.getMessage());

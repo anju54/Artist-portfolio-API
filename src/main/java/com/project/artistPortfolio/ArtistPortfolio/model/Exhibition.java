@@ -8,14 +8,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "exhibition")
+@Table(name = "exhibition",
+			uniqueConstraints=
+			@UniqueConstraint(columnNames= {"venue","date"})
+)
 public class Exhibition {
 	
 	@Id
@@ -45,14 +48,14 @@ public class Exhibition {
 	private List<ExhibitionMedia> exhibitionMedia;
 	
 	@JsonIgnore
-	@OneToOne(mappedBy="exhibition")
-	private OrgStaff orgStaff;
+	@OneToMany(mappedBy="exhibition_id")
+	private List<OrgStaff> orgStaff;
 	
-	public OrgStaff getOrgStaff() {
+	public List<OrgStaff> getOrgStaff() {
 		return orgStaff;
 	}
 
-	public void setOrgStaff(OrgStaff orgStaff) {
+	public void setOrgStaff(List<OrgStaff> orgStaff) {
 		this.orgStaff = orgStaff;
 	}
 
