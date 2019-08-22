@@ -54,6 +54,9 @@ public class ArtistProfile {
 	@OneToOne
 	@JoinColumn(name="user_id")
 	private UserModel user;
+	
+	@OneToOne(mappedBy="artistProfile")
+	private Invitation invitation;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "artistProfile") //bridge table
@@ -72,6 +75,14 @@ public class ArtistProfile {
 	
 	public int getColorId() {
 		return colorId;
+	}
+
+	public Invitation getInvitation() {
+		return invitation;
+	}
+
+	public void setInvitation(Invitation invitation) {
+		this.invitation = invitation;
 	}
 
 	public void setColorId(int colorId) {

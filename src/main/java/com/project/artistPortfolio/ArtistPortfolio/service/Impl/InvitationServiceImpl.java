@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.project.artistPortfolio.ArtistPortfolio.DTO.InvitationDTO;
 import com.project.artistPortfolio.ArtistPortfolio.exception.CustomException;
 import com.project.artistPortfolio.ArtistPortfolio.exception.ExceptionMessage;
+import com.project.artistPortfolio.ArtistPortfolio.model.ArtistProfile;
 import com.project.artistPortfolio.ArtistPortfolio.model.Invitation;
-import com.project.artistPortfolio.ArtistPortfolio.model.Organization;
 import com.project.artistPortfolio.ArtistPortfolio.repository.InvitationRepository;
+import com.project.artistPortfolio.ArtistPortfolio.service.ArtistProfileService;
 import com.project.artistPortfolio.ArtistPortfolio.service.InvitationService;
 import com.project.artistPortfolio.ArtistPortfolio.service.OrganizationService;
 
@@ -27,6 +29,9 @@ public class InvitationServiceImpl implements InvitationService{
 	
 	@Autowired
 	private OrganizationService organizationService;
+	
+	@Autowired
+	private ArtistProfileService artistProfileService;
 	
 	/**
 	 * This is used to get Invitation by id.
@@ -46,8 +51,9 @@ public class InvitationServiceImpl implements InvitationService{
 	 * 
 	 * @param Invitation object
 	 */
-	public void addInvitation(Invitation invitation) {
-		
+	public void addInvitation(InvitationDTO invitationDTO) {
+			
+		Invitation invitation =  mapInvitationDtoToObject(invitationDTO);
 		invitationRepository.save(invitation);
 	}
 	
@@ -103,6 +109,27 @@ public class InvitationServiceImpl implements InvitationService{
 		
 		invitationRepository.deleteById(id);
 		return true;	
+	}
+	
+	/**
+	 * This is used to map Inviation DTo to object
+	 * @param invitationDTO
+	 * @return Invitation object.
+	 */
+	public Invitation mapInvitationDtoToObject(InvitationDTO invitationDTO) {
+		
+		Invitation invitation = new Invitation();
+		
+		invitation.setAccepted(invitationDTO.isAccepted());
+		invitation.setMaxSlots(invitationDTO.getMaxSlots());
+		invitation.setMinSlots(invitationDTO.getMinSlots());
+		invitation.setRejected(invitationDTO.isRejected());
+		invitation.setRejectionReason(invitationDTO.getRejectionReason());
+		
+		ArtistProfile artistProfile = artistProfileService.getArtistProfileById(invitationDTO.getArtist_id());
+		invitation.setArtistProfile(artistProfile);
+		
+		return invitation;
 	}
 
 	

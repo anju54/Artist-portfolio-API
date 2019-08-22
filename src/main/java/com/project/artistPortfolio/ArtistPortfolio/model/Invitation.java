@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -19,10 +20,10 @@ public class Invitation {
 	private int id;
 	
 	@Column(name = "accepted")
-	private int accepted;
+	private boolean accepted;
 	
 	@Column(name = "rejected")
-	private int rejected;
+	private boolean rejected;
 	
 	@Column(name = "min_slots")
 	private int minSlots;
@@ -36,6 +37,18 @@ public class Invitation {
 	@ManyToOne
 	@JoinColumn(name = "exhibition_id", nullable = false)
 	private Exhibition exhibitionId;
+	
+	@OneToOne
+	@JoinColumn(name="artist_id")
+	private ArtistProfile artistProfile;
+
+	public ArtistProfile getArtistProfile() {
+		return artistProfile;
+	}
+
+	public void setArtistProfile(ArtistProfile artistProfile) {
+		this.artistProfile = artistProfile;
+	}
 
 	public int getId() {
 		return id;
@@ -45,19 +58,19 @@ public class Invitation {
 		this.id = id;
 	}
 
-	public int getAccepted() {
+	public boolean isAccepted() {
 		return accepted;
 	}
 
-	public void setAccepted(int accepted) {
+	public void setAccepted(boolean accepted) {
 		this.accepted = accepted;
 	}
 
-	public int getRejected() {
+	public boolean isRejected() {
 		return rejected;
 	}
 
-	public void setRejected(int rejected) {
+	public void setRejected(boolean rejected) {
 		this.rejected = rejected;
 	}
 
